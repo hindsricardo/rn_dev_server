@@ -10,20 +10,25 @@ class Conversations {
 		this.name = 'Conversations'
 
 		server.get('/conversations/me', (req, res, next) => {
-			jwt.verify(req.header('token'), secret, (err, decoded) => {
+			console.log(req.headers.token);
+			jwt.verify(req.headers.token, secret, (err, decoded) => {
 				if(err) {
 					console.log(err, decoded);
-					res.writeHead(403, header);
+					res.writeHead(500, header);
 					res.end(JSON.stringify({
 						err:err,
 						message: 'You are not authorized to access this information'
 					}))
 				}
 				else{
-					let cypher = ["MATCH (user:USER, {username:{username}})-[:SENT]->(messages:MESSAGE)",
-								  "RETURN messages"].join('\n');
+					let cypher = ["MATCH (conversations:CONVERSATION)",
+								  "WHERE ({username} IN conversations.users)",
+								  "MATCH (users:USER)",
+								  "WHERE (users.username IN conversations.users)",
+								  "RETURN users, conversations"].join('\n');
+
 					db.query(cypher, {
-						username: decoded.name
+						username: decoded.name,
 					}, (err, result) => {
 						if(err) {
 							console.log(err);
@@ -37,9 +42,12 @@ class Conversations {
 							res.writeHead(200, header);
 					        res.end(JSON.stringify({
 					        	success:'yes',
-					        	data: result
+					        	result: result
 					        }));
-					        console.log(result);
+					        console.log('/conversations/me', JSON.stringify({
+					        	success:'yes',
+					        	result: result
+					        }));
 					        return
 						}
 					})

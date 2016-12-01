@@ -4,6 +4,7 @@ import {parse} from 'url';
 import seraph from 'seraph';
 import Accounts from '../apps/assembly/accounts';
 import Messages from '../apps/assembly/messages';
+import Conversations from '../apps/assembly/conversations';
 
 const port = 3000;
 
@@ -41,6 +42,7 @@ class Server {
 		});
 		this.accountsRouter = new Accounts(this.db, this.server);
 		this.messagesRouter = new Messages(this.db, this.server);
+		this.conversationsRouter = new Conversations(this.db, this.server);
 
 
 	}

@@ -51,14 +51,16 @@ class Accounts {
 					res.writeHead(200, header);
 			        res.end(JSON.stringify({
 				        	success:'yes',
-				        	data: results,
+				        	user: results[0].user,
+				        	location: results[0].location, 
 				        	message:'Successful Registration',
 				        	token: token
 			        	}));
 			        console.log(JSON.stringify({
 			        	success:'yes',
-			        	data: results,
-			        	message:'Successful registration',
+			        	user: results[0].user,
+			        	location: results[0].location,
+			        	message:'Successful Registration',
 			        	//token: token
 			        }));
 			        return
@@ -106,15 +108,17 @@ class Accounts {
 					res.writeHead(200, header);
 			        res.end(JSON.stringify({
 				        	success:'yes',
-				        	data: results,
+				        	user: results[0].user,
+				        	location: results[0].location,
 				        	message:'Successful Login',
 				        	token: token
 			        	}));
 			        console.log(JSON.stringify({
 			        	success:'yes',
-			        	data: results,
+			        	user: results[0].user,
+			        	location: results[0].location,
 			        	message:'Successful Login',
-			        	//token: token
+			        	token: token
 			        }));
 			        return
 				}
@@ -124,7 +128,7 @@ class Accounts {
 
 		server.get('/users/me', (req, res, next) => {
 			console.log('this is the req', req.header('token'));
-			jwt.verify(req.header('token'), secret, (err, decoded) => {
+			jwt.verify(req.header['token'], secret, (err, decoded) => {
 				if(err) {
 					console.log(err, decoded);
 					res.writeHead(403, header);
@@ -147,6 +151,55 @@ class Accounts {
 							res.writeHead(200, header);
 					        res.end(JSON.stringify(result));
 					        console.log(result);
+					        return
+						}
+					})
+				}
+
+			})
+
+		})
+
+
+		server.post('/users/lookup', (req, res, next) => {
+			console.log('this is the req', req.header('token'), req.body.users);
+			let users = req.body.users;
+			let  cypher = ["MATCH (users:USER)",
+						   "WHERE (users.username IN {userIDs})",
+						   "RETURN users"].join('\n');
+			jwt.verify(req.headers.token, secret, (err, decoded) => {
+				if(err) {
+					console.log(err, decoded);
+					res.writeHead(403, header);
+					res.end(JSON.stringify({
+						err:err,
+						message: 'You are not authorized to access this information'
+					}))
+				}
+				else{
+					console.log(err, decoded);
+					db.query(cypher, {
+						userIDs: users
+					}, (err, result) => {
+						if(err) {
+							console.log(err);
+							res.writeHead(500, header);
+							res.end(JSON.stringify({
+								err:err,
+								message: 'Something went wrong. Please try again'
+							}))
+						}
+						else {
+							res.writeHead(200, header);
+					        res.end(JSON.stringify({
+					        	success:'yes',
+					        	result: result,
+					        }));
+					        console.log('/users/lookup', JSON.stringify({
+						        	success:'yes',
+						        	result: result,
+					        	})
+					        );
 					        return
 						}
 					})

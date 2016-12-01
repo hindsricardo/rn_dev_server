@@ -55,8 +55,8 @@ class Messages {
 			let body = req.body;
 			jwt.verify(req.header('token'), secret, (err, decoded) => {
 				let cypher = ["MATCH (sender:USER {username:{sender}})",
-							  "MATCH (receiver:USER {username:{receiver}})"
-							  "CREATE (message:MESSAGE {created_at:{timestamp}, text:{text}, senderUN:{sender}, recipientUN:{receiver}})",
+							  "MATCH (receiver:USER {username:{receiver}})",
+							  "CREATE (message:MESSAGE {created_at:{timestamp}, text:{text}, senderUN:{sender}, recipientUN:{receiver} })",
 							  "CREATE (sender)-[:SENT]->(message)",
 							  "CREATE (receiver)<-[:RECEIVED]-(message)",
 							  "CREATE (conversation:CONVERSATION {users:{users},created_at:{timestamp}, lastMessageDate:{timestamp},lastMessageText:{text}})",
