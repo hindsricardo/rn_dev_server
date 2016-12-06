@@ -21,14 +21,12 @@ class Conversations {
 					}))
 				}
 				else{
-					let cypher = ["MATCH (conversations:CONVERSATION)",
+					let cypher1 = ["MATCH (conversations:CONVERSATION)",
 								  "WHERE ({username} IN conversations.users)",
-								  "MATCH (users:USER)",
-								  "WHERE (users.username IN conversations.users)",
-								  "RETURN users, conversations"].join('\n');
+								  "RETURN conversations"].join('\n');
 
-					db.query(cypher, {
-						username: decoded.name,
+					db.query(cypher1, {
+						username: decoded.name
 					}, (err, result) => {
 						if(err) {
 							console.log(err);
@@ -39,16 +37,44 @@ class Conversations {
 							}))
 						}
 						else {
-							res.writeHead(200, header);
-					        res.end(JSON.stringify({
-					        	success:'yes',
-					        	result: result
-					        }));
-					        console.log('/conversations/me', JSON.stringify({
-					        	success:'yes',
-					        	result: result
-					        }));
-					        return
+							let userlist = [];
+							console.log(result);
+							for(var x=0; x < result.length; x++){
+								let convo = result[x];
+								for(var n = 0; n < convo.users.length; n++){
+									userlist.push(convo.users[n]);
+								}
+							}
+							console.log(userlist)
+							let cypher2 = ["MATCH (users:USER)",
+								  "WHERE (users.username IN {convoUsers})",
+								  "RETURN users"].join('\n');
+							db.query(cypher2, {
+								convoUsers: userlist
+							}, (err, data) =>{
+								if(err) {
+									console.log(err);
+									res.writeHead(500, header);
+									res.end(JSON.stringify({
+										err:err,
+										message: 'Something went wrong. Please try again'
+									}))
+								}
+								else{
+									res.writeHead(200, header);
+							        res.end(JSON.stringify({
+							        	success:'yes',
+							        	conversations: result,
+							        	users: data
+							        }));
+							        console.log('/conversations/me', JSON.stringify({
+							        	success:'yes',
+							        	conversations: result,
+							        	users: data
+							        }));
+							        return
+								}
+							})
 						}
 					})
 				}
