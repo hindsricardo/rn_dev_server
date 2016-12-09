@@ -83,17 +83,22 @@ class Conversations {
 
 		})
 
-		server.post('/messages/create', (req, res, next) => {
+		server.post('/create/messages', (req, res, next) => {
 			console.log('this is the request', req.body);
 			let body = req.body;
-			jwt.verify(req.header('token'), secret, (err, decoded) => {
-				let cypher = ["CREATE (message:MESSAGE {created_at:{timestamp}, text:{text}, senderUN:{sender}, recipientUN:{receiver}})",
-							  "CREATE (user:USER {username:{sender}})-[:SENT]->(message)",
-							  "RETURN message"].join('\n');
-
-				if(err){
-					console.log(err, decoded,'You are not authorized to access this information');
-					res.writeHead(403, header);
+			jwt.verify(req.headers.token, secret, (err, decoded) => {
+				let cypher = ["MATCH (convo:CONVERSATION)",
+				"WHERE ({senderUN} in convo.users) and ({recipientUN} in convo.users)",
+				"MATCH (user1:USER {username:{senderUN}})",
+				"MATCH (user2:USER {username:{recipientUN}})",
+				"SET convo.lastMessageText = {text}",
+				"CREATE (message:MESSAGE {created_at:{created}, senderUN:{senderUN}, recipientUN:{recipientUN}, text:{text} })", 
+				"CREATE (convo)-[:HAS]->(message)",
+				"CREATE (user1)-[:SENT]->(message)-[:RECEIVED]->(user2)",
+				"RETURN message"].join('\n');
+				if(err) {
+					console.log(err, decoded);
+					res.writeHead(500, header);
 					res.end(JSON.stringify({
 						err:err,
 						message: 'You are not authorized to access this information'
@@ -101,10 +106,10 @@ class Conversations {
 				}
 				else{
 					db.query(cypher, {
-						timestamp: Date.now(),
+						senderUN: body.senderUN,
+						recipientUN:body.recipientUN,
 						text: body.text,
-						sender: decoded.name,
-						recipientUN: body.recipient,
+						created: body.created_at
 					}, (err, results) => {
 						if(err) {
 							console.log(err);
@@ -119,11 +124,11 @@ class Conversations {
 							res.writeHead(200, header);
 					        res.end(JSON.stringify({
 						        	success:'yes',
-						        	data: results,
+						        	message: results,
 					        	}));
 					        console.log(JSON.stringify({
 					        	success:'yes',
-					        	data: results,
+					        	message: results,
 					        	//token: token
 					        }));
 					        return
@@ -136,43 +141,53 @@ class Conversations {
 		}); // end of message create
 
 
-		server.get('/messages/:conversation_id', (req, res, next) => {
-			jwt.verify(req.header('token'), secret, (err, decoded) => {
+		server.post('/conversation/messages', (req, res, next) => {
+			console.log('this is the request', req.body);
+			let body = req.body;
+			jwt.verify(req.headers.token, secret, (err, decoded) => {
+				let cypher = ["MATCH (messages:MESSAGE)", 
+				"WHERE (messages.recipientUN = {id1}) and (messages.senderUN = {id2}) or (messages.recipientUN = {id2}) and (messages.senderUN = {id1})",
+				"RETURN messages",
+				"ORDER BY messages.created_at desc",
+				"LIMIT 25"].join('\n');
 				if(err) {
 					console.log(err, decoded);
-					res.writeHead(403, header);
+					res.writeHead(500, header);
 					res.end(JSON.stringify({
 						err:err,
 						message: 'You are not authorized to access this information'
 					}))
 				}
 				else{
-					let cypher = ["MATCH (:CONVERSATION {id:{id}})-[:IN]->(messages:MESSAGE)",
-								  "RETURN messages ORDER BY messages.created_at desc"].join('\n');
-					let conversation_id = req.params.conversation_id;
 					db.query(cypher, {
-						id: conversation_id
-					}, (err, result) => {
+						id1: body.id1,
+						id2: body.id2
+					}, (err, results) => {
 						if(err) {
 							console.log(err);
-							res.writeHead(500, header);
-							res.end(JSON.stringify({
-								err:err,
-								message: 'Something went wrong. Please try again'
-							}))
+							res.writeHead(500, header)
+					        res.end(JSON.stringify({
+					          success:'no',
+					          err: err,
+					          message:'Something went wrong logging in. Check error message to see what happened.'
+					          }))
 						}
-						else {
+						else{
 							res.writeHead(200, header);
 					        res.end(JSON.stringify({
+						        	success:'yes',
+						        	messages: results,
+					        	}));
+					        console.log(JSON.stringify({
 					        	success:'yes',
-					        	data: result
+					        	messages: results,
+					        	//token: token
 					        }));
-					        console.log(result);
 					        return
 						}
-					})
+					});
+					next();
 				}
-
 			})
 
 		})
