@@ -92,6 +92,7 @@ class Conversations {
 				"MATCH (user1:USER {username:{senderUN}})",
 				"MATCH (user2:USER {username:{recipientUN}})",
 				"SET convo.lastMessageText = {text}",
+				"SET convo.lastMessageDate = {created}",
 				"CREATE (message:MESSAGE {created_at:{created}, senderUN:{senderUN}, recipientUN:{recipientUN}, text:{text} })", 
 				"CREATE (convo)-[:HAS]->(message)",
 				"CREATE (user1)-[:SENT]->(message)-[:RECEIVED]->(user2)",
