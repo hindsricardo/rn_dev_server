@@ -5,6 +5,7 @@ import seraph from 'seraph';
 import Accounts from '../apps/assembly/accounts';
 import Messages from '../apps/assembly/messages';
 import Conversations from '../apps/assembly/conversations';
+import Plan from '../apps/buildfit/plan';
 
 const port = 3000;
 
@@ -43,6 +44,7 @@ class Server {
 		this.accountsRouter = new Accounts(this.db, this.server);
 		this.messagesRouter = new Messages(this.db, this.server);
 		this.conversationsRouter = new Conversations(this.db, this.server);
+		this.planRouter = new Plan(this.db, this.server);
 
 
 	}
