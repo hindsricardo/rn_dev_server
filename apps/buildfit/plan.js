@@ -9,25 +9,29 @@ class Conversations {
 	constructor(db, server) {
 		this.name = 'Plan'
 
-		server.get('/conversations/me', (req, res, next) => {
-			console.log(req.headers.token);
-			jwt.verify(req.headers.token, secret, (err, decoded) => {
+		server.post('/create/plan', (req, res, next) => {	
+			let body = req.body;			
+			let cypher1 = ["MATCH (client:CLIENT {username: {client}})", 
+						  "RETURN client"].join('\n');
+
+			db.query(cypher1, {
+				client: body.username,
+				trainer:body.trainer
+			}, (err, result1) => {
 				if(err) {
-					console.log(err, decoded);
+					console.log(err);
 					res.writeHead(500, header);
 					res.end(JSON.stringify({
 						err:err,
-						message: 'You are not authorized to access this information'
+						message: 'Something went wrong. Please try again'
 					}))
 				}
-				else{
-					let cypher1 = ["MATCH (conversations:CONVERSATION)",
-								  "WHERE ({username} IN conversations.users)",
-								  "RETURN conversations"].join('\n');
-
-					db.query(cypher1, {
-						username: decoded.name
-					}, (err, result) => {
+				else {
+					let cypher2 = ["MATCH (setting:SETTING {trainer: {trainer}})",
+								"RETURN setting"].join('\n');
+					db.query(cypher2, {
+						trainer:body.trainer
+					}, (err, settings) => {
 						if(err) {
 							console.log(err);
 							res.writeHead(500, header);
@@ -35,23 +39,12 @@ class Conversations {
 								err:err,
 								message: 'Something went wrong. Please try again'
 							}))
-						}
-						else {
-							let userlist = [];
-							console.log(result);
-							for(var x=0; x < result.length; x++){
-								let convo = result[x];
-								for(var n = 0; n < convo.users.length; n++){
-									userlist.push(convo.users[n]);
-								}
-							}
-							console.log(userlist)
-							let cypher2 = ["MATCH (users:USER)",
-								  "WHERE (users.username IN {convoUsers})",
-								  "RETURN users"].join('\n');
-							db.query(cypher2, {
-								convoUsers: userlist
-							}, (err, data) =>{
+						} else{
+							let cypher3 = ["MATCH (gsetting: GSETTING {trainer: {trainer}})",
+										"RETURN gsetting"].join('\n');
+							db.query(cypher3, {
+								trainer:body.trainer
+							}, (err, result3) => {
 								if(err) {
 									console.log(err);
 									res.writeHead(500, header);
@@ -59,141 +52,89 @@ class Conversations {
 										err:err,
 										message: 'Something went wrong. Please try again'
 									}))
-								}
-								else{
-									res.writeHead(200, header);
-							        res.end(JSON.stringify({
-							        	success:'yes',
-							        	conversations: result,
-							        	users: data
-							        }));
-							        console.log('/conversations/me', JSON.stringify({
-							        	success:'yes',
-							        	conversations: result,
-							        	users: data
-							        }));
-							        return
+								} else {
+									let cypher4 = ["MATCH (exercise: EXERCISE {trainer: {trainer}})",
+												"RETURN exercise"].join('\n');
+									db.query(cypher4, {
+										trainer:body.trainer
+									}, (err, result4) => {
+										if(err) {
+											console.log(err);
+											res.writeHead(500, header);
+											res.end(JSON.stringify({
+												err:err,
+												message: 'Something went wrong. Please try again'
+											}))
+										} else {
+											let cypher5 = ["MATCH (goals: GOALS {client: {client}})",
+														   "RETURN goals ORDER BY goals.created_at desc LIMIT 1"].join('\n');
+											db.query(cypher5, {
+												client:body.username
+											}, (err, goals) => {
+												if(err) {
+													console.log(err);
+													res.writeHead(500, header);
+													res.end(JSON.stringify({
+														err:err,
+														message: 'Something went wrong. Please try again'
+													}))
+												} else {							
+
+													let get_settings = (body) => {
+															let rules = [];
+															for(var key in body){
+																for(var n = 0; n < settings.length; n++) {
+																	if(body[key] == settings[n].goal && key == setting[n].part){
+																		rules.push(settings[n]);
+																	}
+																}
+															}
+
+														return rules;
+
+													}
+
+													let rand = (myArray)=> { 
+														myArray[Math.floor(Math.random() * myArray.length)];
+													};
+
+													
+
+													res.writeHead(200, header);
+											        res.end(JSON.stringify({
+											        	success:'yes',
+											        	client: result1,
+											        	settings: settings,
+											        	gsetting: result3,
+											        	exercise: result4,
+											        	goals: goals,
+											        	data: get_settings(goals[0])
+											        }));
+											        console.log('/create/plan', JSON.stringify({
+											        	success:'yes',
+											        	client: result1,
+											        	settings: settings,
+											        	gsetting: result3,
+											        	exercise: result4,
+											        	goals: goals,
+											        	data: get_settings(goals[0])
+											        }));
+											        return
+												}
+											})
+									
+										}
+									})
 								}
 							})
 						}
 					})
 				}
-
 			})
-
-		})
-
-		server.post('/create/messages', (req, res, next) => {
-			console.log('this is the request', req.body);
-			let body = req.body;
-			jwt.verify(req.headers.token, secret, (err, decoded) => {
-				let cypher = ["MATCH (convo:CONVERSATION)",
-				"WHERE ({senderUN} in convo.users) and ({recipientUN} in convo.users)",
-				"MATCH (user1:USER {username:{senderUN}})",
-				"MATCH (user2:USER {username:{recipientUN}})",
-				"SET convo.lastMessageText = {text}",
-				"SET convo.lastMessageDate = {created}",
-				"CREATE (message:MESSAGE {created_at:{created}, senderUN:{senderUN}, recipientUN:{recipientUN}, text:{text} })", 
-				"CREATE (convo)-[:HAS]->(message)",
-				"CREATE (user1)-[:SENT]->(message)-[:RECEIVED]->(user2)",
-				"RETURN message"].join('\n');
-				if(err) {
-					console.log(err, decoded);
-					res.writeHead(500, header);
-					res.end(JSON.stringify({
-						err:err,
-						message: 'You are not authorized to access this information'
-					}))
-				}
-				else{
-					db.query(cypher, {
-						senderUN: body.senderUN,
-						recipientUN:body.recipientUN,
-						text: body.text,
-						created: body.created_at
-					}, (err, results) => {
-						if(err) {
-							console.log(err);
-							res.writeHead(500, header)
-					        res.end(JSON.stringify({
-					          success:'no',
-					          err: err,
-					          message:'Something went wrong logging in. Check error message to see what happened.'
-					          }))
-						}
-						else{
-							res.writeHead(200, header);
-					        res.end(JSON.stringify({
-						        	success:'yes',
-						        	message: results,
-					        	}));
-					        console.log(JSON.stringify({
-					        	success:'yes',
-					        	message: results,
-					        	//token: token
-					        }));
-					        return
-						}
-					});
-					next();
-				}
-			})
-
-		}); // end of message create
-
-
-		server.post('/conversation/messages', (req, res, next) => {
-			console.log('this is the request', req.body);
-			let body = req.body;
-			jwt.verify(req.headers.token, secret, (err, decoded) => {
-				let cypher = ["MATCH (messages:MESSAGE)", 
-				"WHERE (messages.recipientUN = {id1}) and (messages.senderUN = {id2}) or (messages.recipientUN = {id2}) and (messages.senderUN = {id1})",
-				"RETURN messages",
-				"ORDER BY messages.created_at desc",
-				"LIMIT 25"].join('\n');
-				if(err) {
-					console.log(err, decoded);
-					res.writeHead(500, header);
-					res.end(JSON.stringify({
-						err:err,
-						message: 'You are not authorized to access this information'
-					}))
-				}
-				else{
-					db.query(cypher, {
-						id1: body.id1,
-						id2: body.id2
-					}, (err, results) => {
-						if(err) {
-							console.log(err);
-							res.writeHead(500, header)
-					        res.end(JSON.stringify({
-					          success:'no',
-					          err: err,
-					          message:'Something went wrong logging in. Check error message to see what happened.'
-					          }))
-						}
-						else{
-							res.writeHead(200, header);
-					        res.end(JSON.stringify({
-						        	success:'yes',
-						        	messages: results,
-					        	}));
-					        console.log(JSON.stringify({
-					        	success:'yes',
-					        	messages: results,
-					        	//token: token
-					        }));
-					        return
-						}
-					});
-					next();
-				}
-			})
-
 		})
 
 	}
+
 }
 
 export default Conversations
