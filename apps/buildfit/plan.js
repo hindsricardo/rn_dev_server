@@ -2,6 +2,7 @@
 import {secret} from './config';
 import jwt from 'jsonwebtoken';
 import uuid from 'node-uuid';
+import _ from 'underscore';
 const header = {'Content-Type':'application/json; charset=utf-8'};
 
 class Conversations {
@@ -57,7 +58,7 @@ class Conversations {
 						  "MATCH (framework)-[:HAS]->(day1:DAY1)",
 						  "UNWIND day1.movements AS level",
 						  "MATCH (trainer)-[:CREATED]->(exercise:EXERCISE)",
-						  "WHERE {location} in exercise.location AND {gender} in exercise.gender AND level in exercise.levels",
+						  "WHERE {location} in exercise.location AND {gender} in exercise.gender AND level in exercise.levels AND {part} = exercise.part",
 						  "RETURN DISTINCT framework, exercise, day1"].join('\n');
 
 			db.query(cypher, {
@@ -95,18 +96,18 @@ class Conversations {
 			console.log(body);
 			let cypher = ["MATCH (trainer:TRAINER {username: {trainer}})",
 						  "MATCH (trainer)-[:HAS]->(framework:FRAMEWORK)",
-						  "WHERE {part} = framework.part AND {goal} = framework.goal",
+						  "WHERE {part} = framework.part AND {goal} = framework.goal AND {gender} = framework.gender",
 						  "MATCH (framework)-[:HAS]->(day1:DAY1)",
-						  "MATCH (framework)-[:HAS]->(exercise:EXERCISE)",
-						  "WHERE {location} in exercise.location AND {gender} in exercise.gender",
-						  "RETURN DISTINCT framework, day1, exercise"].join('\n');
+						  "MATCH (trainer)-[:CREATED]->(exercise:EXERCISE)",
+						  "WHERE {part} = exercise.part AND {location} in exercise.location AND {gender} in exercise.gender",
+						  "RETURN DISTINCT framework"].join('\n');
 			db.query(cypher, {
 				trainer:"hindsricardo@gmail.com",
 				location:body.location,
 				goal: body.goal,
 				part: body.part,
 				gender: body.gender
-			}, (err, results) => {
+			}, (err, frameworks) => {
 				if(err) {
 						console.log(err);
 						res.writeHead(500, header)
@@ -117,18 +118,92 @@ class Conversations {
 				          }))
 					}
 					else{
-						res.writeHead(200, header);
-				        res.end(JSON.stringify({
-					        	success:'yes',
-					        	results: results,
-				        	}));
-				        console.log(JSON.stringify({
-				        	success:'yes',
-				        	results: results,
-				        }));
-				        return
+						let cypher = ["MATCH (trainer:TRAINER {username: {trainer}})",
+						  "MATCH (trainer)-[:HAS]->(framework:FRAMEWORK)",
+						  "WHERE {part} = framework.part AND {goal} = framework.goal AND {gender} = framework.gender",
+						  "MATCH (framework)-[:HAS]->(day1:DAY1)",
+						  "MATCH (trainer)-[:CREATED]->(exercise:EXERCISE)",
+						  "WHERE {location} in exercise.location AND {gender} in exercise.gender AND {part} = exercise.part",
+						  "RETURN DISTINCT exercise"].join('\n');
+						db.query(cypher, {
+							trainer:"hindsricardo@gmail.com",
+							location:body.location,
+							goal: body.goal,
+							part: body.part,
+							gender: body.gender
+						}, (err, exercises) => {
+							if(err) {
+									console.log(err);
+									res.writeHead(500, header)
+							        res.end(JSON.stringify({
+							          success:'no',
+							          err: err,
+							          message:'Something went wrong logging in. Check error message to see what happened.'
+							          }))
+								}
+								else{
+									let cypher = ["MATCH (trainer:TRAINER {username: {trainer}})",
+												  "MATCH (trainer)-[:HAS]->(framework:FRAMEWORK)",
+												  "WHERE {part} = framework.part AND {goal} = framework.goal AND {gender} = framework.gender",
+												  "MATCH (framework)-[:HAS]->(day1:DAY1)",
+												  "MATCH (trainer)-[:CREATED]->(exercise:EXERCISE)",
+												  "WHERE {location} in exercise.location AND {gender} in exercise.gender AND {part} = exercise.part",
+												  "RETURN DISTINCT day1"].join('\n');
+												db.query(cypher, {
+													trainer:"hindsricardo@gmail.com",
+													location:body.location,
+													goal: body.goal,
+													part: body.part,
+													gender: body.gender
+													}, (err, day1) => {
+														if(err) {
+																console.log(err);
+																res.writeHead(500, header)
+														        res.end(JSON.stringify({
+														          success:'no',
+														          err: err,
+														          message:'Something went wrong logging in. Check error message to see what happened.'
+														          }))
+															}
+														else{
+															let cypher = ["UNWIND {exercises} as exercise",
+																		  "MATCH (high:EXERCISE {name:exercise.name})",
+																		  "WHERE 'high' IN exercise.levels",
+																		  "RETURN DISTINCT high"].join('\n');
+															db.query(cypher, {
+																exercises:exercises
+															}, (err, high) =>{
+																if(err) {
+																console.log(err);
+																res.writeHead(500, header)
+														        res.end(JSON.stringify({
+														          success:'no',
+														          err: err,
+														          message:'Something went wrong logging in. Check error message to see what happened.'
+														          }))
+																}
+																else{
+																	res.writeHead(200, header);
+															        res.end(JSON.stringify({
+																        	success:'yes',
+																        	results: {exercises:exercises, frameworks:frameworks, day1:day1, high: high },
+															        	}));
+															        console.log(JSON.stringify({
+															        	success:'yes',
+															        	results: {exercises:exercises, frameworks:frameworks, day1:day1, high: high },
+															        }));
+														        	return
+																}
+															})
+															
+													}	
+												})
+								
+									}	
+							})
+						
 						}	
-					})
+			})
 		})
 
 			// GENERATE A PLAN FROM A TRAINER
