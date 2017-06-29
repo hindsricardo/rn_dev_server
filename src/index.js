@@ -6,6 +6,7 @@ import Accounts from '../apps/assembly/accounts';
 import Messages from '../apps/assembly/messages';
 import Conversations from '../apps/assembly/conversations';
 import Plan from '../apps/buildfit/plan';
+import User from '../apps/buildfit/user';
 
 const port = 3000;
 
@@ -45,6 +46,7 @@ class Server {
 		this.messagesRouter = new Messages(this.db, this.server);
 		this.conversationsRouter = new Conversations(this.db, this.server);
 		this.planRouter = new Plan(this.db, this.server);
+		this.userRouter = new User(this.db, this.server);
 
 
 	}

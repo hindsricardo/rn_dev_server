@@ -18,6 +18,18 @@ var _accounts = require('../apps/assembly/accounts');
 
 var _accounts2 = _interopRequireDefault(_accounts);
 
+var _messages = require('../apps/assembly/messages');
+
+var _messages2 = _interopRequireDefault(_messages);
+
+var _conversations = require('../apps/assembly/conversations');
+
+var _conversations2 = _interopRequireDefault(_conversations);
+
+var _plan = require('../apps/buildfit/plan');
+
+var _plan2 = _interopRequireDefault(_plan);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -56,6 +68,9 @@ var Server = function Server() {
 		console.log("Server started @ ", process.env.PORT || port);
 	});
 	this.accountsRouter = new _accounts2.default(this.db, this.server);
+	this.messagesRouter = new _messages2.default(this.db, this.server);
+	this.conversationsRouter = new _conversations2.default(this.db, this.server);
+	this.planRouter = new _plan2.default(this.db, this.server);
 };
 
 new Server();
