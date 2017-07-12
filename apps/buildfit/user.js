@@ -5,7 +5,7 @@ import uuid from 'node-uuid';
 import _ from 'underscore';
 const header = {'Content-Type':'application/json; charset=utf-8'};
 
-class Conversations {
+class User {
 
 	constructor(db, server) {
 		this.name = 'User'
@@ -86,4 +86,4 @@ class Conversations {
 	}
 
 
-export default Conversations
+export default User

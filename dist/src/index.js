@@ -30,6 +30,10 @@ var _plan = require('../apps/buildfit/plan');
 
 var _plan2 = _interopRequireDefault(_plan);
 
+var _user = require('../apps/buildfit/user');
+
+var _user2 = _interopRequireDefault(_user);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -71,6 +75,7 @@ var Server = function Server() {
 	this.messagesRouter = new _messages2.default(this.db, this.server);
 	this.conversationsRouter = new _conversations2.default(this.db, this.server);
 	this.planRouter = new _plan2.default(this.db, this.server);
+	this.userRouter = new _user2.default(this.db, this.server);
 };
 
 new Server();
