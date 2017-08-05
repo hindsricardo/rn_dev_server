@@ -7,6 +7,7 @@ import Conversations from '../apps/assembly/conversations';
 import Plan from '../apps/buildfit/plan';
 import User from '../apps/buildfit/user';
 import Feedback from '../apps/buildfit/feedback';
+import Analytics from '../apps/buildfit/analytics';
 
 
 
@@ -48,6 +49,7 @@ class Server {
 		this.planRouter = new Plan(this.db, this.server);
 		this.userRouter = new User(this.db, this.server);
 		this.feedbackRouter = new Feedback(this.db, this.server);
+		this.analyticsRouter = new Analytics(this.db, this.server);
 
 
 	}
