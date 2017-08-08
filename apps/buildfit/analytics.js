@@ -77,7 +77,7 @@ class Analytics {
 
 								totalweight1 += parseInt(ting.weightDone);
 									totalreps1 += parseInt(ting.repsDone);									
-									totaltime1 += parseInt(ting.stopTime);
+									totaltime1 += parseInt(ting.stopTime) - parseInt(ting.startTime);
 									let avgweight1 = Math.round((totalweight1/results.length));
 									let avgreps1 = Math.round((totalreps1/results.length));
 									let avgtime1 = Math.round(totaltime1/results.length);
@@ -138,7 +138,7 @@ class Analytics {
 
 											totalweight1 += parseInt(ting.weightDone);
 												totalreps1 += parseInt(ting.repsDone);									
-												totaltime1 += parseInt(ting.stopTime);
+												totaltime1 += parseInt(ting.stopTime) - parseInt(ting.startTime);
 												let avgweight1 = Math.round((totalweight1/results2.length));
 												let avgreps1 = Math.round((totalreps1/results2.length));
 												let avgtime1 = Math.round(totaltime1/results2.length);
@@ -199,7 +199,7 @@ class Analytics {
 
 														totalweight1 += parseInt(ting.weightDone);
 															totalreps1 += parseInt(ting.repsDone);									
-															totaltime1 += parseInt(ting.stopTime);
+															totaltime1 += parseInt(ting.stopTime) - parseInt(ting.startTime);
 															let avgweight1 = Math.round((totalweight1/results3.length));
 															let avgreps1 = Math.round((totalreps1/results3.length));
 															let avgtime1 = Math.round(totaltime1/results3.length);
@@ -249,10 +249,10 @@ class Analytics {
 																	let totalreps1 = 0; 
 																	let totaltime1 = 0; 
 																	let totalrest1 = 0; 
-																	let ptsBack = 0
+																	let ptsBack = 0;
 
-																	for(var i=0; i < results.length; i++){
-																		let ting = results[i];
+																	for(var i=0; i < results4.length; i++){
+																		let ting = results4[i];
 																		if(results4[i - 1]){
 																			 totalrest1 += (parseInt(ting.startTime) - parseInt(results4[i -1].stopTime)); //current set stop time versus pervious set stop time. ASSUMING response in order of oldest record last.
 																			 console.log('totalrest1', totalrest1)
@@ -260,7 +260,7 @@ class Analytics {
 
 																	totalweight1 += parseInt(ting.weightDone);
 																		totalreps1 += parseInt(ting.repsDone);									
-																		totaltime1 += parseInt(ting.stopTime);
+																		totaltime1 += parseInt(ting.stopTime) - parseInt(ting.startTime);
 																		let avgweight1 = Math.round((totalweight1/results4.length));
 																		let avgreps1 = Math.round((totalreps1/results4.length));
 																		let avgtime1 = Math.round(totaltime1/results4.length);
@@ -321,7 +321,7 @@ class Analytics {
 
 																			totalweight1 += parseInt(ting.weightDone);
 																				totalreps1 += parseInt(ting.repsDone);									
-																				totaltime1 += parseInt(ting.stopTime);
+																				totaltime1 += parseInt(ting.stopTime) - parseInt(ting.startTime);
 																				let avgweight1 = Math.round((totalweight1/results5.length));
 																				let avgreps1 = Math.round((totalreps1/results5.length));
 																				let avgtime1 = Math.round(totaltime1/results5.length);
@@ -381,7 +381,7 @@ class Analytics {
 
 																							totalweight1 += parseInt(ting.weightDone);
 																								totalreps1 += parseInt(ting.repsDone);									
-																								totaltime1 += parseInt(ting.stopTime);
+																								totaltime1 += parseInt(ting.stopTime) - parseInt(ting.startTime);
 																								let avgweight1 = Math.round((totalweight1/results6.length));
 																								let avgreps1 = Math.round((totalreps1/results6.length));
 																								let avgtime1 = Math.round(totaltime1/results6.length);
@@ -442,7 +442,7 @@ class Analytics {
 
 																									totalweight1 += parseInt(ting.weightDone);
 																										totalreps1 += parseInt(ting.repsDone);									
-																										totaltime1 += parseInt(ting.stopTime);
+																										totaltime1 += parseInt(ting.stopTime) - parseInt(ting.startTime);
 																										let avgweight1 = Math.round((totalweight1/results7.length));
 																										let avgreps1 = Math.round((totalreps1/results7.length));
 																										let avgtime1 = Math.round(totaltime1/results7.length);
@@ -502,7 +502,7 @@ class Analytics {
 
 																											totalweight1 += parseInt(ting.weightDone);
 																												totalreps1 += parseInt(ting.repsDone);									
-																												totaltime1 += parseInt(ting.stopTime);
+																												totaltime1 += parseInt(ting.stopTime) - parseInt(ting.startTime);
 																												let avgweight1 = Math.round((totalweight1/results8.length));
 																												let avgreps1 = Math.round((totalreps1/results8.length));
 																												let avgtime1 = Math.round(totaltime1/results8.length);
@@ -563,7 +563,7 @@ class Analytics {
 
 																														totalweight1 += parseInt(ting.weightDone);
 																															totalreps1 += parseInt(ting.repsDone);									
-																															totaltime1 += parseInt(ting.stopTime);
+																															totaltime1 += parseInt(ting.stopTime) - parseInt(ting.startTime);
 																															let avgweight1 = Math.round((totalweight1/results9.length));
 																															let avgreps1 = Math.round((totalreps1/results9.length));
 																															let avgtime1 = Math.round(totaltime1/results9.length);
@@ -622,7 +622,7 @@ class Analytics {
 
 																																	totalweight1 += parseInt(ting.weightDone);
 																																		totalreps1 += parseInt(ting.repsDone);									
-																																		totaltime1 += parseInt(ting.stopTime);
+																																		totaltime1 += parseInt(ting.stopTime) - parseInt(ting.startTime);
 																																		let avgweight1 = Math.round((totalweight1/results10.length));
 																																		let avgreps1 = Math.round((totalreps1/results10.length));
 																																		let avgtime1 = Math.round(totaltime1/results10.length);
@@ -683,7 +683,7 @@ class Analytics {
 
 																																				totalweight1 += parseInt(ting.weightDone);
 																																					totalreps1 += parseInt(ting.repsDone);									
-																																					totaltime1 += parseInt(ting.stopTime);
+																																					totaltime1 += parseInt(ting.stopTime) - parseInt(ting.startTime);
 																																					let avgweight1 = Math.round((totalweight1/results11.length));
 																																					let avgreps1 = Math.round((totalreps1/results11.length));
 																																					let avgtime1 = Math.round(totaltime1/results11.length);
@@ -802,6 +802,106 @@ class Analytics {
 
 
 		}) // end of '/bf/get/points'
+
+		// FIND LIST OF TRAINERS THAT MATCH GOALS
+		server.post('/bf/get/lastworkout', (req, res, next) => {
+			let body = req.body;
+			let cypher = [
+						    "MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(set)",
+							"RETURN set",
+							"Order by set.created_at desc",
+							"Limit 1"].join('\n');	
+			db.query(cypher, {
+					id: body.userid,
+				},	(err, results) => {
+					if(err) {
+						console.log(err);
+						res.writeHead(500, header)
+				        res.end(JSON.stringify({
+				          success:'no',   
+				          err: err,
+				          message:'Something went wrong logging in. Check error message to see what happened.'
+				          }))
+					}
+					else{
+						console.log(results)
+						let cypher2 = [
+										"MATCH (u:USER {uuid: {id}})-[:COMPLETED]->(set {planUUID:{planUUID}})",
+										"RETURN DISTINCT set ",
+										 "ORDER BY set.stopTime" ].join('\n');
+						db.query(cypher2, {
+							planUUID: results[0].planUUID,
+							id: body.userid
+						}, (err, results2) => {
+							console.log('results2', results2)
+							let totalweight = 0; 
+							let totalreps = 0; 
+							let totaltime = 0; 
+							let totalrest = 0; 
+							let avgweight = 0;
+							let avgreps = 0;
+							let avgtime = 0;
+							let avgrest = 0;
+							let timeperRep = 0;
+
+							Promise.resolve(true).then(()=>{
+
+								for(var i=0; i < results2.length; i++){
+										let ting = results2[i];
+										if(results2[i - 1]){
+											 totalrest += (parseInt(ting.startTime) - parseInt(results2[i -1].stopTime)); //current set stop time versus pervious set stop time. ASSUMING response in order of oldest record last.
+										}
+
+										totalweight += parseInt(ting.weightDone);
+										totalreps += parseInt(ting.repsDone);									
+										totaltime += parseInt(ting.stopTime - ting.startTime);
+										avgweight = Math.round((totalweight/results2.length));
+										avgreps = Math.round((totalreps/results2.length));
+										avgtime = Math.round(totaltime/results2.length);
+										avgrest = Math.round(totalrest/results2.length);
+										timeperRep =  Math.round(totaltime/totalreps);
+										console.log('/bf/get/lastworkout','totalweight1', totalweight, 'totalreps1', totalreps, 'totaltime1', totaltime, 'avgweight1', avgweight, 'avgreps1', avgreps, 'avgtime1', avgtime, 'avgrest1', avgrest);
+									}
+							})
+							.then(()=>{
+								res.writeHead(200, header);
+						        res.end(JSON.stringify({
+						        	success:'yes',
+						        	results2: results2,
+						        	totalweight: totalweight,
+						        	totalreps: totalreps,
+						        	totaltime: totaltime,
+						        	avgweight: avgweight,
+						        	avgreps: avgreps,
+						        	avgtime: avgtime,
+						        	avgrest: avgrest,
+						        	timeperRep: timeperRep
+
+
+					        	}));
+						        console.log(JSON.stringify({
+						        	success:'yes',
+						        	results2: results2,
+						        	totalweight: totalweight,
+						        	totalreps: totalreps,
+						        	totaltime: totaltime,
+						        	avgweight: avgweight,
+						        	avgreps: avgreps,
+						        	avgtime: avgtime,
+						        	avgrest: avgrest,
+						        	timeperRep: timeperRep,
+								}))
+								return;
+							})
+								
+							
+						})
+						
+					}
+				})
+
+			
+		}) //end of '/bf/get/lastworkout'
 
 	}
 }
