@@ -867,7 +867,10 @@ class Analytics {
 								res.writeHead(200, header);
 						        res.end(JSON.stringify({
 						        	success:'yes',
-						        	results2: results2,
+						        	part: results2[0].part,
+						        	goal: results2[0].goal,
+						        	date: results2[0].stopTime,
+						        	planUUID: results2[0].planUUID,
 						        	totalweight: totalweight,
 						        	totalreps: totalreps,
 						        	totaltime: totaltime,
@@ -881,7 +884,10 @@ class Analytics {
 					        	}));
 						        console.log(JSON.stringify({
 						        	success:'yes',
-						        	results2: results2,
+						        	lpart: results2[0].part,
+						        	goal: results2[0].goal,
+						        	date: results2[0].stopTime,
+						        	planUUID: results2[0].planUUID,
 						        	totalweight: totalweight,
 						        	totalreps: totalreps,
 						        	totaltime: totaltime,
