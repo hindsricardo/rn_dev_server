@@ -803,7 +803,6 @@ class Analytics {
 
 		}) // end of '/bf/get/points'
 
-		// FIND LIST OF TRAINERS THAT MATCH GOALS
 		server.post('/bf/get/lastworkout', (req, res, next) => {
 			let body = req.body;
 			let cypher = [
@@ -884,7 +883,7 @@ class Analytics {
 					        	}));
 						        console.log(JSON.stringify({
 						        	success:'yes',
-						        	lpart: results2[0].part,
+						        	part: results2[0].part,
 						        	goal: results2[0].goal,
 						        	date: results2[0].stopTime,
 						        	planUUID: results2[0].planUUID,
@@ -908,6 +907,127 @@ class Analytics {
 
 			
 		}) //end of '/bf/get/lastworkout'
+
+		server.post('/bf/get/sets', (req, res, next) => {
+			let body = req.body;
+			let cypher = [
+						    "MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(set {part:{bodypart}})",
+							"RETURN set",
+							"Order by set.stopTime"].join('\n');	
+			db.query(cypher, {
+					id: body.userid,
+					bodypart:body.bodypart
+				},	(err, results) => {
+					if(err) {
+						console.log(err);
+						res.writeHead(500, header)
+				        res.end(JSON.stringify({
+				          success:'no',   
+				          err: err,
+				          message:'Something went wrong logging in. Check error message to see what happened.'
+				          }))
+					}
+					else{
+						
+						res.writeHead(200, header);
+				        res.end(JSON.stringify({
+				        	success:'yes',
+				        	sets: results,
+
+			        	}));
+				        console.log(JSON.stringify({
+				        	success:'yes',
+				        	sets: results,
+						}))
+						return;
+
+					}
+				})
+
+			
+		}) //end of '/bf/get/sets'
+
+		server.post('/bf/get/part/avgs', (req, res, next) => {
+			let currentTime = new Date().getTime()
+			let eightweeksago = 4838400000;
+			let body = req.body;
+			let cypher = [
+						    "MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(set {part:{bodypart}})",
+						    "WHERE set.stopTime > {currentTime} - {eightweeksago}" ,
+							"RETURN set",
+							"Order by set.stopTime"].join('\n');	
+			db.query(cypher, {
+					id: body.userid,
+					bodypart:body.bodypart,
+					currentTime: currentTime,
+					eightweeksago: eightweeksago,
+				},	(err, results) => {
+					if(err) {
+						console.log(err);
+						res.writeHead(500, header)
+				        res.end(JSON.stringify({
+				          success:'no',   
+				          err: err,
+				          message:'Something went wrong logging in. Check error message to see what happened.'
+				          }))
+					}
+					else{
+						let totalweight = 0; 
+						let totalreps = 0; 
+						let totaltime = 0; 
+						let totalrest = 0; 
+						let avgweight = 0;
+						let avgreps = 0;
+						let avgtime = 0;
+						let avgrest = 0;
+						let timeperRep = 0;
+						Promise.resolve(true).then(()=>{
+
+						for(var i=0; i < results.length; i++){
+							let ting = results[i];
+							if(results[i - 1]){
+								 totalrest += (parseInt(ting.startTime) - parseInt(results[i -1].stopTime)); //current set stop time versus pervious set stop time. ASSUMING response in order of oldest record last.
+								 console.log('totalrest', totalrest)
+							}
+
+							totalweight += parseInt(ting.weightDone);
+							totalreps += parseInt(ting.repsDone);									
+							totaltime += parseInt(ting.stopTime) - parseInt(ting.startTime);
+							avgweight = Math.round((totalweight/results.length));
+							avgreps = Math.round((totalreps/results.length));
+							avgtime = Math.round(totaltime/results.length);
+							avgrest = Math.round(totalrest/results.length);
+							timeperRep =  Math.round(totaltime/totalreps);
+							}
+						}).then(()=>{
+							res.writeHead(200, header);
+					        res.end(JSON.stringify({
+					        	success:'yes',
+					        	sets: results,
+					        	avgweight: avgweight,
+					        	avgreps: avgreps,
+					        	avgtime: avgtime,
+					        	avgrest: avgrest,
+					        	timeperRep: timeperRep
+
+				        	}));
+					        console.log(JSON.stringify({
+					        	success:'yes',
+					        	sets: results,
+					        	avgweight: avgweight,
+					        	avgreps: avgreps,
+					        	avgtime: avgtime,
+					        	avgrest: avgrest,
+					        	timeperRep: timeperRep
+							}))
+							return;
+						})
+
+					}
+				})
+
+			
+		}) //end of '/bf/get/part/avgs'
 
 	}
 }
