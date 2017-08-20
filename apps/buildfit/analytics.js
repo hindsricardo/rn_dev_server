@@ -1404,6 +1404,95 @@ class Analytics {
 			
 		}) //end of 'bf/check/need/results/feedback'
 
+		server.post('/bf/check/need/soreness/feedback', (req, res, next) => {
+			let oneweeksago = 1209600000/2; //dividing by 2 to make it one week to shorten feedback time period. This will keep users more engaged with the app. 
+			let currentTime = new Date().getTime();
+			let body = req.body;
+			let cypher = [
+						    "MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setGlutes {part:{glutes}})",
+						    "WHERE setGlutes.stopTime > {currentTime} - {oneweeksago} AND NOT (setGlutes)<-[:RECORDED]-(:SORENESS {pain:0})",
+							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(sethamstrings {part:{hamstrings}})",
+						    "WHERE sethamstrings.stopTime > {currentTime} - {oneweeksago} AND NOT (sethamstrings)<-[:RECORDED]-(:SORENESS {pain:0})",
+							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setback {part:{back}})",
+						    "WHERE setback.stopTime > {currentTime} - {oneweeksago} AND NOT (setback)<-[:RECORDED]-(:SORENESS {pain:0})",
+							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setcalves {part:{calves}})",
+						    "WHERE setcalves.stopTime > {currentTime} - {oneweeksago} AND NOT (setcalves)<-[:RECORDED]-(:SORENESS {pain:0})",
+							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setcore {part:{core}})",
+						    "WHERE setcore.stopTime > {currentTime} - {oneweeksago} AND NOT (setcore)<-[:RECORDED]-(:SORENESS {pain:0})",
+							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setbiceps {part:{biceps}})",
+						    "WHERE setbiceps.stopTime > {currentTime} - {oneweeksago} AND NOT (setbiceps)<-[:RECORDED]-(:SORENESS {pain:0})",
+							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setquads {part:{quads}})",
+						    "WHERE setquads.stopTime > {currentTime} - {oneweeksago} AND NOT (setquads)<-[:RECORDED]-(:SORENESS {pain:0})",
+							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(settriceps {part:{triceps}})",
+						    "WHERE settriceps.stopTime > {currentTime} - {oneweeksago} AND NOT (settriceps)<-[:RECORDED]-(:SORENESS {pain:0})",
+							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setshoulders {part:{shoulders}})",
+						    "WHERE setshoulders.stopTime > {currentTime} - {oneweeksago} AND NOT (setshoulders)<-[:RECORDED]-(:SORENESS {pain:0})",
+							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setchest {part:{chest}})",
+						    "WHERE setchest.stopTime > {currentTime} - {oneweeksago} AND NOT (setchest)<-[:RECORDED]-(:SORENESS {pain:0})",
+							"RETURN setGlutes, sethamstrings, setback, setcalves, setcore, setbiceps, setquads, setshoulders, settriceps, setchest "].join('\n');	
+			db.query(cypher, {
+					id: body.userid,
+					currentTime: currentTime,
+					oneweeksago: oneweeksago,
+					glutes: 'glutes',
+					hamstrings: 'hamstrings',
+					back: 'back',
+					calves: 'calves',
+					core: 'core',
+					biceps: 'biceps',
+					quads: 'quads',
+					triceps: 'triceps',
+					shoulders: 'shoulders',
+					chest: 'chest'
+				},	(err, results) => {
+					console.log(results)
+					if(err) {
+						console.log(err);
+						res.writeHead(500, header)
+				        res.end(JSON.stringify({
+				          success:'no',   
+				          err: err,
+				          message:'Something went wrong logging in. Check error message to see what happened.'
+				          }))
+					}
+					else{
+						if(results.length > 0){
+							res.writeHead(200, header);
+					        res.end(JSON.stringify({
+					        	success:'yes',
+					        	sets: results,
+					        	required: true
+
+				        	}));
+					        console.log(JSON.stringify({
+					        	success:'yes',
+					        	sets: results,
+					        	required: true
+							}))
+							return;
+						}else{
+							res.writeHead(200, header);
+					        res.end(JSON.stringify({
+					        	success:'yes',
+					        	sets: results,
+					        	required: false
+
+				        	}));
+					        console.log(JSON.stringify({
+					        	success:'yes',
+					        	sets: results,
+					        	required: false
+
+							}))
+							return;
+						}
+
+					}
+				})
+
+			
+		}) //end of 'bf/check/need/soreness/feedback'
+
 
 
 
