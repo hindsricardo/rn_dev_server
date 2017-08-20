@@ -1494,6 +1494,53 @@ class Analytics {
 		}) //end of 'bf/check/need/soreness/feedback'
 
 
+		server.post('/bf/set/soreness/feedback', (req, res, next) => {
+			let body = req.body;
+			let oneweeksago = 1209600000/2;
+			let currentTime = new Date().getTime()
+			let cypher = [
+						    "MATCH (set4 {part:{bodypart}})<-[:COMPLETED]-(u:USER {uuid:{id}})",
+						    "WHERE set4.stopTime > {currentTime} - {oneweeksago} AND NOT (set4)<-[:RECORDED]-(:SORENESS {pain:0})",
+						    "CREATE (n:SORENESS {timestamp:{currentTime}, pain:{soreness}})-[:RECORDED]->(set4)", // create relationship between current result and set4 2 weeks or less
+							"RETURN n"].join('\n');	
+			db.query(cypher, {
+					id: body.userid,
+					bodypart:body.bodypart,
+					oneweeksago: oneweeksago,
+					currentTime: currentTime,
+					soreness: body.soreness
+				},	(err, results) => {
+						if(err) {
+							console.log(err);
+							res.writeHead(500, header)
+					        res.end(JSON.stringify({
+					          success:'no',   
+					          err: err,
+					          message:'Something went wrong logging in. Check error message to see what happened.'
+					          }))
+						}
+						else{
+								res.writeHead(200, header);
+						        res.end(JSON.stringify({
+						        	success:'yes',
+						        	results: results,
+
+					        	}));
+						        console.log(JSON.stringify({
+						        	success:'yes',
+						        	results: results,
+								}))
+								return;
+
+						}
+					
+
+				})
+
+			
+		}) //end of '/bf/set/soreness/feedback'
+
+
 
 
 	}
