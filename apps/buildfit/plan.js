@@ -49,17 +49,17 @@ class Plan {
 				})
 			})
 
-		server.post('/frameworks/el/v1', (req, res, next) => { //Return day1, exercise and frameworks for a target part where location (gym or home), any day1 movement in level and gender in gender
+		server.post('/frameworks/el/v1', (req, res, next) => { //Return pattern, exercise and frameworks for a target part where location (gym or home), any pattern movement in level and gender in gender
 			let body = req.body;
 			console.log(body);
 			let cypher = ["MATCH (trainer:TRAINER {username: {trainer}})",
 						  "MATCH (trainer)-[:HAS]->(framework:FRAMEWORK)",
 						  "WHERE {part} = framework.part AND {gender} = framework.gender",
-						  "MATCH (framework)-[:HAS]->(day1:DAY1)",
-						  "UNWIND day1.movements AS level",
+						  "MATCH (framework)-[:HAS]->(pattern:PATTERN)",
+						  "UNWIND pattern.movements AS level",
 						  "MATCH (trainer)-[:CREATED]->(exercise:EXERCISE)",
 						  "WHERE {location} in exercise.location AND {gender} in exercise.gender AND level in exercise.levels AND {part} = exercise.part",
-						  "RETURN DISTINCT framework, exercise, day1"].join('\n');
+						  "RETURN DISTINCT framework, exercise, pattern"].join('\n');
 
 			db.query(cypher, {
 				trainer:"hindsricardo@gmail.com",
@@ -97,7 +97,7 @@ class Plan {
 			let cypher = ["MATCH (trainer:TRAINER {username: {trainer}})",
 						  "MATCH (trainer)-[:HAS]->(framework:FRAMEWORK)",
 						  "WHERE {part} = framework.part AND {goal} = framework.goal AND {gender} = framework.gender",
-						  "MATCH (framework)-[:HAS]->(day1:DAY1)",
+						  "MATCH (framework)-[:HAS]->(pattern:PATTERN)",
 						  "MATCH (trainer)-[:CREATED]->(exercise:EXERCISE)",
 						  "WHERE {part} = exercise.part AND {location} in exercise.location AND {gender} in exercise.gender",
 						  "RETURN DISTINCT framework"].join('\n');
@@ -121,7 +121,7 @@ class Plan {
 						let cypher = ["MATCH (trainer:TRAINER {username: {trainer}})",
 						  "MATCH (trainer)-[:HAS]->(framework:FRAMEWORK)",
 						  "WHERE {part} = framework.part AND {goal} = framework.goal AND {gender} = framework.gender",
-						  "MATCH (framework)-[:HAS]->(day1:DAY1)",
+						  "MATCH (framework)-[:HAS]->(pattern:PATTERN)",
 						  "MATCH (trainer)-[:CREATED]->(exercise:EXERCISE)",
 						  "WHERE {location} in exercise.location AND {gender} in exercise.gender AND {part} = exercise.part",
 						  "RETURN DISTINCT exercise"].join('\n');
@@ -145,10 +145,10 @@ class Plan {
 									let cypher = ["MATCH (trainer:TRAINER {username: {trainer}})",
 												  "MATCH (trainer)-[:HAS]->(framework:FRAMEWORK)",
 												  "WHERE {part} = framework.part AND {goal} = framework.goal AND {gender} = framework.gender",
-												  "MATCH (framework)-[:HAS]->(day1:DAY1)",
+												  "MATCH (framework)-[:HAS]->(pattern:PATTERN)",
 												  "MATCH (trainer)-[:CREATED]->(exercise:EXERCISE)",
 												  "WHERE {location} in exercise.location AND {gender} in exercise.gender AND {part} = exercise.part",
-												  "RETURN DISTINCT day1"].join('\n');
+												  "RETURN DISTINCT pattern"].join('\n');
 												db.query(cypher, {
 													trainer:"hindsricardo@gmail.com",
 													location:body.location,
