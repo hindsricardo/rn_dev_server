@@ -1410,28 +1410,29 @@ class Analytics {
 			let body = req.body;
 			let cypher = [
 						    "MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setGlutes {part:{glutes}})",
-						    "WHERE setGlutes.stopTime > {currentTime} - {oneweeksago} AND NOT (setGlutes)<-[:RECORDED]-(:SORENESS {pain:0})",
+						    "WHERE setGlutes.stopTime > {currentTime} - {oneweeksago} AND NOT (setGlutes)<-[:RECORDED]-(:SORENESS {pain:1})",
 							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(sethamstrings {part:{hamstrings}})",
-						    "WHERE sethamstrings.stopTime > {currentTime} - {oneweeksago} AND NOT (sethamstrings)<-[:RECORDED]-(:SORENESS {pain:0})",
+						    "WHERE sethamstrings.stopTime > {currentTime} - {oneweeksago} AND NOT (sethamstrings)<-[:RECORDED]-(:SORENESS {pain:1})",
 							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setback {part:{back}})",
-						    "WHERE setback.stopTime > {currentTime} - {oneweeksago} AND NOT (setback)<-[:RECORDED]-(:SORENESS {pain:0})",
+						    "WHERE setback.stopTime > {currentTime} - {oneweeksago} AND NOT (setback)<-[:RECORDED]-(:SORENESS {pain:1})",
 							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setcalves {part:{calves}})",
-						    "WHERE setcalves.stopTime > {currentTime} - {oneweeksago} AND NOT (setcalves)<-[:RECORDED]-(:SORENESS {pain:0})",
+						    "WHERE setcalves.stopTime > {currentTime} - {oneweeksago} AND NOT (setcalves)<-[:RECORDED]-(:SORENESS {pain:1})",
 							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setcore {part:{core}})",
-						    "WHERE setcore.stopTime > {currentTime} - {oneweeksago} AND NOT (setcore)<-[:RECORDED]-(:SORENESS {pain:0})",
+						    "WHERE setcore.stopTime > {currentTime} - {oneweeksago} AND NOT (setcore)<-[:RECORDED]-(:SORENESS {pain:1})",
 							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setbiceps {part:{biceps}})",
-						    "WHERE setbiceps.stopTime > {currentTime} - {oneweeksago} AND NOT (setbiceps)<-[:RECORDED]-(:SORENESS {pain:0})",
+						    "WHERE setbiceps.stopTime > {currentTime} - {oneweeksago} AND NOT (setbiceps)<-[:RECORDED]-(:SORENESS {pain:1})",
 							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setquads {part:{quads}})",
-						    "WHERE setquads.stopTime > {currentTime} - {oneweeksago} AND NOT (setquads)<-[:RECORDED]-(:SORENESS {pain:0})",
+						    "WHERE setquads.stopTime > {currentTime} - {oneweeksago} AND NOT (setquads)<-[:RECORDED]-(:SORENESS {pain:1})",
 							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(settriceps {part:{triceps}})",
-						    "WHERE settriceps.stopTime > {currentTime} - {oneweeksago} AND NOT (settriceps)<-[:RECORDED]-(:SORENESS {pain:0})",
+						    "WHERE settriceps.stopTime > {currentTime} - {oneweeksago} AND NOT (settriceps)<-[:RECORDED]-(:SORENESS {pain:1})",
 							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setshoulders {part:{shoulders}})",
-						    "WHERE setshoulders.stopTime > {currentTime} - {oneweeksago} AND NOT (setshoulders)<-[:RECORDED]-(:SORENESS {pain:0})",
+						    "WHERE setshoulders.stopTime > {currentTime} - {oneweeksago} AND NOT (setshoulders)<-[:RECORDED]-(:SORENESS {pain:1})",
 							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setchest {part:{chest}})",
-						    "WHERE setchest.stopTime > {currentTime} - {oneweeksago} AND NOT (setchest)<-[:RECORDED]-(:SORENESS {pain:0})",
+						    "WHERE setchest.stopTime > {currentTime} - {oneweeksago} AND NOT (setchest)<-[:RECORDED]-(:SORENESS {pain:1})",
 							"RETURN setGlutes, sethamstrings, setback, setcalves, setcore, setbiceps, setquads, setshoulders, settriceps, setchest "].join('\n');	
 			db.query(cypher, {
 					id: body.userid,
+
 					currentTime: currentTime,
 					oneweeksago: oneweeksago,
 					glutes: 'glutes',
@@ -1500,7 +1501,7 @@ class Analytics {
 			let currentTime = new Date().getTime()
 			let cypher = [
 						    "MATCH (set4 {part:{bodypart}})<-[:COMPLETED]-(u:USER {uuid:{id}})",
-						    "WHERE set4.stopTime > {currentTime} - {oneweeksago} AND NOT (set4)<-[:RECORDED]-(:SORENESS {pain:0})",
+						    "WHERE set4.stopTime > {currentTime} - {oneweeksago} AND NOT (set4)<-[:RECORDED]-(:SORENESS)",
 						    "CREATE (n:SORENESS {timestamp:{currentTime}, pain:{soreness}})-[:RECORDED]->(set4)", // create relationship between current result and set4 2 weeks or less
 							"RETURN n"].join('\n');	
 			db.query(cypher, {
@@ -1520,6 +1521,42 @@ class Analytics {
 					          }))
 						}
 						else{
+							if(results.length < 1){
+								let cypher = [
+								    "MATCH (u:USER {uuid:{id}})",
+								    "CREATE (n:SORENESS {timestamp:{currentTime}, pain:{soreness}})-[:RECORDED]->(u)", // create relationship between current result and set4 2 weeks or less
+									"RETURN n"].join('\n')
+								db.query(cypher, {
+									id: body.userid,
+									bodypart:body.bodypart,
+									oneweeksago: oneweeksago,
+									currentTime: currentTime,
+									soreness: body.soreness
+								},	(err, results) => {
+									if(err) {
+										console.log(err);
+										res.writeHead(500, header)
+								        res.end(JSON.stringify({
+								          success:'no',   
+								          err: err,
+								          message:'Something went wrong logging in. Check error message to see what happened.'
+								          }))
+									}
+									else{
+										res.writeHead(200, header);
+								        res.end(JSON.stringify({
+								        	success:'yes',
+								        	results: results,
+
+							        	}));
+								        console.log(JSON.stringify({
+								        	success:'yes',
+								        	results: results,
+										}))
+										return;
+									}
+								})
+							}else{
 								res.writeHead(200, header);
 						        res.end(JSON.stringify({
 						        	success:'yes',
@@ -1531,6 +1568,7 @@ class Analytics {
 						        	results: results,
 								}))
 								return;
+							}
 
 						}
 					

@@ -34,11 +34,15 @@ var _feedback = require('../apps/buildfit/feedback');
 
 var _feedback2 = _interopRequireDefault(_feedback);
 
+var _analytics = require('../apps/buildfit/analytics');
+
+var _analytics2 = _interopRequireDefault(_analytics);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var port = 3001;
+var port = 3000;
 
 var Server = function Server() {
 	_classCallCheck(this, Server);
@@ -75,6 +79,7 @@ var Server = function Server() {
 	this.planRouter = new _plan2.default(this.db, this.server);
 	this.userRouter = new _user2.default(this.db, this.server);
 	this.feedbackRouter = new _feedback2.default(this.db, this.server);
+	this.analyticsRouter = new _analytics2.default(this.db, this.server);
 };
 
 new Server();

@@ -155,7 +155,7 @@ class Plan {
 													goal: body.goal,
 													part: body.part,
 													gender: body.gender
-													}, (err, day1) => {
+													}, (err, pattern) => {
 														if(err) {
 																console.log(err);
 																res.writeHead(500, header)
@@ -186,11 +186,11 @@ class Plan {
 																	res.writeHead(200, header);
 															        res.end(JSON.stringify({
 																        	success:'yes',
-																        	results: {exercises:exercises, frameworks:frameworks, day1:day1, high: high },
+																        	results: {exercises:exercises, frameworks:frameworks, pattern:pattern, high: high },
 															        	}));
 															        console.log(JSON.stringify({
 															        	success:'yes',
-															        	results: {exercises:exercises, frameworks:frameworks, day1:day1, high: high },
+															        	results: {exercises:exercises, frameworks:frameworks, pattern:pattern, high: high },
 															        }));
 														        	return
 																}
