@@ -3,6 +3,7 @@ import {secret} from './config';
 import jwt from 'jsonwebtoken';
 import uuid from 'node-uuid';
 import _ from 'underscore';
+var ml = require('machine_learning');
 const header = {'Content-Type':'application/json; charset=utf-8'};
 
 class Analytics {
@@ -11,7 +12,6 @@ class Analytics {
 		this.name = 'Analytics'
 
 
-		// FIND LIST OF TRAINERS THAT MATCH GOALS
 		server.post('/bf/get/points', (req, res, next) => {	
 			let twoweeksago = 1209600000;
 			let fourweeksago = 2419200000;
@@ -1110,39 +1110,20 @@ class Analytics {
 
 		server.post('/bf/set/results/feedback', (req, res, next) => {
 			let body = req.body;
-			let twoweeksago = 1209600000;
-			let fourweeksago = 2419200000;
-			let sixweeksago = 3628800000;
 			let eightweeksago = 4838400000;
 			let currentTime = new Date().getTime()
 			let cypher = [
-						    "MATCH (set4 {part:{bodypart}})<-[:COMPLETED]-(u:USER {uuid:{id}})",
-						    "WHERE set4.stopTime > {currentTime} - {twoweeksago}",
-						    "CREATE (result:RESULT {timestamp:{currentTime}, results:{score}})-[:RECORDED {importance:.05}]->(set4)", // create relationship between current result and set4 2 weeks or less
-						    "WITH result",
-						    "MATCH (set3 {part:{bodypart}})<-[:COMPLETED]-(u:USER {uuid:{id}})",
-						    "WHERE set3.stopTime > {currentTime} - {fourweeksago} AND set3.stopTime < {currentTime} - {twoweeksago}",
-						    "CREATE (result)-[:RECORDED {importance:.15}]->(set3)", // create relationship between current result and set3 2 to 4 weeks
-						    "WITH result",
-						    "MATCH (set2 {part:{bodypart}})<-[:COMPLETED]-(u:USER {uuid:{id}})",
-						    "WHERE set2.stopTime > {currentTime} - {sixweeksago} AND set2.stopTime < {currentTime} - {fourweeksago}",
-						    "CREATE (result)-[:RECORDED {importance:.25}]->(set2)", // create relationship between current result and set2 4 to 6 weeks
-						    "WITH result",
 						    "MATCH (set1 {part:{bodypart}})<-[:COMPLETED]-(u:USER {uuid:{id}})",
-						    "WHERE set1.stopTime > {currentTime} - {eightweeksago} AND set1.stopTime < {currentTime} - {sixweeksago}",
-						    "CREATE (result)-[:RECORDED {importance:.55}]->(set1)", //CREATE result and add relationship to set1 6 to 8 weeks
+						    "WHERE set1.stopTime < {currentTime} - {eightweeksago} AND NOT (:RESULT)<-[:RECORDED]-(set1)",
+						    "CREATE (result:RESULT {score: {score}})<-[:RECORDED]-(set1)", 
 							"RETURN result"].join('\n');	
 			db.query(cypher, {
 					id: body.userid,
 					bodypart:body.bodypart,
-					twoweeksago: twoweeksago,
-					fourweeksago: fourweeksago,
-					sixweeksago: sixweeksago,
 					eightweeksago: eightweeksago,
 					currentTime: currentTime,
 					score: body.score
 				},	(err, results) => {
-					if(results.length > 0){
 						if(err) {
 							console.log(err);
 							res.writeHead(500, header)
@@ -1165,185 +1146,43 @@ class Analytics {
 								}))
 								return;
 
-						}
-					}
-					else{
-						let cypher2 = [
-						    "MATCH (set3 {part:{bodypart}})<-[:COMPLETED]-(u:USER {uuid:{id}})",
-						    "WHERE set3.stopTime > {currentTime} - {fourweeksago} AND set3.stopTime < {currentTime} - {twoweeksago}",
-						    "CREATE (result:RESULT {timestamp:{currentTime}, results:{score}})-[:RECORDED {importance:.15}]->(set3)", // create relationship between current result and set3 2 to 4 weeks
-						    "WITH result",
-						    "MATCH (set2 {part:{bodypart}})<-[:COMPLETED]-(u:USER {uuid:{id}})",
-						    "WHERE set2.stopTime > {currentTime} - {sixweeksago} AND set2.stopTime < {currentTime} - {fourweeksago}",
-						    "CREATE (result)-[:RECORDED {importance:.25}]->(set2)", // create relationship between current result and set2 4 to 6 weeks
-						    "WITH result",
-						    "MATCH (set1 {part:{bodypart}})<-[:COMPLETED]-(u:USER {uuid:{id}})",
-						    "WHERE set1.stopTime > {currentTime} - {eightweeksago} AND set1.stopTime < {currentTime} - {sixweeksago}",
-						    "CREATE (result)-[:RECORDED {importance:.55}]->(set1)", //CREATE result and add relationship to set1 6 to 8 weeks
-							"RETURN result"].join('\n');	
-						db.query(cypher2, {
-								id: body.userid,
-								bodypart:body.bodypart,
-								twoweeksago: twoweeksago,
-								fourweeksago: fourweeksago,
-								sixweeksago: sixweeksago,
-								eightweeksago: eightweeksago,
-								currentTime: currentTime,
-								score: body.score
-							},	(err, results2) => {
-								if(results2.length > 0){
-									if(err) {
-										console.log(err);
-										res.writeHead(500, header)
-								        res.end(JSON.stringify({
-								          success:'no',   
-								          err: err,
-								          message:'Something went wrong logging in. Check error message to see what happened.'
-								          }))
-									}
-									else{
-											res.writeHead(200, header);
-									        res.end(JSON.stringify({
-									        	success:'yes',
-									        	results: results2,
-
-								        	}));
-									        console.log(JSON.stringify({
-									        	success:'yes',
-									        	results: results2,
-											}))
-											return;
-
-									}
-								}
-								else{
-									let cypher3 = [
-									    "MATCH (set2 {part:{bodypart}})<-[:COMPLETED]-(u:USER {uuid:{id}})",
-									    "WHERE set2.stopTime > {currentTime} - {sixweeksago} AND set2.stopTime < {currentTime} - {fourweeksago}",
-									    "CREATE (result:RESULT {timestamp:{currentTime}, results:{score}})-[:RECORDED {importance:.25}]->(set2)", // create relationship between current result and set2 4 to 6 weeks
-									    "WITH result",
-									    "MATCH (set1 {part:{bodypart}})<-[:COMPLETED]-(u:USER {uuid:{id}})",
-									    "WHERE set1.stopTime > {currentTime} - {eightweeksago} AND set1.stopTime < {currentTime} - {sixweeksago}",
-									    "CREATE (result)-[:RECORDED {importance:.55}]->(set1)", //CREATE result and add relationship to set1 6 to 8 weeks
-										"RETURN result"].join('\n');	
-									db.query(cypher3, {
-											id: body.userid,
-											bodypart:body.bodypart,
-											twoweeksago: twoweeksago,
-											fourweeksago: fourweeksago,
-											sixweeksago: sixweeksago,
-											eightweeksago: eightweeksago,
-											currentTime: currentTime,
-											score: body.score
-										},	(err, results3) => {
-											if(results3.length > 0){
-												if(err) {
-													console.log(err);
-													res.writeHead(500, header)
-											        res.end(JSON.stringify({
-											          success:'no',   
-											          err: err,
-											          message:'Something went wrong logging in. Check error message to see what happened.'
-											          }))
-												}
-												else{
-														res.writeHead(200, header);
-												        res.end(JSON.stringify({
-												        	success:'yes',
-												        	results: results3,
-
-											        	}));
-												        console.log(JSON.stringify({
-												        	success:'yes',
-												        	results: results3,
-														}))
-														return;
-
-												}
-											}
-											else{
-												let cypher4 = [
-												    "MATCH (set1 {part:{bodypart}})<-[:COMPLETED]-(u:USER {uuid:{id}})",
-												    "WHERE set1.stopTime > {currentTime} - {eightweeksago} AND set1.stopTime < {currentTime} - {sixweeksago}",
-												    "CREATE (result:RESULT {timestamp:{currentTime}, results:{score}})-[:RECORDED {importance:.55}]->(set1)", //CREATE result and add relationship to set1 6 to 8 weeks
-													"RETURN result"].join('\n');	
-												db.query(cypher4, {
-														id: body.userid,
-														bodypart:body.bodypart,
-														twoweeksago: twoweeksago,
-														fourweeksago: fourweeksago,
-														sixweeksago: sixweeksago,
-														eightweeksago: eightweeksago,
-														currentTime: currentTime,
-														score: body.score
-													},	(err, results4) => {
-															if(err) {
-																console.log(err);
-																res.writeHead(500, header)
-														        res.end(JSON.stringify({
-														          success:'no',   
-														          err: err,
-														          message:'Something went wrong logging in. Check error message to see what happened.'
-														          }))
-															}
-															else{
-																	res.writeHead(200, header);
-															        res.end(JSON.stringify({
-															        	success:'yes',
-															        	results: results4,
-
-														        	}));
-															        console.log(JSON.stringify({
-															        	success:'yes',
-															        	results: results4,
-																	}))
-																	return;
-
-															}
-													})
-											}
-										})
-								}
-							})
-					}
-
-				})
+						}								
+		
+					})
 
 			
 		}) //end of '/bf/set/results/feedback'
 
 
 		server.post('/bf/check/need/results/feedback', (req, res, next) => {
-			let twoweeksago = 1209600000/2; //dividing by 2 to make it one week to shorten feedback time period. This will keep users more engaged with the app. 
 			let eightweeksago = 4838400000;
 			let currentTime = new Date().getTime();
 			let body = req.body;
 			let cypher = [
 						    "MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setGlutes {part:{glutes}})",
-						    "WHERE setGlutes.stopTime < {currentTime} - {twoweeksago} AND setGlutes.stopTime > {currentTime} - {eightweeksago} AND NOT (setGlutes)<-[:RECORDED]-(:RESULT)",
+						    "WHERE setGlutes.stopTime < {currentTime} - {eightweeksago} AND NOT (setGlutes)<-[:RECORDED]-(:RESULT)",
 							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(sethamstrings {part:{hamstrings}})",
-						    "WHERE sethamstrings.stopTime < {currentTime} - {twoweeksago} AND sethamstrings.stopTime > {currentTime} - {eightweeksago} AND NOT (sethamstrings)<-[:RECORDED]-(:RESULT)",
+						    "WHERE sethamstrings.stopTime < {currentTime} - {eightweeksago} AND NOT (sethamstrings)<-[:RECORDED]-(:RESULT)",
 							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setback {part:{back}})",
-						    "WHERE setback.stopTime < {currentTime} - {twoweeksago} AND setback.stopTime > {currentTime} - {eightweeksago} AND NOT (setback)<-[:RECORDED]-(:RESULT)",
+						    "WHERE setback.stopTime < {currentTime} - {eightweeksago} AND NOT (setback)<-[:RECORDED]-(:RESULT)",
 							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setcalves {part:{calves}})",
-						    "WHERE setcalves.stopTime < {currentTime} - {twoweeksago} AND setcalves.stopTime > {currentTime} - {eightweeksago} AND NOT (setcalves)<-[:RECORDED]-(:RESULT)",
+						    "WHERE setcalves.stopTime < {currentTime} - {eightweeksago} AND NOT (setcalves)<-[:RECORDED]-(:RESULT)",
 							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setcore {part:{core}})",
-						    "WHERE setcore.stopTime < {currentTime} - {twoweeksago} AND setcore.stopTime > {currentTime} - {eightweeksago} AND NOT (setcore)<-[:RECORDED]-(:RESULT)",
+						    "WHERE setcore.stopTime < {currentTime} - {eightweeksago} AND NOT (setcore)<-[:RECORDED]-(:RESULT)",
 							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setbiceps {part:{biceps}})",
-						    "WHERE setbiceps.stopTime < {currentTime} - {twoweeksago} AND setbiceps.stopTime > {currentTime} - {eightweeksago} AND NOT (setbiceps)<-[:RECORDED]-(:RESULT)",
+						    "WHERE setbiceps.stopTime < {currentTime} - {eightweeksago} AND NOT (setbiceps)<-[:RECORDED]-(:RESULT)",
 							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setquads {part:{quads}})",
-						    "WHERE setquads.stopTime < {currentTime} - {twoweeksago} AND setquads.stopTime > {currentTime} - {eightweeksago} AND NOT (setquads)<-[:RECORDED]-(:RESULT)",
+						    "WHERE setquads.stopTime < {currentTime} - {eightweeksago} AND NOT (setquads)<-[:RECORDED]-(:RESULT)",
 							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(settriceps {part:{triceps}})",
-						    "WHERE settriceps.stopTime < {currentTime} - {twoweeksago} AND settriceps.stopTime > {currentTime} - {eightweeksago} AND NOT (settriceps)<-[:RECORDED]-(:RESULT)",
+						    "WHERE settriceps.stopTime < {currentTime} - {eightweeksago} AND NOT (settriceps)<-[:RECORDED]-(:RESULT)",
 							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setshoulders {part:{shoulders}})",
-						    "WHERE setshoulders.stopTime < {currentTime} - {twoweeksago} AND setshoulders.stopTime > {currentTime} - {eightweeksago} AND NOT (setshoulders)<-[:RECORDED]-(:RESULT)",
+						    "WHERE setshoulders.stopTime < {currentTime} - {eightweeksago} AND NOT (setshoulders)<-[:RECORDED]-(:RESULT)",
 							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setchest {part:{chest}})",
-						    "WHERE setchest.stopTime < {currentTime} - {twoweeksago} AND setchest.stopTime > {currentTime} - {eightweeksago} AND NOT (setchest)<-[:RECORDED]-(:RESULT)",
+						    "WHERE setchest.stopTime < {currentTime} - {eightweeksago} AND NOT (setchest)<-[:RECORDED]-(:RESULT)",
 							"RETURN setGlutes, sethamstrings, setback, setcalves, setcore, setbiceps, setquads, setshoulders, settriceps, setchest "].join('\n');	
 			db.query(cypher, {
 					id: body.userid,
 					currentTime: currentTime,
-					twoweeksago: twoweeksago,
 					eightweeksago: eightweeksago,
 					glutes: 'glutes',
 					hamstrings: 'hamstrings',
@@ -1367,37 +1206,17 @@ class Analytics {
 				          }))
 					}
 					else{
-						if(results.length > 0){
 							res.writeHead(200, header);
 					        res.end(JSON.stringify({
 					        	success:'yes',
-					        	sets: results,
-					        	required: true
+					        	results: results,
 
 				        	}));
 					        console.log(JSON.stringify({
 					        	success:'yes',
-					        	sets: results,
-					        	required: true
+					        	results: results,
 							}))
 							return;
-						}else{
-							res.writeHead(200, header);
-					        res.end(JSON.stringify({
-					        	success:'yes',
-					        	sets: results,
-					        	required: false
-
-				        	}));
-					        console.log(JSON.stringify({
-					        	success:'yes',
-					        	sets: results,
-					        	required: false
-
-							}))
-							return;
-						}
-
 					}
 				})
 
@@ -1502,7 +1321,7 @@ class Analytics {
 			let cypher = [
 						    "MATCH (set4 {part:{bodypart}})<-[:COMPLETED]-(u:USER {uuid:{id}})",
 						    "WHERE set4.stopTime > {currentTime} - {oneweeksago} AND NOT (set4)<-[:RECORDED]-(:SORENESS)",
-						    "CREATE (n:SORENESS {timestamp:{currentTime}, pain:{soreness}})-[:RECORDED]->(set4)", // create relationship between current result and set4 2 weeks or less
+						    "CREATE (n:SORENESS {timestamp:{currentTime}, pain:{soreness}, part:{bodypart}})-[:RECORDED]->(set4)", // create relationship between current result and set4 2 weeks or less
 							"RETURN n"].join('\n');	
 			db.query(cypher, {
 					id: body.userid,
@@ -1524,7 +1343,7 @@ class Analytics {
 							if(results.length < 1){
 								let cypher = [
 								    "MATCH (u:USER {uuid:{id}})",
-								    "CREATE (n:SORENESS {timestamp:{currentTime}, pain:{soreness}})-[:RECORDED]->(u)", // create relationship between current result and set4 2 weeks or less
+								    "CREATE (n:SORENESS {timestamp:{currentTime}, pain:{soreness}, part:{bodypart}})-[:RECORDED]->(u)", // create relationship between current result and set4 2 weeks or less
 									"RETURN n"].join('\n')
 								db.query(cypher, {
 									id: body.userid,
@@ -1576,7 +1395,223 @@ class Analytics {
 				})
 
 			
-		}) //end of '/bf/set/soreness/feedback'
+		}) //end of '/bf/get/soreness/feedback'
+
+		server.post('/bf/get/mostimportant/factors', (req, res, next) => {     
+			let body = req.body;
+			let oneweeksago = 1209600000/2;
+			let currentTime = new Date().getTime()
+			let cypher1 = [
+						    "MATCH (u:USER {uuid:{id}})-[]->(sets:SetFeedback {part: {bodypart}})",	    
+							"RETURN sets ORDER BY sets.startTime ASC"].join('\n');	
+			db.query(cypher1, {
+					id: body.userid,
+					bodypart:body.bodypart,
+
+				},	(err, results1) => {
+						if(err) {
+							console.log(err);
+							res.writeHead(500, header)
+					        res.end(JSON.stringify({
+					          success:'no',   
+					          err: err,
+					          message:'Something went wrong logging in. Check error message to see what happened.'
+					          }))
+						}
+						else{
+					        let cypher2 = [
+						        "MATCH (u:USER {uuid:{id}})<-[:RECORDED]-(soreness:SORENESS {part:{bodypart}})",
+					        	"RETURN soreness ORDER BY soreness.timestamp ASC"].join('\n');
+					        db.query(cypher2, {
+					        	id: body.userid,
+								bodypart:body.bodypart,
+					        }, (err, results2) => {
+					        	if(err){
+					        		console.log(err);
+									res.writeHead(500, header)
+							        res.end(JSON.stringify({
+							          success:'no',   
+							          err: err,
+							          message:'Something went wrong logging in. Check error message to see what happened.'
+							          }))
+					        	}
+					        	else{
+									let cypher3 = [
+								    "MATCH (setsAgain1:SetFeedback {part:{bodypart}})<-[:RECORDED]-(result:RESULT)",
+						        	"RETURN result ORDER BY result.timestamp ASC"].join('\n');
+						        	db.query(cypher3, {
+						        		id: body.userid,
+										bodypart:body.bodypart,
+						        	}, (err, results3) => {
+						        		if(err){
+							        		console.log(err);
+											res.writeHead(500, header)
+									        res.end(JSON.stringify({
+									          success:'no',   
+									          err: err,
+									          message:'Something went wrong logging in. Check error message to see what happened.'
+									          }))
+							        	}
+							        	else{
+
+											let cypher4 = [
+											"MATCH (setsAgain2:SetFeedback {part: {bodypart}})-[:RECORDED]->(soreness2:SORENESS {part:{bodypart}})",
+								        	"RETURN soreness2"].join('\n');
+								        	db.query(cypher4, {
+								        		id: body.userid,
+												bodypart:body.bodypart,
+								        	}, (err, results4) => {
+								        		if(err){
+									        		console.log(err);
+													res.writeHead(500, header)
+											        res.end(JSON.stringify({
+											          success:'no',   
+											          err: err,
+											          message:'Something went wrong logging in. Check error message to see what happened.'
+											          }))
+									        	}
+									        	else{
+
+
+									        			let soreness = results2.concat(results4).map((x)=>{
+									        				return x = x.pain;
+									        			});
+									        			let weights = results1.map((x)=>{
+									        				return x = x.weightDone;
+									        			})
+									        			let reps = results1.map((x)=>{
+									        				return x = x.repsDone;
+									        			})
+									        			let setTime = results1.map((x)=>{
+									        				return x = x.setTime;
+									        			})
+									        			let exercise = results1.map((x)=>{
+									        				return x = x.name;
+									        			})
+									        			let feel = results1.map((x)=>{
+									        				return x = x.feel;
+									        			})
+									        			let timeperRep = results1.map((x)=>{
+									        				return x = x.setTime/x.repsDone;
+									        			})
+									        			let results = results3.map((x)=>{
+									        				if(x.results === 1){
+									        					return x = [1,0];
+									        				}else{
+									        					return x = [0,1]
+									        				}
+									        				
+									        			})
+									        			let timeBetweenResults = results3.map((x, index)=>{
+									        				if(results3[parseInt(index) + 1] !== undefined){
+									        					return x = results3[parseInt(index) + 1].timestamp - x.timestamp;
+									        				}else{
+									        					return x = Date.now() - x.timestamp;
+									        				}
+									        			})
+									        			let rest = results1.map((x, index)=>{
+									        				if(results1[parseInt(index) + 1] !== undefined){
+									        					if(results1[parseInt(index) + 1].startTime - x.stopTime < 86400000){
+									        						return x = results1[parseInt(index) + 1].startTime - x.stopTime;
+									        					}else{
+									        						return x = undefined;
+									        					}
+									   
+									        				}else{
+									        					return x = undefined;
+									        				}
+									        			}).filter((x)=>{
+									        				return x != null
+									        			});
+
+
+									        			let daysBetweenWorkout = results1.map((x, index)=>{
+									        				if(results1[parseInt(index) + 1] !== undefined){
+									        					if(results1[parseInt(index) + 1].startTime - x.stopTime >= 86400000){
+									        						return x = results1[parseInt(index) + 1].startTime - x.stopTime;
+									        					}else{
+									        						return x = undefined;
+									        					}
+									   
+									        				}else{
+									        					return x = undefined;
+									        				}
+									        			}).filter((x)=>{
+									        				return x != null
+									        			});
+
+									        			let x = [soreness, weights, reps, setTime, exercise, feel, timeperRep, timeBetweenResults, rest, daysBetweenWorkout];
+									        			let y = results;
+
+									        				var mlp = new ml.MLP({
+															    'input' : x,
+															    'label' : y,
+															    'n_ins' : 10,
+															    'n_outs' : 2,
+															    'hidden_layer_sizes' : [5,5,2]
+															});
+
+															mlp.train({
+															    'lr' : 0.6,
+															    'epochs' : 20000
+															});
+
+															var test_x = [soreness[0], weights[0], reps[0], setTime[0], exercise[0], feel[0], timeperRep[0], timeBetweenResults[0], rest[0]];
+															console.log("Result : ",mlp.predict(test_x));
+									        				
+									        				res.writeHead(200, header);
+													        res.end(JSON.stringify({
+													        	success:'yes',
+													        	sets: results1,
+													        	soreness: soreness,
+													        	results: results,
+													        	weights: weights,
+													        	reps: reps,
+													        	timeBetweenResults: timeBetweenResults,
+													        	setTime: setTime,
+													        	rest: rest,
+													        	daysBetweenWorkout: daysBetweenWorkout,
+													        	exercise: exercise,
+													        	timeperRep: timeperRep,
+													        	feel: feel,
+													        	x: x,
+													        	y:y
+
+												        	}));
+												        	console.log(JSON.stringify({
+													        	success:'yes',
+													        	sets: results1,
+													        	soreness: soreness,
+													        	results: results,
+													        	timeBetweenResults: timeBetweenResults,
+													        	reps: reps,
+													        	setTime: setTime,
+													        	rest: rest,
+													        	daysBetweenWorkout: daysBetweenWorkout,
+													        	exercise: exercise,
+													        	timeperRep: timeperRep,
+													        	feel: feel,
+													        	x:x,
+													        	y:y
+															}));
+									        				
+
+												        
+														return
+
+									        	}
+									        })
+							        	}
+						        	})
+					        	}
+					        })
+						}
+					
+
+				})
+
+			
+		}) //end of /bf/get/mostimportant/factors
 
 
 
