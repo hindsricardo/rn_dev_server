@@ -17,11 +17,14 @@
     "nodemon": "^1.10.2"
   },
   "dependencies": {
+    "binary-to-string": "^0.1.2",
     "jsonwebtoken": "^7.1.9",
-    "machine_learning": "^0.1.1",
+    "neataptic": "^1.4.5",
     "node-uuid": "^1.4.7",
     "restify": "^4.1.1",
     "seraph": "^0.15.2",
+    "string-to-binary": "^0.1.2",
+    "synaptic": "^1.1.3",
     "underscore": "^1.8.3"
   }
 }

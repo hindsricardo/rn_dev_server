@@ -3,7 +3,9 @@ import {secret} from './config';
 import jwt from 'jsonwebtoken';
 import uuid from 'node-uuid';
 import _ from 'underscore';
-var ml = require('machine_learning');
+var b2s = require('binary-to-string');
+var s2b = require('string-to-binary');
+var neataptic = require('Neataptic'); 
 const header = {'Content-Type':'application/json; charset=utf-8'};
 
 class Analytics {
@@ -1340,42 +1342,7 @@ class Analytics {
 					          }))
 						}
 						else{
-							if(results.length < 1){
-								let cypher = [
-								    "MATCH (u:USER {uuid:{id}})",
-								    "CREATE (n:SORENESS {timestamp:{currentTime}, pain:{soreness}, part:{bodypart}})-[:RECORDED]->(u)", // create relationship between current result and set4 2 weeks or less
-									"RETURN n"].join('\n')
-								db.query(cypher, {
-									id: body.userid,
-									bodypart:body.bodypart,
-									oneweeksago: oneweeksago,
-									currentTime: currentTime,
-									soreness: body.soreness
-								},	(err, results) => {
-									if(err) {
-										console.log(err);
-										res.writeHead(500, header)
-								        res.end(JSON.stringify({
-								          success:'no',   
-								          err: err,
-								          message:'Something went wrong logging in. Check error message to see what happened.'
-								          }))
-									}
-									else{
-										res.writeHead(200, header);
-								        res.end(JSON.stringify({
-								        	success:'yes',
-								        	results: results,
-
-							        	}));
-								        console.log(JSON.stringify({
-								        	success:'yes',
-								        	results: results,
-										}))
-										return;
-									}
-								})
-							}else{
+							
 								res.writeHead(200, header);
 						        res.end(JSON.stringify({
 						        	success:'yes',
@@ -1387,7 +1354,6 @@ class Analytics {
 						        	results: results,
 								}))
 								return;
-							}
 
 						}
 					
@@ -1402,7 +1368,8 @@ class Analytics {
 			let oneweeksago = 1209600000/2;
 			let currentTime = new Date().getTime()
 			let cypher1 = [
-						    "MATCH (u:USER {uuid:{id}})-[]->(sets:SetFeedback {part: {bodypart}})",	    
+						    "MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(sets:SetFeedback {part: {bodypart}})",
+    						"WHERE (sets)-[:RECORDED]->(:RESULT)",
 							"RETURN sets ORDER BY sets.startTime ASC"].join('\n');	
 			db.query(cypher1, {
 					id: body.userid,
@@ -1420,7 +1387,7 @@ class Analytics {
 						}
 						else{
 					        let cypher2 = [
-						        "MATCH (u:USER {uuid:{id}})<-[:RECORDED]-(soreness:SORENESS {part:{bodypart}})",
+						        "MATCH (u:USER {uuid:{id}})-[:RECORDED]->(soreness:SORENESS {part:{bodypart}})",
 					        	"RETURN soreness ORDER BY soreness.timestamp ASC"].join('\n');
 					        db.query(cypher2, {
 					        	id: body.userid,
@@ -1437,7 +1404,7 @@ class Analytics {
 					        	}
 					        	else{
 									let cypher3 = [
-								    "MATCH (setsAgain1:SetFeedback {part:{bodypart}})<-[:RECORDED]-(result:RESULT)",
+								    "MATCH (setsAgain1:SetFeedback {part:{bodypart}})-[:RECORDED]->(result:RESULT)",
 						        	"RETURN result ORDER BY result.timestamp ASC"].join('\n');
 						        	db.query(cypher3, {
 						        		id: body.userid,
@@ -1470,134 +1437,310 @@ class Analytics {
 											          message:'Something went wrong logging in. Check error message to see what happened.'
 											          }))
 									        	}
-									        	else{
+									        	else{						        	
 
-
-									        			let soreness = results2.concat(results4).map((x)=>{
-									        				return x = x.pain;
-									        			});
-									        			let weights = results1.map((x)=>{
-									        				return x = x.weightDone;
-									        			})
-									        			let reps = results1.map((x)=>{
-									        				return x = x.repsDone;
-									        			})
-									        			let setTime = results1.map((x)=>{
-									        				return x = x.setTime;
-									        			})
-									        			let exercise = results1.map((x)=>{
-									        				return x = x.name;
-									        			})
-									        			let feel = results1.map((x)=>{
-									        				return x = x.feel;
-									        			})
-									        			let timeperRep = results1.map((x)=>{
-									        				return x = x.setTime/x.repsDone;
-									        			})
+									        	
 									        			let results = results3.map((x)=>{
-									        				if(x.results === 1){
-									        					return x = [1,0];
-									        				}else{
-									        					return x = [0,1]
-									        				}
-									        				
+									        				return x = x.score;
 									        			})
-									        			let timeBetweenResults = results3.map((x, index)=>{
-									        				if(results3[parseInt(index) + 1] !== undefined){
-									        					return x = results3[parseInt(index) + 1].timestamp - x.timestamp;
-									        				}else{
-									        					return x = Date.now() - x.timestamp;
+									        	
+									        			results1.forEach((x, index)=>{
+									        				if(results2[index] != undefined){
+									        					x.soreness = results2[index].pain;
+									        					x.results = results[index];
 									        				}
-									        			})
-									        			let rest = results1.map((x, index)=>{
+									        				else{
+									        					x.soreness = 0;
+									        					x.results = results[index];
+									        				}
 									        				if(results1[parseInt(index) + 1] !== undefined){
 									        					if(results1[parseInt(index) + 1].startTime - x.stopTime < 86400000){
-									        						return x = results1[parseInt(index) + 1].startTime - x.stopTime;
+									        						x.rest = results1[parseInt(index) + 1].startTime - x.stopTime;
 									        					}else{
-									        						return x = undefined;
+									        						x.rest = 0;
 									        					}
 									   
 									        				}else{
-									        					return x = undefined;
+									        					x.rest = 0;
 									        				}
-									        			}).filter((x)=>{
-									        				return x != null
 									        			});
 
 
 									        			let daysBetweenWorkout = results1.map((x, index)=>{
 									        				if(results1[parseInt(index) + 1] !== undefined){
 									        					if(results1[parseInt(index) + 1].startTime - x.stopTime >= 86400000){
-									        						return x = results1[parseInt(index) + 1].startTime - x.stopTime;
+									        						return x.score = results1[parseInt(index) + 1].startTime - x.stopTime; x.results = results[index]; 
 									        					}else{
-									        						return x = undefined;
+									        						return x.score = 0; 
 									        					}
 									   
 									        				}else{
-									        					return x = undefined;
+									        					return x.score = 0;
 									        				}
-									        			}).filter((x)=>{
-									        				return x != null
+									        			}).filter((x, index)=>{
+									        				return x.score != 0;
+									        			})
+
+									        			results1.map((x, index)=>{
+									        				x.weightDone = x.weightDone/10000;
+									        				x.repsDone = x.repsDone/10000;
+									        				x.rest = x.rest/10000;
+									        				x.tut = (x.stopTime - x.startTime)/1000000;
+									        				x.name = s2b(x.name);
+									        				//console.log(x.name.length)
+
+									        				x.name_array = Array.from(x.name);
+									        				x.name_array = x.name_array.map((x)=>{
+									        					return x = parseInt(x);
+									        				})
+									        				/*if(results1[index - 1]){
+									        						if(results1[index - 1].name_array.length - x.name_array.length > 0){
+									        							
+									        							for(var i = results1[index - 1].name_array.length; i < results1[index - 1].name_array.length - x.name_array.length; i++){
+									        								x.name_array = x.name_array[i].concat([0.911]);
+									        							}
+									        						} else if(results1[index - 1].name_array.length - x.name_array.length < 0){
+									        							for(var i = results1[index].name_array.length; i < x.name_array.length - results1[index - 1].name_array.length; i++){
+									        								results1[index - 1].name_array = results1[index - 1].name_array[i].concat([0.911]);
+									        							}
+
+									        						}
+									        					
+									        				}*/
+									        			})
+
+									        			let x = results1.map((x, index)=>{ return x = [x.weightDone, x.repsDone, x.rest, x.tut]/*.concat(x.name_array)*/});
+									        			let y = results.map((x)=>{
+									        				return x = [x];
+									        			})
+									        			let training_set = [];
+									        			x.forEach((n, index)=>{
+									        				training_set.push({input:n, output: y[index]});
+									        				console.log(training_set);
+									        			})
+
+
+									        			let network = new neataptic.architect.Perceptron(x[0].length, x.length, 1);
+									        			network.evolve(training_set, {
+									        				  //mutation: methods.mutation.FFW,
+															  equal: true,
+															  popsize: 100,
+															  elitism: 10,
+															  log: 1,
+															  error: 0.001,
+															  iterations: 10000,
+															  mutationRate: 0.5
 									        			});
 
-									        			let x = [soreness, weights, reps, setTime, exercise, feel, timeperRep, timeBetweenResults, rest, daysBetweenWorkout];
-									        			let y = results;
+									        												        			
+														x.forEach((data, index)=>{
+															console.log(network.activate(data));
+															results1[index].prediction = network.activate(data);
+														})	
 
-									        				var mlp = new ml.MLP({
-															    'input' : x,
-															    'label' : y,
-															    'n_ins' : 10,
-															    'n_outs' : 2,
-															    'hidden_layer_sizes' : [5,5,2]
-															});
+														let significant	= results1.filter((n)=>{
+															return n.prediction > .3; //make it more than 70%
+														});
+														let important_weights = [];
+														let important_reps = [];
+														let important_rest = [];
+														let important_tut = [];
+														Promise.resolve(true).then(()=>{
+															training_set.forEach((n, index)=>{
+																let starter_data = n;
+																// weight tests
+																for(var i =0; i < 20; i++){ 
+																	n.input[0] = ((n.input[0] * 10000)+5);
+																	console.log('weight input', n.input[0]);
+																	n.input[0] = n.input[0]/10000;
+																	console.log('weight input', n.input[0], network.activate(x[index]), network.activate(n.input));
+																	console.log('training set', training_set[index].input, n.input);
+													
+																		if(network.activate(x[index]) < network.activate(n.input)){
+																			important_weights.push({
+																				weight: n.input[0] * 10000,
+																				prediction: network.activate(n.input),
+																				data: n
+																			})
+																			console.log(important_weights);
+																		}
 
-															mlp.train({
-															    'lr' : 0.6,
-															    'epochs' : 20000
-															});
+																}
+																for(var i =0; i < 20; i++){ 
+																	n.input[0] = ((n.input[0] * 10000)-5);
+																	console.log('weight input', n.input[0]);
+																	n.input[0] = n.input[0]/10000;
+																	console.log('weight input', n.input[0], network.activate(x[index]), network.activate(n.input));
+																	console.log('training set', training_set[index].input, n.input);
+													
+																		if(network.activate(x[index]) < network.activate(n.input)){
+																			important_weights.push({
+																				weight: n.input[0] * 10000,
+																				prediction: network.activate(n.input),
+																				data: n
+																			})
+																			console.log(important_weights);
+																		}
 
-															var test_x = [soreness[0], weights[0], reps[0], setTime[0], exercise[0], feel[0], timeperRep[0], timeBetweenResults[0], rest[0]];
-															console.log("Result : ",mlp.predict(test_x));
-									        				
-									        				res.writeHead(200, header);
+																}
+																// reps test
+																for(var i =0; i < 30; i++){ 
+																	n.input[1] = ((n.input[1] * 10000) + 1);
+																	console.log('reps input', n.input[1]);
+																	n.input[1] = n.input[1]/10000;
+																	n.input[0] = starter_data.input[0];
+																	console.log('reps input', n.input[1], network.activate(x[index]), network.activate(n.input));
+																	console.log('training set', training_set[index].input, n.input);
+													
+																		if(network.activate(x[index]) < network.activate(n.input)){
+																			important_reps.push({
+																				reps: n.input[1] * 10000,
+																				prediction: network.activate(n.input),
+																				data: n,
+																			})
+																			console.log(important_reps);
+																		}
+
+																}
+																for(var i =0; i < 30; i++){ 
+																	n.input[1] = ((n.input[1] * 10000)-1);
+																	console.log('reps input', n.input[1]);
+																	n.input[1] = n.input[1]/10000;
+																	n.input[0] = starter_data.input[0];
+																	console.log('reps input', n.input[1], network.activate(x[index]), network.activate(n.input));
+																	console.log('training set', training_set[index].input, n.input);
+													
+																		if(network.activate(x[index]) < network.activate(n.input)){
+																			important_reps.push({
+																				reps: n.input[1] * 10000,
+																				prediction: network.activate(n.input),
+																				data: n
+																			})
+																			console.log(important_reps);
+																		}
+
+																}
+																// rest test
+																for(var i =0; i < 60; i++){ 
+																	n.input[2] = ((n.input[2] * 10000) + 1);
+																	console.log('rest input', n.input[2]);
+																	n.input[2] = n.input[2]/10000;
+																	n.input[1] = starter_data.input[1];
+																	console.log('rest input', n.input[2], network.activate(x[index]), network.activate(n.input));
+																	console.log('training set', training_set[index].input, n.input);
+													
+																		if(network.activate(x[index]) < network.activate(n.input)){
+																			important_rest.push({
+																				rest: n.input[2] * 10000,
+																				prediction: network.activate(n.input),
+																				data: n,
+																			})
+																			console.log(important_reps);
+																		}
+
+																}
+																for(var i =0; i < 60; i++){ 
+																	n.input[2] = ((n.input[2] * 10000)-1);
+																	console.log('rest input', n.input[2]);
+																	n.input[2] = n.input[2]/10000;
+																	n.input[1] = starter_data.input[1];
+																	console.log('rest input', n.input[2], network.activate(x[index]), network.activate(n.input));
+																	console.log('training set', training_set[index].input, n.input);
+													
+																		if(network.activate(x[index]) < network.activate(n.input)){
+																			important_rest.push({
+																				rest: n.input[2] * 10000,
+																				prediction: network.activate(n.input),
+																				data: n
+																			})
+																			console.log(important_reps);
+																		}
+
+																}
+																// tut test
+																for(var i =0; i < 60; i++){ 
+																	n.input[3] = ((n.input[3] * 1000000) + 1000);
+																	console.log('tut input', n.input[3]);
+																	n.input[3] = n.input[3]/1000000;
+																	n.input[2] = starter_data.input[2];
+																	console.log('tut input', n.input[3], network.activate(x[index]), network.activate(n.input));
+																	console.log('training set', training_set[index].input, n.input);
+													
+																		if(network.activate(x[index]) < network.activate(n.input)){
+																			important_tut.push({
+																				tut: n.input[3] * 1000000,
+																				prediction: network.activate(n.input),
+																				data: n,
+																			})
+																			console.log(important_reps);
+																		}
+
+																}
+																for(var i =0; i < 60; i++){ 
+																	n.input[3] = ((n.input[3] * 1000000)-1000);
+																	console.log('tut input', n.input[3]);
+																	n.input[3] = n.input[3]/1000000;
+																	n.input[2] = starter_data.input[2];
+																	console.log('tut input', n.input[3], network.activate(x[index]), network.activate(n.input));
+																	console.log('training set', training_set[index].input, n.input);
+													
+																		if(network.activate(x[index]) < network.activate(n.input)){
+																			important_tut.push({
+																				tut: n.input[3] * 1000000,
+																				prediction: network.activate(n.input),
+																				data: n
+																			})
+																			console.log(important_reps);
+																		}
+
+																}
+										        				/*x.weightDone = x.weightDone/10000;
+										        				x.repsDone = x.repsDone/10000;
+										        				x.rest = x.rest/10000;
+										        				x.tut = (x.stopTime - x.startTime)/1000000;
+										        				x.name = s2b(x.name);
+										        				//console.log(x.name.length)
+
+										        				x.name_array = Array.from(x.name);
+										        				x.name_array = x.name_array.map((x)=>{
+										        					return x = parseInt(x);
+										        				})*/
+										        			
+										        			})
+														}).then(()=>{
+															res.writeHead(200, header);
 													        res.end(JSON.stringify({
 													        	success:'yes',
 													        	sets: results1,
-													        	soreness: soreness,
-													        	results: results,
-													        	weights: weights,
-													        	reps: reps,
-													        	timeBetweenResults: timeBetweenResults,
-													        	setTime: setTime,
-													        	rest: rest,
-													        	daysBetweenWorkout: daysBetweenWorkout,
-													        	exercise: exercise,
-													        	timeperRep: timeperRep,
-													        	feel: feel,
-													        	x: x,
-													        	y:y
+													        	//results: results,
+													        	//daysBetweenWorkout: daysBetweenWorkout,
+													        	//x: x,
+													        	//y:y,
+													        	prediction: network.activate(x[0]),
+													        	//significant: significant,
+													        	important_weights: important_weights,
+													        	important_reps: important_reps,
+													        	important_rest: important_rest,
+													        	important_tut: important_tut
+													        	
+													    
+												
 
 												        	}));
 												        	console.log(JSON.stringify({
 													        	success:'yes',
 													        	sets: results1,
-													        	soreness: soreness,
-													        	results: results,
-													        	timeBetweenResults: timeBetweenResults,
-													        	reps: reps,
-													        	setTime: setTime,
-													        	rest: rest,
-													        	daysBetweenWorkout: daysBetweenWorkout,
-													        	exercise: exercise,
-													        	timeperRep: timeperRep,
-													        	feel: feel,
-													        	x:x,
-													        	y:y
+													        	//results: results,	
+													        	//daysBetweenWorkout: daysBetweenWorkout,
+													    
 															}));
 									        				
 
 												        
 														return
+														})
+																					        										        				
+									        			
 
 									        	}
 									        })
