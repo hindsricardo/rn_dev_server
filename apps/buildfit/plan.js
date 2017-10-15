@@ -3,6 +3,7 @@ import {secret} from './config';
 import jwt from 'jsonwebtoken';
 import uuid from 'node-uuid';
 import _ from 'underscore';
+const uuidV4 = require('uuid');
 const header = {'Content-Type':'application/json; charset=utf-8'};
 
 class Plan {
@@ -106,7 +107,7 @@ class Plan {
 				location:body.location,
 				goal: body.goal,
 				part: body.part,
-				gender: body.gender
+				gender: body.gender,
 			}, (err, frameworks) => {
 				if(err) {
 						console.log(err);
@@ -130,7 +131,7 @@ class Plan {
 							location:body.location,
 							goal: body.goal,
 							part: body.part,
-							gender: body.gender
+							gender: body.gender,
 						}, (err, exercises) => {
 							if(err) {
 									console.log(err);
@@ -183,16 +184,43 @@ class Plan {
 														          }))
 																}
 																else{
-																	res.writeHead(200, header);
-															        res.end(JSON.stringify({
-																        	success:'yes',
-																        	results: {exercises:exercises, frameworks:frameworks, pattern:pattern, high: high },
-															        	}));
-															        console.log(JSON.stringify({
-															        	success:'yes',
-															        	results: {exercises:exercises, frameworks:frameworks, pattern:pattern, high: high },
-															        }));
-														        	return
+																	let cypher = ["MATCH (trainer:TRAINER {username: {trainer}})",
+																	  "MATCH (trainer)-[:HAS]->(framework:FRAMEWORK)",
+																	  "WHERE {part} = framework.part AND {goal} = framework.goal AND {gender} = framework.gender",
+																	  "MATCH (framework)-[:HAS]->(pattern:PATTERN)",
+																	  "MATCH (u:USER {uuid:{id}})-[:CREATED]->(exercise:EXERCISE)",
+																	  "WHERE {location} in exercise.location AND {gender} in exercise.gender AND {part} = exercise.part",
+																	  "RETURN DISTINCT exercise"].join('\n');
+																	db.query(cypher, {
+																		trainer:"hindsricardo@gmail.com",
+																		location:body.location,
+																		goal: body.goal,
+																		part: body.part,
+																		gender: body.gender,
+																		id: body.userid
+																	}, (err, user_exercises) => {
+																		if(err) {
+																				console.log(err);
+																				res.writeHead(500, header)
+																		        res.end(JSON.stringify({
+																		          success:'no',
+																		          err: err,
+																		          message:'Something went wrong logging in. Check error message to see what happened.'
+																		          }))
+																			}
+																			else{
+																				res.writeHead(200, header);
+																		        res.end(JSON.stringify({
+																			        	success:'yes',
+																			        	results: {exercises:exercises, frameworks:frameworks, pattern:pattern, high: high, user_exercises: user_exercises },
+																		        	}));
+																		        console.log(JSON.stringify({
+																		        	success:'yes',
+																		        	results: {exercises:exercises, frameworks:frameworks, pattern:pattern, high: high },
+																		        }));
+																	        	return
+																	        }
+																	    })
 																}
 															})
 															
@@ -275,7 +303,53 @@ class Plan {
 						}	
 					})
 		
+			}) // GENERATE A PLAN FROM A TRAINER
+
+		// add USER CREATED EXERCISE
+		server.post('/client/create/exercise', (req, res, next) => {	
+			let body = req.body			
+			let cypher = ["MATCH (u:USER {uuid:{id}})",
+						  "CREATE (exercise:EXERCISE {uuid:{uuid}, VideoURL:'null', location: {location}, description: {description}, sets: {sets}, part: {part}, name: {name}, gender: {gender}, goal: {goal} })",
+						  "CREATE (u)-[:CREATED]->(exercise)",
+						  "RETURN exercise"].join('\n');	// return the list of trainers as an array
+				db.query(cypher, {
+					goal: body.goal,
+					id:body.userid,
+					description:body.description,
+					name: body.name,
+					location: ['gym','home'],
+					gender: ['male', 'female'],
+					part: body.bodypart,
+					sets: '{ "superset": [ { "id": 1, "reps": "15", "rest" : "0", "description": "do as many as you can with perfect form" } ], "low": [ { "id": 1, "reps": "15", "rest" : "45", "description": "" }, { "id": 2, "reps": "20", "rest" : "45", "description": "" }, { "id": 3, "reps": "25", "rest" : "45", "description": "" } ], "high": [ { "id": 1, "reps": 12, "rest": 45, "description": "use a weight that is challenging enough where the last 4 to 3 reps burn your glutes. Also, if you are able to do more reps then continue until your glute muscles can not do more. Doing more than the given number of sets means you need to increase the weight more on the next set to get closer to the target reps. Now crush this set!" }, { "id": 2, "reps": 10, "rest": 45, "description": "Adjust the weight so that you are only able to do the given number of reps. Again if you can do more than ten reps, do not stop there and continue until your glutes cannot take anymore." }, { "id": 3, "reps": 8, "rest": 45, "description": "Increase the weight from the previous set if you were able to do the target number of reps or more. On this set do not do more than the target number of reps." }, { "id": 4, "reps": 8, "rest": 45, "description": "Do not do more than eight reps." }, { "id": 5, "reps": 15, "rest": 0, "description": "Do not decrease the weight from the previous set. Trust your body to make it through to this increased number of reps." } ], "medium": [ { "id": 1, "reps": 15, "rest": 45, "description": "the last three or four reps should be hard." }, { "id": 2, "reps": 15, "rest": 45, "description": "" }, { "id": 3, "reps": 15, "rest": 45, "description": "" }]}',
+					uuid: uuidV4()
+				},	(err, results) => {
+					if(err) {
+						console.log(err);
+						res.writeHead(500, header)
+				        res.end(JSON.stringify({
+				          success:'no',
+				          err: err,
+				          message:'Something went wrong logging in. Check error message to see what happened.'
+				          }))
+					}
+					else{
+						res.writeHead(200, header);
+				        res.end(JSON.stringify({
+					        	success:'yes',
+					        	results: results
+					        	//token: token
+				        	}));
+				        console.log(JSON.stringify({
+				        	success:'yes',
+				        	results: results,
+				        	//token: token
+				        }));
+				        return
+					}
+				})
 			})
+
+
 
 		}
 
