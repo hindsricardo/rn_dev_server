@@ -212,11 +212,11 @@ class Plan {
 																				res.writeHead(200, header);
 																		        res.end(JSON.stringify({
 																			        	success:'yes',
-																			        	results: {exercises:exercises, frameworks:frameworks, pattern:pattern, high: high, user_exercises: user_exercises },
+																			        	results: {exercises:exercises.concat(user_exercises), frameworks:frameworks, pattern:pattern, high: high },
 																		        	}));
 																		        console.log(JSON.stringify({
 																		        	success:'yes',
-																		        	results: {exercises:exercises, frameworks:frameworks, pattern:pattern, high: high },
+																		        	results: {exercises:exercises.concat(user_exercises), frameworks:frameworks, pattern:pattern, high: high },
 																		        }));
 																	        	return
 																	        }
