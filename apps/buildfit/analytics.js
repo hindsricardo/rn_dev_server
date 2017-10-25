@@ -1163,7 +1163,7 @@ class Analytics {
 			let body = req.body;
 			let cypher = [
 						    "MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(sets)",
-						    "WHERE sets.stopTime < {currentTime} - {eightweeksago} AND NOT (sets)<-[:RECORDED]-(:RESULT)",
+						    "WHERE sets.stopTime < {currentTime} - {eightweeksago} AND NOT (sets)-[:RECORDED]->(:RESULT)",
 							"RETURN sets "].join('\n');	
 			db.query(cypher, {
 					id: body.userid,
