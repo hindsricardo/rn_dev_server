@@ -309,7 +309,7 @@ class Plan {
 		server.post('/client/create/exercise', (req, res, next) => {	
 			let body = req.body			
 			let cypher = ["MATCH (u:USER {uuid:{id}})",
-						  "CREATE (exercise:EXERCISE {uuid:{uuid}, VideoURL:'null', location: {location}, description: {description}, sets: {sets}, part: {part}, name: {name}, gender: {gender}, goal: {goal} })",
+						  "CREATE (exercise:EXERCISE {uuid:{uuid}, VideoURL:'null', location: {location}, description: {description}, sets: {sets}, part: {part}, name: {name}, gender: {gender}, goal: {goal}, levels: {levels} })",
 						  "CREATE (u)-[:CREATED]->(exercise)",
 						  "RETURN exercise"].join('\n');	// return the list of trainers as an array
 				db.query(cypher, {
@@ -319,9 +319,10 @@ class Plan {
 					name: body.name,
 					location: ['gym','home'],
 					gender: ['male', 'female'],
-					part: body.bodypart,
+					part: body.part,
 					sets: '{ "superset": [ { "id": 1, "reps": "15", "rest" : "0", "description": "do as many as you can with perfect form" } ], "low": [ { "id": 1, "reps": "15", "rest" : "45", "description": "" }, { "id": 2, "reps": "20", "rest" : "45", "description": "" }, { "id": 3, "reps": "25", "rest" : "45", "description": "" } ], "high": [ { "id": 1, "reps": 12, "rest": 45, "description": "use a weight that is challenging enough where the last 4 to 3 reps burn your glutes. Also, if you are able to do more reps then continue until your glute muscles can not do more. Doing more than the given number of sets means you need to increase the weight more on the next set to get closer to the target reps. Now crush this set!" }, { "id": 2, "reps": 10, "rest": 45, "description": "Adjust the weight so that you are only able to do the given number of reps. Again if you can do more than ten reps, do not stop there and continue until your glutes cannot take anymore." }, { "id": 3, "reps": 8, "rest": 45, "description": "Increase the weight from the previous set if you were able to do the target number of reps or more. On this set do not do more than the target number of reps." }, { "id": 4, "reps": 8, "rest": 45, "description": "Do not do more than eight reps." }, { "id": 5, "reps": 15, "rest": 0, "description": "Do not decrease the weight from the previous set. Trust your body to make it through to this increased number of reps." } ], "medium": [ { "id": 1, "reps": 15, "rest": 45, "description": "the last three or four reps should be hard." }, { "id": 2, "reps": 15, "rest": 45, "description": "" }, { "id": 3, "reps": 15, "rest": 45, "description": "" }]}',
-					uuid: uuidV4()
+					uuid: uuidV4(),
+					levels: ['superset', 'high', 'medium', 'low']
 				},	(err, results) => {
 					if(err) {
 						console.log(err);

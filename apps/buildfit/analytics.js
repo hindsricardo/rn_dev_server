@@ -1112,6 +1112,7 @@ class Analytics {
 
 		server.post('/bf/set/results/feedback', (req, res, next) => {
 			let body = req.body;
+			console.log('/bf/set/results/feedback', body);
 			let eightweeksago = 4838400000;
 			let currentTime = new Date().getTime()
 			let cypher = [
@@ -1142,7 +1143,7 @@ class Analytics {
 						        	results: results,
 
 					        	}));
-						        console.log(JSON.stringify({
+						        console.log('/bf/set/results/feedback',JSON.stringify({
 						        	success:'yes',
 						        	results: results,
 								}))
@@ -1161,41 +1162,13 @@ class Analytics {
 			let currentTime = new Date().getTime();
 			let body = req.body;
 			let cypher = [
-						    "MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setGlutes {part:{glutes}})",
-						    "WHERE setGlutes.stopTime < {currentTime} - {eightweeksago} AND NOT (setGlutes)<-[:RECORDED]-(:RESULT)",
-							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(sethamstrings {part:{hamstrings}})",
-						    "WHERE sethamstrings.stopTime < {currentTime} - {eightweeksago} AND NOT (sethamstrings)<-[:RECORDED]-(:RESULT)",
-							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setback {part:{back}})",
-						    "WHERE setback.stopTime < {currentTime} - {eightweeksago} AND NOT (setback)<-[:RECORDED]-(:RESULT)",
-							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setcalves {part:{calves}})",
-						    "WHERE setcalves.stopTime < {currentTime} - {eightweeksago} AND NOT (setcalves)<-[:RECORDED]-(:RESULT)",
-							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setcore {part:{core}})",
-						    "WHERE setcore.stopTime < {currentTime} - {eightweeksago} AND NOT (setcore)<-[:RECORDED]-(:RESULT)",
-							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setbiceps {part:{biceps}})",
-						    "WHERE setbiceps.stopTime < {currentTime} - {eightweeksago} AND NOT (setbiceps)<-[:RECORDED]-(:RESULT)",
-							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setquads {part:{quads}})",
-						    "WHERE setquads.stopTime < {currentTime} - {eightweeksago} AND NOT (setquads)<-[:RECORDED]-(:RESULT)",
-							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(settriceps {part:{triceps}})",
-						    "WHERE settriceps.stopTime < {currentTime} - {eightweeksago} AND NOT (settriceps)<-[:RECORDED]-(:RESULT)",
-							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setshoulders {part:{shoulders}})",
-						    "WHERE setshoulders.stopTime < {currentTime} - {eightweeksago} AND NOT (setshoulders)<-[:RECORDED]-(:RESULT)",
-							"MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(setchest {part:{chest}})",
-						    "WHERE setchest.stopTime < {currentTime} - {eightweeksago} AND NOT (setchest)<-[:RECORDED]-(:RESULT)",
-							"RETURN setGlutes, sethamstrings, setback, setcalves, setcore, setbiceps, setquads, setshoulders, settriceps, setchest "].join('\n');	
+						    "MATCH (u:USER {uuid:{id}})-[:COMPLETED]->(sets)",
+						    "WHERE sets.stopTime < {currentTime} - {eightweeksago} AND NOT (sets)<-[:RECORDED]-(:RESULT)",
+							"RETURN sets "].join('\n');	
 			db.query(cypher, {
 					id: body.userid,
 					currentTime: currentTime,
 					eightweeksago: eightweeksago,
-					glutes: 'glutes',
-					hamstrings: 'hamstrings',
-					back: 'back',
-					calves: 'calves',
-					core: 'core',
-					biceps: 'biceps',
-					quads: 'quads',
-					triceps: 'triceps',
-					shoulders: 'shoulders',
-					chest: 'chest'
 				},	(err, results) => {
 					console.log(results)
 					if(err) {
@@ -1208,6 +1181,34 @@ class Analytics {
 				          }))
 					}
 					else{
+						Promise.resolve(true).then(()=>{
+							results = results.map((x)=>{
+								switch(x.part){
+									case 'glutes':
+										return x = 'glutes';
+									case 'hamstrings':
+										return x = 'hamstrings';
+									case 'back':
+										return x = 'back';
+									case 'calves':
+										return x = 'calves';
+									case 'core':
+										return x = 'core';
+									case 'biceps':
+										return x = 'biceps';
+									case 'quads':
+										return x = 'quads';
+									case 'triceps':
+										return x = 'triceps';
+									case 'shoulders':
+										return x = 'shoulders';
+									case 'chest':
+										return x = 'chest';
+								}
+					
+							})
+						})
+						.then(()=>{
 							res.writeHead(200, header);
 					        res.end(JSON.stringify({
 					        	success:'yes',
@@ -1219,6 +1220,8 @@ class Analytics {
 					        	results: results,
 							}))
 							return;
+						});
+
 					}
 				})
 
