@@ -8,10 +8,12 @@ import Plan from '../apps/buildfit/plan';
 import User from '../apps/buildfit/user';
 import Feedback from '../apps/buildfit/feedback';
 import Analytics from '../apps/buildfit/analytics';
+var neo4j = require('neo4j-driver').v1;
 
 
 
-const port = 3000;
+
+const port = 3001;
 
 
 class Server {
@@ -24,10 +26,9 @@ class Server {
 		    pass: url.auth.split(':')[1]});
 		}
 		else{
-		  this.db = seraph({
-		    user: "neo4j",
-		    pass: "Car81you"
-		    });
+			var driver = neo4j.driver("bolt://localhost", neo4j.auth.basic("neo4j", "Hin81you!"));
+
+		  this.db = driver.session();
 		}
 
 		this.server = restify.createServer();

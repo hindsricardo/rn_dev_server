@@ -8,44 +8,28 @@ const header = {'Content-Type':'application/json; charset=utf-8'};
 class User {
 
 	constructor(db, server) {
-		this.name = 'User'
+		this.name = 'User'; 
 
 		// FIND LIST OF TRAINERS THAT MATCH GOALS
 		server.post('/create/user/v1', (req, res, next) => {	
 			let body = req.body;		
-			let cypher = [ "MATCH (user:USER {uuid: {id} })",
-						   "RETURN user"].join('\n');
+			let cypher = "MATCH (user:USER {uuid: $id }) RETURN user";
 
-				db.query(cypher, {
+				db.run(cypher, {
 					id: body.id	//set goals variable in cypher to body.goals
-				},	(err, results) => {
-					if(err) {
-						console.log(err);
-						res.writeHead(500, header)
-				        res.end(JSON.stringify({
-				          success:'no',
-				          err: err,
-				          message:'Something went wrong logging in. Check error message to see what happened.'
-				          }))
-					}
-					else if(results.length < 1){
+				}).then((results) => {
+					db.close();
+					results = results.records;
+					if(results.length < 1){
 						console.log('CREATING NEW USER')
-						let cypher2 = ["CREATE (user:USER {uuid:{id}, name:{name} })",
+						let cypher2 = ["CREATE (user:USER {uuid:$id, name:$name })",
 										"RETURN user"].join('\n');
-							db.query(cypher2, {
+							db.run(cypher2, {
 								id: body.id,
 								name: body.name,
-							}, (err, results2) => {
-								if(err) {
-									console.log(err);
-									res.writeHead(500, header)
-							        res.end(JSON.stringify({
-							          success:'no',
-							          err: err,
-							          message:'Something went wrong logging in. Check error message to see what happened.'
-							          }))
-								}
-								else{
+							}).then((results2) => {
+								db.close();
+								results2 = results2.records;
 									res.writeHead(200, header);
 							        res.end(JSON.stringify({
 								        	loggedin:'yes',
@@ -57,8 +41,16 @@ class User {
 							        	results: results2,
 							        	//token: token
 							        }));
-								}
 							})
+							.catch((err)=>{
+								console.log(err);
+								res.writeHead(500, header)
+						        res.end(JSON.stringify({
+						          success:'no',
+						          err: err,
+						          message:'Something went wrong logging in. Check error message to see what happened.'
+						          }))
+							});
 					}
 					else{
 						console.log('FOUND USER')
@@ -76,6 +68,15 @@ class User {
 				        return
 					}
 				})
+				.catch((err)=>{
+					console.log(err);
+					res.writeHead(500, header)
+			        res.end(JSON.stringify({
+			          success:'no',
+			          err: err,
+			          message:'Something went wrong logging in. Check error message to see what happened.'
+			          }))
+				});
 			})
 
 

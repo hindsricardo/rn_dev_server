@@ -20,6 +20,7 @@
     "binary-to-string": "^0.1.2",
     "jsonwebtoken": "^7.1.9",
     "neataptic": "^1.4.5",
+    "neo4j-driver": "^1.5.0",
     "node-uuid": "^1.4.7",
     "restify": "^4.1.1",
     "seraph": "^0.15.2",
