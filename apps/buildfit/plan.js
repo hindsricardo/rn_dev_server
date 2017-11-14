@@ -350,12 +350,12 @@ class Plan {
 				//console.log('/admin/seed/exercises', exercises_core_pack)
 				let array = [exercises_core_pack ];// add exercise packs here.
 					array.forEach((pack)=>{
-						let cypher = 	"MATCH (trainer:TRAINER {username: $username}) "+
-										"UNWIND "+pack + " AS move "+
-										"MERGE (exercise:EXERCISE {name: move.name} ) "+
-										"MERGE (trainer)-[:CREATED]->(exercise) "+
-										"SET exercise += move "+
-										"RETURN exercise";
+						let cypher = 	'MATCH (trainer:TRAINER {username: $username}) '+
+										'UNWIND '+pack + ' AS move '+
+										'MERGE (exercise:EXERCISE {name: move.name} ) '+
+										'MERGE (trainer)-[:CREATED]->(exercise) '+
+										'SET exercise += move '+
+										'RETURN exercise';
 
 						db.run(cypher, {
 							username: 'hindsricardo@gmail.com',
