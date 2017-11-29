@@ -15,10 +15,11 @@ class Feedback {
 			let body = req.body;
 			console.log(body);
 				let cypher = "MATCH (user:USER {uuid: $user}) "+
-							 "CREATE (feedback:SetFeedback {planUUID: $planUUID, stopTime: $stopTime, name: $name, uuid: $uuid, level: $level, location: $location, gender: $gender, part: $part, rest: $rest, startTime: $startTime, repsDone: $repsDone, weightDone: $weightDone, feel: $feel})<-[relate:COMPLETED]-(user:USER {uuid: {user} }) "+
-							 "RETURN user, set, relate";		
+							 "CREATE (feedback:SetFeedback { planUUID: $planUUID, stopTime: $stopTime, name: $name, uuid: $uuid, level: $level, location: $location, gender: $gender, part: $part, rest: $rest, startTime: $startTime, repsDone: $repsDone, weightDone: $weightDone, feel: $feel })<-[relate:COMPLETED]-(user) "+
+							 "RETURN feedback";		
 
 				db.run(cypher,{
+					//videoURL: body.set.videoURL,
 					planUUID: body.set.planUUID,
 					stopTime: body.set.stopTime,
 					name: body.set.name,
@@ -33,8 +34,7 @@ class Feedback {
 					location: body.set.location,
 					startTime: body.set.startTime,
 					feel: body.set.feel,
-					user: body.user
-
+					user: body.user,
 				}).then((results)=>{
 					results = results.records;
 					db.close();

@@ -26,7 +26,7 @@ class Server {
 		    pass: url.auth.split(':')[1]});
 		}
 		else{
-			var driver = neo4j.driver("bolt://localhost", neo4j.auth.basic("neo4j", "Hin81you!"));
+			var driver = neo4j.driver("bolt://127.0.0.1:11005", neo4j.auth.basic("neo4j", "Hin81you!"));
 
 		  this.db = driver.session();
 		}

@@ -12,20 +12,23 @@
   "author": "\"Ricardo Hinds <hindsricardo@gmail.com>",
   "license": "ISC",
   "devDependencies": {
-    "babel-cli": "^6.16.0",
-    "babel-preset-es2015": "^6.16.0",
-    "nodemon": "^1.10.2"
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "nodemon": "^1.12.1"
   },
   "dependencies": {
     "binary-to-string": "^0.1.2",
-    "jsonwebtoken": "^7.1.9",
-    "neataptic": "^1.4.5",
+    "cryptr": "^2.0.0",
+    "jsonwebtoken": "^7.4.3",
+    "lower-case": "^1.1.4",
+    "neataptic": "^1.4.7",
     "neo4j-driver": "^1.5.0",
-    "node-uuid": "^1.4.7",
-    "restify": "^4.1.1",
-    "seraph": "^0.15.2",
+    "node-uuid": "^1.4.8",
+    "restify": "^4.3.2",
+    "seraph": "^0.15.3",
     "string-to-binary": "^0.1.2",
-    "synaptic": "^1.1.3",
-    "underscore": "^1.8.3"
+    "synaptic": "^1.1.4",
+    "underscore": "^1.8.3",
+    "uuid": "^3.1.0"
   }
 }
