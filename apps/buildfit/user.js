@@ -68,12 +68,12 @@ class User {
 										res.writeHead(200, header);
 								        res.end(JSON.stringify({
 									        	loggedin:'yes',
-									        	results: results
+									        	results: results2
 									        	//token: token
 								        	}));
 								        console.log(JSON.stringify({
 								        	loggedin:'yes',
-								        	results: results,
+								        	results: results2,
 								        	//token: token
 								        }));
 				        				return
@@ -83,12 +83,12 @@ class User {
 										res.writeHead(200, header);
 								        res.end(JSON.stringify({
 									        	loggedin:'no',
-									        	results: results
+									        	results: results2
 									        	//token: token
 								        	}));
 								        console.log(JSON.stringify({
 								        	loggedin:'yes',
-								        	results: results,
+								        	results: results2,
 								        	//token: token
 								        }));
 								        return

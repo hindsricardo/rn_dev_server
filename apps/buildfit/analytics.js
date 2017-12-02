@@ -1368,7 +1368,7 @@ class Analytics {
 									        				x.repsDone = x.repsDone/10000;
 									        				x.rest = x.rest/10000;
 									        				x.tut = (x.stopTime - x.startTime)/1000000;
-									        				x.name = s2b(x.name);
+									        				x.name = s2b(x.uuid);
 									        				//console.log(x.name.length)
 
 									        				x.name_array = Array.from(x.name);
@@ -1391,7 +1391,7 @@ class Analytics {
 									        				}*/
 									        			})
 
-									        			let x = results1.map((x, index)=>{ return x = [x.weightDone, x.repsDone, x.rest, x.tut]/*.concat(x.name_array)*/});
+									        			let x = results1.map((x, index)=>{ return x = [x.weightDone, x.repsDone, x.rest, x.tut].concat(x.name_array)});
 									        			let y = results.map((x)=>{
 									        				return x = [x];
 									        			})
