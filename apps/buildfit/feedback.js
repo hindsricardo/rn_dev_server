@@ -15,25 +15,13 @@ class Feedback {
 			let body = req.body;
 			console.log(body);
 				let cypher = "MATCH (user:USER {uuid: $user}) "+
-							 "CREATE (feedback:SetFeedback { planUUID: $planUUID, stopTime: $stopTime, name: $name, uuid: $uuid, level: $level, location: $location, gender: $gender, part: $part, rest: $rest, startTime: $startTime, repsDone: $repsDone, weightDone: $weightDone, feel: $feel })<-[relate:COMPLETED]-(user) "+
+							 "UNWIND $sets AS set "+
+							 "CREATE (feedback:SetFeedback)<-[relate:COMPLETED]-(user) "+
+							 "SET feedback = set "+
 							 "RETURN feedback";		
 
 				db.run(cypher,{
-					//videoURL: body.set.videoURL,
-					planUUID: body.set.planUUID,
-					stopTime: body.set.stopTime,
-					name: body.set.name,
-					uuid: body.set.uuid,
-					level: body.set.level,
-					location: body.set.location,
-					gender: body.set.gender,
-					part: body.set.part,
-					rest: body.set.rest,
-					repsDone: body.set.repsDone,
-					weightDone: body.set.weightDone,
-					location: body.set.location,
-					startTime: body.set.startTime,
-					feel: body.set.feel,
+					sets: body.set,
 					user: body.user,
 				}).then((results)=>{
 					results = results.records;
