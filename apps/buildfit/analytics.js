@@ -56,30 +56,28 @@ class Analytics {
 					let results =  data.records;
 					db.close();
 
-								let totalweight1 = 0; 
-								let totalreps1 = 0; 
-								let totaltime1 = 0; 
-								let totalrest1 = 0; 
+					
 								let ptsAll = 0
+								let total = 0
 
-								for(var i=0; i < results.length; i++){
-									let ting = results[i]._fields[0].properties;
-									if(results[i - 1]){
-										 totalrest1 += (parseInt(ting.startTime) - parseInt(results[i -1]._fields[0].properties.stopTime)); //current set stop time versus pervious set stop time. ASSUMING response in order of oldest record last.
-										 console.log('/bf/get/points','totalrest1', totalrest1)
+								Promise.resolve(true).then(() =>{
+									for(var i=0; i < results.length; i++){
+										let ting = results[i]._fields[0].properties;
+							
+
+										total += parseInt(ting.pts)
+					
 									}
+								})
+								.then(() => {
+									ptsAll = (total/results.length).toFixed(2);
+									if(ptsGlutes == "NaN"){
+										ptsGlutes = 0;
+									}
+									console.log('/bf/get/points','total',total, 'ptsAll', ptsAll);
+								})
 
-								totalweight1 += parseInt(ting.weightDone);
-									totalreps1 += parseInt(ting.repsDone);									
-									totaltime1 += parseInt(ting.stopTime) - parseInt(ting.startTime);
-									let avgweight1 = Math.round((totalweight1/results.length));
-									let avgreps1 = Math.round((totalreps1/results.length));
-									let avgtime1 = Math.round(totaltime1/results.length);
-									let avgrest1 = Math.round(totalrest1/results.length);
-									let pts1 = ((avgweight1/(avgrest1 * 0.001)).toFixed(2)/((avgreps1)/(avgrest1 * 0.001))).toFixed(4);
-									ptsAll = (pts1 * results.length).toFixed(1);
-									console.log('/bf/get/points','totalweight1', totalweight1, 'totalreps1', totalreps1, 'totaltime1', totaltime1, 'avgweight1', avgweight1, 'avgreps1',avgreps1, 'avgtime1', avgtime1, 'avgrest1', avgrest1, 'pts1', pts1, 'ptsAll', ptsAll);
-								}
+
 							let cypher2 = "MATCH (n:USER {uuid:$id})-[:COMPLETED]->(set {part: $glutes}) WHERE set.stopTime > $currentTime - $eightweeksago RETURN DISTINCT set ORDER BY set.stopTime";
 
 							db.run(cypher2, {
@@ -102,31 +100,27 @@ class Analytics {
 										db.close();
 										let results2 = data2.records;
 
-										console.log('/bf/get/points',results2.records);
-											let totalweight1 = 0; 
-											let totalreps1 = 0; 
-											let totaltime1 = 0; 
-											let totalrest1 = 0; 
+										console.log('/bf/get/points' , results2.records);
+									
+											let total1 = 0; 
 											let ptsGlutes = 0
+											Promise.resolve(true).then(() =>{
+												for(var i=0; i < results2.length; i++){
+													let ting = results2[i]._fields[0].properties;
+												
 
-											for(var i=0; i < results2.length; i++){
-												let ting = results2[i]._fields[0].properties;
-												if(results2[i - 1]){
-													 totalrest1 += (parseInt(ting.startTime) - parseInt(results2[i -1]._fields[0].properties.stopTime)); //current set stop time versus pervious set stop time. ASSUMING response in order of oldest record last.
-													 console.log('/bf/get/points','totalrest1', totalrest1)
+													total1 += parseInt(ting.pts)
+													
 												}
-
-											totalweight1 += parseInt(ting.weightDone);
-												totalreps1 += parseInt(ting.repsDone);									
-												totaltime1 += parseInt(ting.stopTime) - parseInt(ting.startTime);
-												let avgweight1 = Math.round((totalweight1/results2.length));
-												let avgreps1 = Math.round((totalreps1/results2.length));
-												let avgtime1 = Math.round(totaltime1/results2.length);
-												let avgrest1 = Math.round(totalrest1/results2.length);
-												let pts1 = ((avgweight1/(avgrest1 * 0.001)).toFixed(2)/((avgreps1)/(avgrest1 * 0.001))).toFixed(4);
-												ptsGlutes = (pts1 * results2.length).toFixed(1);
-												console.log('/bf/get/points','totalweight1', totalweight1, 'totalreps1', totalreps1, 'totaltime1', totaltime1, 'avgweight1', avgweight1, 'avgreps1',avgreps1, 'avgtime1', avgtime1, 'avgrest1', avgrest1, 'pts1', pts1, 'ptsGlutes', ptsGlutes);
-											}
+											})
+											.then(() => {
+												ptsGlutes = (total1/results2.length).toFixed(2);
+												if(ptsGlutes == "NaN"){
+													ptsGlutes = 0;
+												}
+											console.log('/bf/get/points','totalweight1', 'total1', total1, 'ptsGlutes', ptsGlutes);
+											})
+										
 
 
 							let cypher3 = "MATCH (n:USER {uuid:$id})-[:COMPLETED]->(set {part: $hamstrings}) WHERE set.stopTime > $currentTime - $eightweeksago RETURN DISTINCT set ORDER BY set.stopTime";	
@@ -151,30 +145,20 @@ class Analytics {
 								let results3 = data3.records;
 								db.close();
 				
-											let totalweight1 = 0; 
-											let totalreps1 = 0; 
-											let totaltime1 = 0; 
-											let totalrest1 = 0; 
+											 
+											let total2 = 0; 
 											let ptsHamstrings = 0
 
 											for(var i=0; i < results3.length; i++){
 												let ting = results3[i]._fields[0].properties;
-												if(results3[i - 1]){
-													 totalrest1 += (parseInt(ting.startTime) - parseInt(results3.records[i -1]._fields[0].properties.stopTime)); //current set stop time versus pervious set stop time. ASSUMING response in order of oldest record last.
-													 console.log('/bf/get/points','totalrest1', totalrest1)
-												}
-
-											totalweight1 += parseInt(ting.weightDone);
-												totalreps1 += parseInt(ting.repsDone);									
-												totaltime1 += parseInt(ting.stopTime) - parseInt(ting.startTime);
-												let avgweight1 = Math.round((totalweight1/results3.length));
-												let avgreps1 = Math.round((totalreps1/results3.length));
-												let avgtime1 = Math.round(totaltime1/results3.length);
-												let avgrest1 = Math.round(totalrest1/results3.length);
-												let pts1 = ((avgweight1/(avgrest1 * 0.001)).toFixed(2)/((avgreps1)/(avgrest1 * 0.001))).toFixed(4);
-												ptsHamstrings = (pts1 * results3.length).toFixed(1);
-												console.log('/bf/get/points','totalweight1', totalweight1, 'totalreps1', totalreps1, 'totaltime1', totaltime1, 'avgweight1', avgweight1, 'avgreps1',avgreps1, 'avgtime1', avgtime1, 'avgrest1', avgrest1, 'pts1', pts1, 'ptsHamstrings', ptsHamstrings);
+											
+												total2 += parseInt(ting.pts);
 											}
+											ptsHamstrings = (total2/results3.length).toFixed(2);
+											if(ptsHamstrings == "NaN"){
+												ptsHamstrings = 0;
+											}
+
 	
 							let cypher4 = "MATCH (n:USER {uuid:$id})-[:COMPLETED]->(set {part: $back}) WHERE set.stopTime > $currentTime - $eightweeksago RETURN DISTINCT set ORDER BY set.stopTime";	
 
@@ -197,30 +181,20 @@ class Analytics {
 								db.close();
 								let results4 = data4.records;
 
-											let totalweight1 = 0; 
-											let totalreps1 = 0; 
-											let totaltime1 = 0; 
-											let totalrest1 = 0; 
+										
+											let total3 = 0; 
 											let ptsBack = 0;
 
 											for(var i=0; i < results4.length; i++){
 												let ting = results4[i]._fields[0].properties;
-												if(results4[i - 1]){
-													 totalrest1 += (parseInt(ting.startTime) - parseInt(results4[i -1]._fields[0].properties.stopTime)); //current set stop time versus pervious set stop time. ASSUMING response in order of oldest record last.
-													 console.log('/bf/get/points', 'totalrest1', totalrest1)
-												}
+												total3 += parseInt(ting.pts);
 
-											totalweight1 += parseInt(ting.weightDone);
-												totalreps1 += parseInt(ting.repsDone);									
-												totaltime1 += parseInt(ting.stopTime) - parseInt(ting.startTime);
-												let avgweight1 = Math.round((totalweight1/results4.length));
-												let avgreps1 = Math.round((totalreps1/results4.length));
-												let avgtime1 = Math.round(totaltime1/results4.length);
-												let avgrest1 = Math.round(totalrest1/results4.length);
-												let pts1 = ((avgweight1/(avgrest1 * 0.001)).toFixed(2)/((avgreps1)/(avgrest1 * 0.001))).toFixed(4);
-												ptsBack = (pts1 * results4.length).toFixed(1);
-												console.log('/bf/get/points','totalweight1', totalweight1, 'totalreps1', totalreps1, 'totaltime1', totaltime1, 'avgweight1', avgweight1, 'avgreps1',avgreps1, 'avgtime1', avgtime1, 'avgrest1', avgrest1, 'pts1', pts1, 'ptsBack', ptsBack);
 											}
+											ptsBack = (total3/results4.length).toFixed(2);
+											if(ptsBack == "NaN"){
+												ptsBack = 0;
+											}
+											
 
 							let cypher5 = "MATCH (n:USER {uuid:$id})-[:COMPLETED]->(set {part: $calves}) WHERE set.stopTime > $currentTime - $eightweeksago RETURN DISTINCT set ORDER BY set.stopTime";	// return the list of trainers as an array
 
@@ -244,29 +218,19 @@ class Analytics {
 								let results5 = data5.records;
 								db.close();
 		
-											let totalweight1 = 0; 
-											let totalreps1 = 0; 
-											let totaltime1 = 0; 
-											let totalrest1 = 0; 
+											 
+											let total4 = 0; 
 											let ptsCalves = 0
 
 											for(var i=0; i < results5.length; i++){
 												let ting = results5[i]._fields[0].properties;
-												if(results5[i - 1]){
-													totalrest1 += (parseInt(ting.startTime) - parseInt(results5[i -1]._fields[0].properties.stopTime)); //current set stop time versus pervious set stop time. ASSUMING response in order of oldest record last.
-													 console.log('/bf/get/points', 'totalrest1', totalrest1)
-												}
 
-											totalweight1 += parseInt(ting.weightDone);
-												totalreps1 += parseInt(ting.repsDone);									
-												totaltime1 += parseInt(ting.stopTime) - parseInt(ting.startTime);
-												let avgweight1 = Math.round((totalweight1/results5.length));
-												let avgreps1 = Math.round((totalreps1/results5.length));
-												let avgtime1 = Math.round(totaltime1/results5.length);
-												let avgrest1 = Math.round(totalrest1/results5.length);
-												let pts1 = ((avgweight1/(avgrest1 * 0.001)).toFixed(2)/((avgreps1)/(avgrest1 * 0.001))).toFixed(4);
-												ptsCalves = (pts1 * results5.length).toFixed(1);
-												console.log('/bf/get/points','totalweight1', totalweight1, 'totalreps1', totalreps1, 'totaltime1', totaltime1, 'avgweight1', avgweight1, 'avgreps1',avgreps1, 'avgtime1', avgtime1, 'avgrest1', avgrest1, 'pts1', pts1, 'ptsCalves', ptsCalves);
+												total4 += parseInt(ting.pts)
+											}
+
+											ptsCalves = (total4/ results5.length).toFixed(2)
+											if(ptsCalves == "NaN"){
+												ptsCalves = 0;
 											}
 
 							let cypher6 = "MATCH (n:USER {uuid:$id})-[:COMPLETED]->(set {part: $core}) WHERE set.stopTime > $currentTime - $eightweeksago RETURN DISTINCT set ORDER BY set.stopTime";	// return the list of trainers as an array
@@ -291,29 +255,19 @@ class Analytics {
 								db.close();
 								let results6 = data6.records;
 
-											let totalweight1 = 0; 
-											let totalreps1 = 0; 
-											let totaltime1 = 0; 
-											let totalrest1 = 0; 
+									
+											let total5 = 0; 
 											let ptsCore = 0
 
 											for(var i=0; i < results6.length; i++){
 												let ting = results6[i]._fields[0].properties;
-												if(results6[i - 1]){
-													 totalrest1 += (parseInt(ting.startTime) - parseInt(results6[i -1]._fields[0].properties.stopTime)); //current set stop time versus pervious set stop time. ASSUMING response in order of oldest record last.
-													 console.log('/bf/get/points','totalrest1', totalrest1)
-												}
+											
+												total5 +=  parseInt(ting.pts)
+											}
 
-											totalweight1 += parseInt(ting.weightDone);
-												totalreps1 += parseInt(ting.repsDone);									
-												totaltime1 += parseInt(ting.stopTime) - parseInt(ting.startTime);
-												let avgweight1 = Math.round((totalweight1/results6.length));
-												let avgreps1 = Math.round((totalreps1/results6.length));
-												let avgtime1 = Math.round(totaltime1/results6.length);
-												let avgrest1 = Math.round(totalrest1/results6.length);
-												let pts1 = ((avgweight1/(avgrest1 * 0.001)).toFixed(2)/((avgreps1)/(avgrest1 * 0.001))).toFixed(4);
-												ptsCore = (pts1 * results6.length).toFixed(1);
-												console.log('/bf/get/points','totalweight1', totalweight1, 'totalreps1', totalreps1, 'totaltime1', totaltime1, 'avgweight1', avgweight1, 'avgreps1',avgreps1, 'avgtime1', avgtime1, 'avgrest1', avgrest1, 'pts1', pts1, 'ptsCore', ptsCore);
+											ptsCore = (total5/results6.length).toFixed(2)
+											if(ptsCore == "NaN"){
+												ptsCore = 0;
 											}
 
 							let cypher7 = "MATCH (n:USER {uuid:$id})-[:COMPLETED]->(set {part: $biceps}) WHERE set.stopTime > $currentTime - $eightweeksago RETURN DISTINCT set ORDER BY set.stopTime";	// return the list of trainers as an array
@@ -337,29 +291,18 @@ class Analytics {
 							}).then((data7) => {
 								db.close();
 								let results7 = data7.records;
-											let totalweight1 = 0; 
-											let totalreps1 = 0; 
-											let totaltime1 = 0; 
-											let totalrest1 = 0; 
+											
+											let total6 = 0; 
 											let ptsBiceps = 0
 
 											for(var i=0; i < results7.length; i++){
 												let ting = results7[i]._fields[0].properties;
-												if(results7[i - 1]){
-													 totalrest1 += (parseInt(ting.startTime) - parseInt(results7[i -1]._fields[0].properties.stopTime)); //current set stop time versus pervious set stop time. ASSUMING response in order of oldest record last.
-													 console.log('/bf/get/points','totalrest1', totalrest1)
-												}
+												total6 += parseInt(ting.pts);
+											}
 
-											totalweight1 += parseInt(ting.weightDone);
-												totalreps1 += parseInt(ting.repsDone);									
-												totaltime1 += parseInt(ting.stopTime) - parseInt(ting.startTime);
-												let avgweight1 = Math.round((totalweight1/results7.length));
-												let avgreps1 = Math.round((totalreps1/results7.length));
-												let avgtime1 = Math.round(totaltime1/results7.length);
-												let avgrest1 = Math.round(totalrest1/results7.length);
-												let pts1 = ((avgweight1/(avgrest1 * 0.001)).toFixed(2)/((avgreps1)/(avgrest1 * 0.001))).toFixed(4);
-												ptsBiceps = (pts1 * results7.length).toFixed(1);
-												console.log('/bf/get/points','totalweight1', totalweight1, 'totalreps1', totalreps1, 'totaltime1', totaltime1, 'avgweight1', avgweight1, 'avgreps1',avgreps1, 'avgtime1', avgtime1, 'avgrest1', avgrest1, 'pts1', pts1, 'ptsBiceps', ptsBiceps);
+											ptsBiceps = (total6/ results7.length).toFixed(2);
+											if(ptsBiceps == "NaN"){
+												ptsBiceps = 0;
 											}
 
 							let cypher8 = "MATCH (n:USER {uuid:$id})-[:COMPLETED]->(set {part: $quads}) WHERE set.stopTime > $currentTime - $eightweeksago RETURN DISTINCT set ORDER BY set.stopTime";	// return the list of trainers as an array
@@ -383,29 +326,19 @@ class Analytics {
 							}).then((data8) => {
 								db.close();
 								let results8 = data8.records;
-											let totalweight1 = 0; 
-											let totalreps1 = 0; 
-											let totaltime1 = 0; 
-											let totalrest1 = 0; 
+
+											let total7 = 0; 
 											let ptsQuads = 0
 
 											for(var i=0; i < results8.length; i++){
 												let ting = results8[i]._fields[0].properties;
-												if(results8[i - 1]){
-													 totalrest1 += (parseInt(ting.startTime) - parseInt(results8[i -1]._fields[0].properties.stopTime)); //current set stop time versus pervious set stop time. ASSUMING response in order of oldest record last.
-													 console.log('/bf/get/points','totalrest1', totalrest1)
-												}
+												total7 += parseInt(ting.pts)
 
-											totalweight1 += parseInt(ting.weightDone);
-												totalreps1 += parseInt(ting.repsDone);									
-												totaltime1 += parseInt(ting.stopTime) - parseInt(ting.startTime);
-												let avgweight1 = Math.round((totalweight1/results8.length));
-												let avgreps1 = Math.round((totalreps1/results8.length));
-												let avgtime1 = Math.round(totaltime1/results8.length);
-												let avgrest1 = Math.round(totalrest1/results8.length);
-												let pts1 = ((avgweight1/(avgrest1 * 0.001)).toFixed(2)/((avgreps1)/(avgrest1 * 0.001))).toFixed(4);
-												ptsQuads = (pts1 * results8.length).toFixed(1);
-												console.log('/bf/get/points','totalweight1', totalweight1, 'totalreps1', totalreps1, 'totaltime1', totaltime1, 'avgweight1', avgweight1, 'avgreps1',avgreps1, 'avgtime1', avgtime1, 'avgrest1', avgrest1, 'pts1', pts1, 'ptsQuads', ptsQuads);
+											}
+
+											ptsQuads = (total7/ results8.length).toFixed(2);
+											if(ptsQuads == "NaN"){
+												ptsQuads = 0;
 											}
 
 							let cypher9 = "MATCH (n:USER {uuid:$id})-[:COMPLETED]->(set {part: $triceps}) WHERE set.stopTime > $currentTime - $eightweeksago RETURN DISTINCT set ORDER BY set.stopTime";	// return the list of trainers as an array
@@ -429,29 +362,18 @@ class Analytics {
 							}).then((data9) => {
 								db.close();
 								let results9 = data9.records;
-											let totalweight1 = 0; 
-											let totalreps1 = 0; 
-											let totaltime1 = 0; 
-											let totalrest1 = 0; 
+										
+											let total8 = 0; 
 											let ptsTriceps = 0
 
 											for(var i=0; i < results9.length; i++){
 												let ting = results9[i]._fields[0].properties;
-												if(results9[i - 1]){
-													 totalrest1 += (parseInt(ting.startTime) - parseInt(results9[i -1]._fields[0].properties.stopTime)); //current set stop time versus pervious set stop time. ASSUMING response in order of oldest record last.
-													 console.log('/bf/get/points','totalrest1', totalrest1)
-												}
+												total8 += parseInt(ting.pts);
+											}
 
-											totalweight1 += parseInt(ting.weightDone);
-												totalreps1 += parseInt(ting.repsDone);									
-												totaltime1 += parseInt(ting.stopTime) - parseInt(ting.startTime);
-												let avgweight1 = Math.round((totalweight1/results9.length));
-												let avgreps1 = Math.round((totalreps1/results9.length));
-												let avgtime1 = Math.round(totaltime1/results9.length);
-												let avgrest1 = Math.round(totalrest1/results9.length);
-												let pts1 = ((avgweight1/(avgrest1 * 0.001)).toFixed(2)/((avgreps1)/(avgrest1 * 0.001))).toFixed(4);
-												ptsTriceps = (pts1 * results9.length).toFixed(1);
-												console.log('/bf/get/points','totalweight1', totalweight1, 'totalreps1', totalreps1, 'totaltime1', totaltime1, 'avgweight1', avgweight1, 'avgreps1',avgreps1, 'avgtime1', avgtime1, 'avgrest1', avgrest1, 'pts1', pts1, 'ptsTriceps', ptsTriceps);
+											ptsTriceps = (total8/ results9.length).toFixed(2);
+											if(ptsTriceps == "NaN"){
+												ptsTriceps = 0;
 											}
 		
 							let cypher10 = "MATCH (n:USER {uuid:$id})-[:COMPLETED]->(set {part: $shoulders}) WHERE set.stopTime > $currentTime - $eightweeksago RETURN DISTINCT set ORDER BY set.stopTime";	// return the list of trainers as an array
@@ -475,29 +397,18 @@ class Analytics {
 							}).then((data10) => {
 								db.close()
 								let results10 = data10.records;
-											let totalweight1 = 0; 
-											let totalreps1 = 0; 
-											let totaltime1 = 0; 
-											let totalrest1 = 0; 
+										 
+											let total9 = 0; 
 											let ptsShoulders = 0
 
 											for(var i=0; i < results10.length; i++){
 												let ting = results10[i]._fields[0].properties;
-												if(results10[i - 1]){
-													 totalrest1 += (parseInt(ting.startTime) - parseInt(results10[i -1]._fields[0].properties.stopTime)); //current set stop time versus pervious set stop time. ASSUMING response in order of oldest record last.
-													 console.log('/bf/get/points','totalrest1', totalrest1)
-												}
+												total9 += parseInt(ting.pts)
+											}
 
-											totalweight1 += parseInt(ting.weightDone);
-												totalreps1 += parseInt(ting.repsDone);									
-												totaltime1 += parseInt(ting.stopTime) - parseInt(ting.startTime);
-												let avgweight1 = Math.round((totalweight1/results10.length));
-												let avgreps1 = Math.round((totalreps1/results10.length));
-												let avgtime1 = Math.round(totaltime1/results10.length);
-												let avgrest1 = Math.round(totalrest1/results10.length);
-												let pts1 = ((avgweight1/(avgrest1 * 0.001)).toFixed(2)/((avgreps1)/(avgrest1 * 0.001))).toFixed(4);
-												ptsShoulders = (pts1 * results10.length).toFixed(1);
-												console.log('/bf/get/points','totalweight1', totalweight1, 'totalreps1', totalreps1, 'totaltime1', totaltime1, 'avgweight1', avgweight1, 'avgreps1',avgreps1, 'avgtime1', avgtime1, 'avgrest1', avgrest1, 'pts1', pts1, 'ptsShoulders', ptsShoulders);
+											ptsShoulders = (total9/ results10.length).toFixed(2);
+											if(ptsShoulders == "NaN"){
+												ptsShoulders = 0;
 											}
 
 
@@ -522,30 +433,19 @@ class Analytics {
 								}).then((data11) => {
 									db.close();
 									let results11 = data11.records;
-												let totalweight1 = 0; 
-												let totalreps1 = 0; 
-												let totaltime1 = 0; 
-												let totalrest1 = 0; 
+											 
+												let total10 = 0; 
 												let ptsChest = 0
 												Promise.resolve(true).then(()=>{
 													for(var i=0; i < results11.length; i++){
 														let ting = results11[i]._fields[0].properties;
-														if(results11[i - 1]){
-															 totalrest1 += (parseInt(ting.startTime) - parseInt(results11[i -1]._fields[0].properties.stopTime)); //current set stop time versus pervious set stop time. ASSUMING response in order of oldest record last.
-															 console.log('/bf/get/points','totalrest1', totalrest1)
-														}
+														total10 += parseInt(ting.pts)
+													}	
 
-													totalweight1 += parseInt(ting.weightDone);
-														totalreps1 += parseInt(ting.repsDone);									
-														totaltime1 += parseInt(ting.stopTime) - parseInt(ting.startTime);
-														let avgweight1 = Math.round((totalweight1/results11.length));
-														let avgreps1 = Math.round((totalreps1/results11.length));
-														let avgtime1 = Math.round(totaltime1/results11.length);
-														let avgrest1 = Math.round(totalrest1/results11.length);
-														let pts1 = ((avgweight1/(avgrest1 * 0.001)).toFixed(2)/((avgreps1)/(avgrest1 * 0.001))).toFixed(4);
-														ptsChest = (pts1 * results11.length).toFixed(1);
-														console.log('/bf/get/points','totalweight1', totalweight1, 'totalreps1', totalreps1, 'totaltime1', totaltime1, 'avgweight1', avgweight1, 'avgreps1',avgreps1, 'avgtime1', avgtime1, 'avgrest1', avgrest1, 'pts1', pts1, 'ptsChest', ptsChest);
-													}													
+													ptsChest = (total10 / results11.length).toFixed(2); 
+													if(ptsChest == "NaN"){
+														ptsChest = 0;
+													}												
 												}).then(()=>{
 													console.log('/bf/get/points','tings here')
 													res.writeHead(200, header);
@@ -713,12 +613,12 @@ class Analytics {
 					if(results.length > 0){
 
 
-					let cypher2 = "MATCH (u:USER {uuid: $id}})-[:COMPLETED]->(set {planUUID:$planUUID}) RETURN DISTINCT set ORDER BY set.stopTime";
+					let cypher2 = "MATCH (u:USER {uuid: $id})-[:COMPLETED]->(set {planUUID:$planUUID}) RETURN DISTINCT set ORDER BY set.stopTime";
 					db.run(cypher2, {
 						planUUID: results[0]._fields[0].properties.planUUID,
 						id: body.userid
 					}).then((data2) => {
-						let results2 = results2.records;
+						let results2 = data2.records;
 						db.close();
 						console.log('/bf/get/lastworkout','results2', results2)
 						let totalweight = 0; 
