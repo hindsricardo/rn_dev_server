@@ -28,7 +28,7 @@
     "neataptic": "^1.4.7",
     "neo4j-driver": "^1.5.0",
     "node-uuid": "^1.4.8",
-    "restify": "^4.3.2",
+    "restify": "^6.3.4",
     "seraph": "^0.15.3",
     "string-to-binary": "^0.1.2",
     "synaptic": "^1.1.4",

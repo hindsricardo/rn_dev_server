@@ -32,9 +32,9 @@ class Server {
 		}
 
 		this.server = restify.createServer();
-		this.server.use(restify.acceptParser(this.server.acceptable));
-		this.server.use(restify.queryParser());
-		this.server.use(restify.bodyParser());
+		this.server.use(restify.plugins.acceptParser(this.server.acceptable));
+		this.server.use(restify.plugins.queryParser());
+		this.server.use(restify.plugins.bodyParser());
 		this.server.use((req, res, next) => {
 		    res.header('Access-Control-Allow-Origin', "*");
 		    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
