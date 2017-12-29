@@ -9,7 +9,8 @@
     "start": "node dist/src/index.js"
   },
   "engines": {
-    "node": "8.3.0"
+    "node": "8.3.0",
+    "npm": "5.0.4"
   },
   "keywords": [],
   "author": "\"Ricardo Hinds <hindsricardo@gmail.com>",
