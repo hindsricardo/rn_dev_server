@@ -8,6 +8,9 @@
     "prestart": "babel src/index.js --out-dir dist",
     "start": "node dist/src/index.js"
   },
+  "engines": {
+    "node": "8.3.0"
+  },
   "keywords": [],
   "author": "\"Ricardo Hinds <hindsricardo@gmail.com>",
   "license": "ISC",
@@ -30,6 +33,5 @@
     "synaptic": "^1.1.4",
     "underscore": "^1.8.3",
     "uuid": "^3.1.0",
-    "node": "8.3.0"
   }
 }
