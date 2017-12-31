@@ -42,7 +42,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var port = 3000;
+var neo4j = require('neo4j-driver').v1;
+
+var port = 3001;
 
 var Server = function Server() {
 	_classCallCheck(this, Server);
@@ -54,16 +56,15 @@ var Server = function Server() {
 			user: url.auth.split(':')[0],
 			pass: url.auth.split(':')[1] });
 	} else {
-		this.db = (0, _seraph2.default)({
-			user: "neo4j",
-			pass: "Car81you"
-		});
+		var driver = neo4j.driver("bolt://127.0.0.1:11005", neo4j.auth.basic("neo4j", "Hin81you!"));
+
+		this.db = driver.session();
 	}
 
 	this.server = _restify2.default.createServer();
-	this.server.use(_restify2.default.acceptParser(this.server.acceptable));
-	this.server.use(_restify2.default.queryParser());
-	this.server.use(_restify2.default.bodyParser());
+	this.server.use(_restify2.default.plugins.acceptParser(this.server.acceptable));
+	this.server.use(_restify2.default.plugins.queryParser());
+	this.server.use(_restify2.default.plugins.bodyParser());
 	this.server.use(function (req, res, next) {
 		res.header('Access-Control-Allow-Origin', "*");
 		res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
