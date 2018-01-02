@@ -5,7 +5,7 @@ import uuid from 'node-uuid';
 import _ from 'underscore';
 var b2s = require('binary-to-string');
 var s2b = require('string-to-binary');
-var neataptic = require('Neataptic'); 
+//var neataptic = require('Neataptic'); 
 const header = {'Content-Type':'application/json; charset=utf-8'};
 
 class Analytics {
@@ -1145,7 +1145,7 @@ class Analytics {
 		}) //end of '/bf/get/soreness/feedback'
 
 		//TODO: CONVERT TO NEW NEO4J DRIVER USING PROMISE
-		server.post('/bf/get/mostimportant/factors', (req, res, next) => {     
+		/*server.post('/bf/get/mostimportant/factors', (req, res, next) => {     
 			let body = req.body;
 			let oneweeksago = 1209600000/2;
 			let currentTime = new Date().getTime()
@@ -1289,9 +1289,9 @@ class Analytics {
 									        						}
 									        					
 									        				}*/
-									        			})
+									        			//})
 
-									        			let x = results1.map((x, index)=>{ return x = [x.weightDone, x.repsDone, x.rest, x.tut].concat(x.name_array)});
+									        		/*	let x = results1.map((x, index)=>{ return x = [x.weightDone, x.repsDone, x.rest, x.tut].concat(x.name_array)});
 									        			let y = results.map((x)=>{
 									        				return x = [x];
 									        			})
@@ -1488,7 +1488,7 @@ class Analytics {
 										        					return x = parseInt(x);
 										        				})*/
 										        			
-										        			})
+										        		/*	 })
 														}).then(()=>{
 															res.writeHead(200, header);
 													        res.end(JSON.stringify({
@@ -1536,7 +1536,7 @@ class Analytics {
 				})
 
 			
-		}) //end of /bf/get/mostimportant/factors
+		}) //end of /bf/get/mostimportant/factors */
 
 
 
