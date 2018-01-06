@@ -4,7 +4,7 @@
   "description": "Development server used for react native projects locally",
   "main": "src/index.js",
   "scripts": {
-    "dev": "pm2 start --interpreter babel-node ./src/index.js",
+    "dev": "pm2 start --interpreter babel-node ./src/index.js --watch",
     "prestart": "babel src/index.js --out-dir dist",
     "start": "node dist/src/index.js"
   },
@@ -26,6 +26,7 @@
     ]
   },
   "dependencies": {
+    "@sendgrid/mail": "^6.1.4",
     "binary-to-string": "^0.1.2",
     "cryptr": "^2.0.0",
     "jsonwebtoken": "^7.4.3",
@@ -33,6 +34,7 @@
     "neataptic": "^1.4.7",
     "neo4j-driver": "^1.5.0",
     "node-uuid": "^1.4.8",
+    "nodemailer": "^4.4.1",
     "restify": "^6.3.4",
     "seraph": "^0.15.3",
     "simple-node-logger": "^0.93.33",
