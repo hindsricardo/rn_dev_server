@@ -111,14 +111,18 @@ class User {
 
 				// FIND LIST OF TRAINERS THAT MATCH GOALS
 		server.post('/sendpassword/user/v1', (req, res, next) => {	
-			let body = req.body;		
+			let body = req.body;
+			db.run("MATCH (n:SENDGRIDPK) RETURN n",{})
+			.then((results) =>{
+				db.close();
+
 			let smtpConfig = {
 			    host: 'smtp.sendgrid.net',
 				    port: 587,
 				    secure: false, // upgrade later with STARTTLS
 				    auth: {
 				        user: 'apikey',
-				        pass: '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'
+				        pass: results.records[0]._fields[0].properties.key
 				    }
 			};
 			let transporter = nodemailer.createTransport(smtpConfig);
@@ -136,8 +140,8 @@ class User {
 								        from: '" Build Method Fitness " <help@buildmethodfitness.com>', // sender address
 								        to: body.email, // list of receivers
 								        subject: 'Password Recovery ✔', // Subject line
-								        text: 'Hello world? '+results2[0]._fields[0].properties.password, // plain text body
-								        html: '<b>Hello world?' +results2[0]._fields[0].properties.password + '</b>' // html body
+								        text: 'Your Build Method Fitness password is: '+results2[0]._fields[0].properties.password, // plain text body
+								        html: '<b>our Build Method Fitness password is:' +results2[0]._fields[0].properties.password + '</b>' // html body
 								    };
 
 								    transporter.sendMail(mailOptions, (error, info) => {
@@ -169,6 +173,8 @@ class User {
 						          message:'Something went wrong logging in. Check error message to see what happened.'
 						          }))
 							});
+
+				})	
 						
 	
 			})
