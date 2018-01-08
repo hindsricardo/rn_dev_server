@@ -54,6 +54,7 @@ class User {
 										console.log(err);
 										res.writeHead(500, header)
 								        res.end(JSON.stringify({
+								         loggedin:'no',
 								          success:'no',
 								          err: err,
 								          message:'Something went wrong logging in. Check error message to see what happened.'
@@ -62,7 +63,7 @@ class User {
 								}
 								else{
 									var decryptedString = results2[0]._fields[0].properties.password;
-									if(decryptedString === body.password){
+									if(decryptedString == body.password){
 										console.log('FOUND USER')
 										res.writeHead(200, header);
 								        res.end(JSON.stringify({
@@ -86,7 +87,7 @@ class User {
 									        	//token: token
 								        	}));
 								        console.log(JSON.stringify({
-								        	loggedin:'yes',
+								        	loggedin:'no',
 								        	results: results2,
 								        	//token: token
 								        }));
