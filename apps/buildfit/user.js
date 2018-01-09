@@ -4,7 +4,9 @@ import jwt from 'jsonwebtoken';
 import _ from 'underscore';
 const nodemailer = require('nodemailer');
 const header = {'Content-Type':'application/json; charset=utf-8'};
-var lowerCase = require('lower-case')
+var lowerCase = require('lower-case');
+const log = require('simple-node-logger').createSimpleLogger('node-error.log');
+
 
 
 
@@ -26,7 +28,7 @@ class User {
 								results2 = results2.records;
 								db.close();
 								var encryptedString = body.password;
-								if(results2.length < 1){
+								if(results2.length == 0){
 									let cypher3 = "CREATE (user:USER {uuid:$id, email:$email, password: $password }) RETURN user";
 									db.run(cypher3, {
 										id: body.id,
@@ -46,11 +48,13 @@ class User {
 									        console.log(JSON.stringify({
 									        	loggedin:'yes',
 									        	results: results3,
+									        	message: 'ACCOUNT CREATED'
 									        	//token: token
 									        }));
 									        return
 									})
 									.catch((err)=>{
+										log.error(err, ' /create/user/v1');// log to error file
 										console.log(err);
 										res.writeHead(500, header)
 								        res.end(JSON.stringify({
@@ -74,6 +78,7 @@ class User {
 								        console.log(JSON.stringify({
 								        	loggedin:'yes',
 								        	results: results2,
+								        	message: 'FOUND YOU!'
 								        	//token: token
 								        }));
 				        				return
@@ -89,6 +94,7 @@ class User {
 								        console.log(JSON.stringify({
 								        	loggedin:'no',
 								        	results: results2,
+								        	message: 'INCORRECT PASSWORD'
 								        	//token: token
 								        }));
 								        return
@@ -98,6 +104,7 @@ class User {
 
 							})
 							.catch((err)=>{
+								log.error(err);// log to error file
 								console.log(err);
 								res.writeHead(500, header)
 						        res.end(JSON.stringify({
@@ -146,6 +153,7 @@ class User {
 								    };
 
 								    transporter.sendMail(mailOptions, (error, info) => {
+								    	log.error(error, ' /sendpassword/user/v1 ');// log to error file
 								        if (error) {
 								            return console.log(error);
 								        }
@@ -166,6 +174,7 @@ class User {
 
 							})
 							.catch((err)=>{
+								log.error(err, ' /sendpassword/user/v1 ');// log to error file
 								console.log(err);
 								res.writeHead(500, header)
 						        res.end(JSON.stringify({

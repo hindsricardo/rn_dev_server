@@ -7,6 +7,8 @@ var b2s = require('binary-to-string');
 var s2b = require('string-to-binary');
 //var neataptic = require('Neataptic'); 
 const header = {'Content-Type':'application/json; charset=utf-8'};
+const log = require('simple-node-logger').createSimpleLogger('node-error.log');
+
 
 class Analytics {
 
@@ -488,6 +490,7 @@ class Analytics {
 												
 								}) //11
 								.catch((err)=>{
+									log.error(err, '/bf/get/points')
 									console.log('/bf/get/points',err);
 									res.writeHead(500, header)
 							        res.end(JSON.stringify({
@@ -498,6 +501,7 @@ class Analytics {
 								});
 							}) //10
 							.catch((err)=>{
+								log.error(err, '/bf/get/points')
 								console.log('/bf/get/points',err);
 								res.writeHead(500, header)
 						        res.end(JSON.stringify({
@@ -508,6 +512,7 @@ class Analytics {
 							});
 						}) //9
 						.catch((err)=>{
+							log.error(err, '/bf/get/points')
 							console.log('/bf/get/points',err);
 							res.writeHead(500, header)
 					        res.end(JSON.stringify({
@@ -518,6 +523,7 @@ class Analytics {
 						});
 					}) //8
 					.catch((err)=>{
+						log.error(err, '/bf/get/points')
 						console.log('/bf/get/points',err);
 						res.writeHead(500, header)
 				        res.end(JSON.stringify({
@@ -528,6 +534,7 @@ class Analytics {
 					});	
 					}) //7
 					.catch((err)=>{
+						log.error(err, '/bf/get/points')
 						console.log('/bf/get/points',err);
 						res.writeHead(500, header)
 				        res.end(JSON.stringify({
@@ -538,6 +545,7 @@ class Analytics {
 					});
 					}) //6
 					.catch((err)=>{
+						log.error(err, '/bf/get/points')
 						console.log('/bf/get/points',err);
 						res.writeHead(500, header)
 				        res.end(JSON.stringify({
@@ -548,6 +556,7 @@ class Analytics {
 					});
 					}) //5
 					.catch((err)=>{
+						log.error(err, '/bf/get/points')
 						console.log('/bf/get/points',err);
 						res.writeHead(500, header)
 				        res.end(JSON.stringify({
@@ -558,6 +567,7 @@ class Analytics {
 					});
 					}) //4
 					.catch((err)=>{
+						log.error(err, '/bf/get/points')
 						console.log('/bf/get/points',err);
 						res.writeHead(500, header)
 				        res.end(JSON.stringify({
@@ -568,6 +578,7 @@ class Analytics {
 						});
 					}) //3
 					.catch((err)=>{
+						log.error(err, '/bf/get/points')
 						console.log('/bf/get/points',err);
 						res.writeHead(500, header)
 				        res.end(JSON.stringify({
@@ -578,6 +589,7 @@ class Analytics {
 					});
 					}) //2
 					.catch((err)=>{
+						log.error(err, '/bf/get/points')
 						console.log('/bf/get/points',err);
 						res.writeHead(500, header)
 				        res.end(JSON.stringify({
@@ -588,6 +600,7 @@ class Analytics {
 					});
 				}) //1
 				.catch((err)=>{
+					log.error(err, '/bf/get/points')
 					console.log('/bf/get/points',err);
 					res.writeHead(500, header)
 			        res.end(JSON.stringify({
@@ -686,6 +699,7 @@ class Analytics {
 
 				    }) //data2
 				    .catch((err)=>{
+				    	log.error(err, '/bf/get/lastworkout')
 						console.log('/bf/get/lastworkout',err);
 						res.writeHead(500, header)
 				        res.end(JSON.stringify({
@@ -707,6 +721,7 @@ class Analytics {
 				}
 			}) //data1
 			.catch((err)=>{
+				log.error(err, '/bf/get/lastworkout')
 				console.log('/bf/get/lastworkout',err);
 				res.writeHead(500, header)
 		        res.end(JSON.stringify({
@@ -742,6 +757,7 @@ class Analytics {
 		        	}));
 				})
 				.catch((err)=>{
+					log.error(err, ' /bf/get/sets')
 					console.log(err);
 					res.writeHead(500, header)
 			        res.end(JSON.stringify({
@@ -819,6 +835,7 @@ class Analytics {
 						
 				})
 				.catch((err)=>{
+					log.error(err, ' /bf/get/part/avgs')
 					console.log(err);
 					res.writeHead(500, header)
 			        res.end(JSON.stringify({
