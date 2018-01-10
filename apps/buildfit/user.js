@@ -17,8 +17,22 @@ class User {
 
 		// FIND LIST OF TRAINERS THAT MATCH GOALS
 		server.post('/create/user/v1', (req, res, next) => {	
-			let body = req.body;		
-			let cypher = "MATCH (user:USER {uuid: $id }) RETURN user";
+			let body = req.body;	
+			db.run("MATCH (n:SENDGRIDPK) RETURN n",{})
+			.then((results) =>{
+					db.close();
+
+				let smtpConfig = {
+				    host: 'smtp.sendgrid.net',
+					    port: 587,
+					    secure: false, // upgrade later with STARTTLS
+					    auth: {
+					        user: 'apikey',
+					        pass: results.records[0]._fields[0].properties.key
+					    }
+				};
+				let transporter = nodemailer.createTransport(smtpConfig);	
+				let cypher = "MATCH (user:USER {uuid: $id }) RETURN user";
 
 				
 						let cypher2 = "MATCH (user:USER {email:$email }) RETURN user";
@@ -42,7 +56,8 @@ class User {
 											res.writeHead(200, header);
 									        res.end(JSON.stringify({
 										        	loggedin:'yes',
-										        	results: results3
+										        	results: results3,
+										        	message: 'ACCOUNT CREATED'
 										        	//token: token
 									        	}));
 									        console.log(JSON.stringify({
@@ -72,7 +87,8 @@ class User {
 										res.writeHead(200, header);
 								        res.end(JSON.stringify({
 									        	loggedin:'yes',
-									        	results: results2
+									        	results: results2,
+									        	message: 'FOUND YOU!'
 									        	//token: token
 								        	}));
 								        console.log(JSON.stringify({
@@ -84,20 +100,56 @@ class User {
 				        				return
 									}
 									else{
-										console.log('INCORRECT PASSWORD')
-										res.writeHead(200, header);
-								        res.end(JSON.stringify({
+										let mailOptions = {
+									        from: '" Build Method Fitness " <help@buildmethodfitness.com>', // sender address
+									        to: body.email, // list of receivers
+									        subject: 'Password Recovery ✔', // Subject line
+									        text: 'Your Build Method Fitness password is: '+results2[0]._fields[0].properties.password, // plain text body
+									        html: '<b>our Build Method Fitness password is:' +results2[0]._fields[0].properties.password + '</b>' // html body
+									    };
+
+								    transporter.sendMail(mailOptions, (error, info) => {
+								    	log.error(error, ' /sendpassword/user/v1 ');// log to error file
+								        if (error) {
+								            return console.log(error);
+								            console.log('INCORRECT PASSWORD')
+											res.writeHead(200, header);
+									        res.end(JSON.stringify({
+										        	loggedin:'no',
+										        	results: results2,
+										        	message: 'INCORRECT PASSWORD. PLEASE TRY AGAIN'
+										        	//token: token
+									        	}));
+									        console.log(JSON.stringify({
 									        	loggedin:'no',
-									        	results: results2
+									        	results: results2,
+									        	message: 'INCORRECT PASSWORD. PLEASE TRY AGAIN'
 									        	//token: token
-								        	}));
-								        console.log(JSON.stringify({
-								        	loggedin:'no',
-								        	results: results2,
-								        	message: 'INCORRECT PASSWORD'
-								        	//token: token
-								        }));
-								        return
+									        }));
+									        return
+								        }
+								        else{
+									        console.log('INCORRECT PASSWORD')
+											res.writeHead(200, header);
+									        res.end(JSON.stringify({
+										        	loggedin:'no',
+										        	results: results2,
+										        	message: 'INCORRECT PASSWORD. PASSWORD HAS BEEN SET TO '+body.email
+										        	//token: token
+									        	}));
+									        console.log(JSON.stringify({
+									        	loggedin:'no',
+									        	results: results2,
+									        	message: 'INCORRECT PASSWORD. PASSWORD HAS BEEN SET TO '+body.email
+									        	//token: token
+									        }));
+									        return
+								        }
+								        console.log('Message sent: %s', info.messageId);
+
+
+								    });
+
 									}
 								}
 																	
@@ -113,6 +165,8 @@ class User {
 						          message:'Something went wrong logging in. Check error message to see what happened.'
 						          }))
 							});
+
+						})
 						
 	
 			})
