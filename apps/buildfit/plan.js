@@ -1,6 +1,6 @@
 /* apps/buildfit/plan*/
 import {secret} from './config';
-import {exercises_core_pack} from './config';
+import {exercises_core_pack, exercises_back_pack} from './config';
 import {frameworks} from './config';
 import {patterns} from './config';
 
@@ -138,7 +138,7 @@ class Plan {
 				let cypher = "MATCH (trainer:TRAINER {username: $trainer}) "+
 								  "MATCH (trainer)-[:HAS]->(framework:FRAMEWORKS) "+
 								  "WHERE $part = framework.part AND $goal = framework.goal AND $gender = framework.gender "+
-								  "MATCH (framework)-[:HAS]->(pattern:PATTERN) "+
+								  "MATCH (framework)-[:HAS]->(pattern:PATTERN {soreness: $soreness}) "+
 								  "MATCH (trainer)-[:CREATED]->(exercise:EXERCISE) "+
 								  "WHERE $location in exercise.location AND $gender in exercise.gender AND $part = exercise.part "+
 								  "RETURN DISTINCT pattern";
@@ -147,7 +147,8 @@ class Plan {
 					location:body.location,
 					goal: body.goal,
 					part: body.part,
-					gender: body.gender
+					gender: body.gender,
+					soreness: body.soreness
 				}).then((pattern) => {
 									db.close();
 									pattern = pattern.records;
@@ -348,7 +349,7 @@ class Plan {
 		server.post('/admin/seed/exercises', (req, res, next)=>{
 			//if(req.header['token'] == secret){
 				//console.log('/admin/seed/exercises', exercises_core_pack)
-				let array = [exercises_core_pack ];// add exercise packs here.
+				let array = [exercises_core_pack];// add exercise packs here.
 					array.forEach((pack)=>{
 						let cypher = 	'MATCH (trainer:TRAINER {username: $username}) '+
 										'UNWIND '+pack + ' AS move '+
