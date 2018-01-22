@@ -21,6 +21,7 @@ class Analytics {
 			let fourweeksago = 2419200000;
 			let sixweeksago = 3628800000;
 			let eightweeksago = 4838400000;
+			let hours24 = 86400000;
 			let currentTime = new Date().getTime()
 			let glutes = 0;
 			let	hamstrings = 0;
@@ -60,24 +61,50 @@ class Analytics {
 
 					
 								let ptsAll = 0
-								let total = 0
+								let split = [[]]
+								let counter = 0;
+
 
 								Promise.resolve(true).then(() =>{
 									for(var i=0; i < results.length; i++){
 										let ting = results[i]._fields[0].properties;
-							
-
-										total += parseInt(ting.pts)
+										if(!isNaN(ting.pts)){
+											if(i != 0 && ting.stopTime - results[i - 1]._fields[0].properties.stopTime > hours24){
+												counter += 1
+												split[counter] = [parseInt(ting.pts)];
+											}else{
+												split[counter].push(parseInt(ting.pts));
+											}
+										}
 					
 									}
 								})
 								.then(() => {
-									ptsAll = (total/results.length).toFixed(2);
-									if(ptsGlutes == "NaN"){
-										ptsGlutes = 0;
+									if(results.length > 0){
+
+
+										for(var i=0; i < split.length; i++){
+											split[i] = split[i].reduce((accumulator, currentValue, currentIndex, array) => {
+											    return accumulator + currentValue;
+											  });
+										}
 									}
-									console.log('/bf/get/points','total',total, 'ptsAll', ptsAll);
 								})
+								.then(() => {
+									console.log('split',split)
+									if(results.length > 0){
+										counter = split.length;
+										ptsAll = split.reduce((accumulator, currentValue, currentIndex, array) => {
+											    return accumulator + currentValue;
+											  });
+									}
+
+									console.log('/bf/get/points', 'ptsAll', ptsAll);
+								})
+								.then(() => {
+									ptsAll = (ptsAll/counter).toFixed(2)
+								})
+
 
 
 							let cypher2 = "MATCH (n:USER {uuid:$id})-[:COMPLETED]->(set {part: $glutes}) WHERE set.stopTime > $currentTime - $eightweeksago RETURN DISTINCT set ORDER BY set.stopTime";
@@ -104,24 +131,53 @@ class Analytics {
 
 										console.log('/bf/get/points' , results2.records);
 									
-											let total1 = 0; 
 											let ptsGlutes = 0
+											let split = [[]]
+											let counter = 0;
+
+
 											Promise.resolve(true).then(() =>{
+												
 												for(var i=0; i < results2.length; i++){
 													let ting = results2[i]._fields[0].properties;
-												
-
-													total1 += parseInt(ting.pts)
-													
+													if(!isNaN(ting.pts)){
+														if(i != 0 && ting.stopTime - results2[i - 1]._fields[0].properties.stopTime > hours24){
+															counter += 1
+															split[counter] = [parseInt(ting.pts)];
+														}else{
+															split[counter].push(parseInt(ting.pts));
+														}
+													}
+								
 												}
 											})
 											.then(() => {
-												ptsGlutes = (total1/results2.length).toFixed(2);
-												if(ptsGlutes == "NaN"){
-													ptsGlutes = 0;
+												if(results2.length > 0){
+													for(var i=0; i < split.length; i++){
+														split[i] = split[i].reduce((accumulator, currentValue, currentIndex, array) => {
+														    return accumulator + currentValue;
+														  });
+													}
 												}
-											console.log('/bf/get/points','totalweight1', 'total1', total1, 'ptsGlutes', ptsGlutes);
 											})
+											.then(() => {
+												console.log('split',split)
+												if(results2.length > 0){
+													counter = split.length;
+													ptsGlutes = split.reduce((accumulator, currentValue, currentIndex, array) => {
+														    return accumulator + currentValue;
+														  });
+												}
+
+												console.log('/bf/get/points', 'ptsAll', ptsGlutes);
+											})							
+											.then(() => {
+												if(results2.length > 0){
+													ptsGlutes = (ptsGlutes/counter).toFixed(2)
+												}
+											})
+
+
 										
 
 
@@ -148,20 +204,52 @@ class Analytics {
 								db.close();
 				
 											 
-											let total2 = 0; 
 											let ptsHamstrings = 0
+											let split = [[]]
+											let counter = 0;
 
-											for(var i=0; i < results3.length; i++){
-												let ting = results3[i]._fields[0].properties;
-											
-												total2 += parseInt(ting.pts);
-											}
-											ptsHamstrings = (total2/results3.length).toFixed(2);
-											if(ptsHamstrings == "NaN"){
-												ptsHamstrings = 0;
-											}
 
-	
+											Promise.resolve(true).then(() =>{
+												for(var i=0; i < results3.length; i++){
+													let ting = results3[i]._fields[0].properties;
+													if(!isNaN(ting.pts)){
+														if(i != 0 && ting.stopTime - results3[i - 1]._fields[0].properties.stopTime > hours24){
+															counter += 1
+															split[counter] = [parseInt(ting.pts)];
+														}else{
+															split[counter].push(parseInt(ting.pts));
+														}
+													}
+								
+												}
+											})
+											.then(() => {
+												if(results3.length > 0){
+													for(var i=0; i < split.length; i++){
+														split[i] = split[i].reduce((accumulator, currentValue, currentIndex, array) => {
+														    return accumulator + currentValue;
+														  });
+													}
+												}
+											})
+											.then(() => {
+
+												console.log('split',split)
+												if(results3.length > 0){
+													counter = split.length
+													ptsHamstrings = split.reduce((accumulator, currentValue, currentIndex, array) => {
+														    return accumulator + currentValue;
+														  });
+												}
+
+												console.log('/bf/get/points', 'ptsAll', ptsHamstrings);
+											})
+											.then(() => {
+												if(results3.length > 0){
+													ptsHamstrings = (ptsHamstrings/counter).toFixed(2)
+												}
+											})
+
 							let cypher4 = "MATCH (n:USER {uuid:$id})-[:COMPLETED]->(set {part: $back}) WHERE set.stopTime > $currentTime - $eightweeksago RETURN DISTINCT set ORDER BY set.stopTime";	
 
 							db.run(cypher4, {
@@ -184,18 +272,50 @@ class Analytics {
 								let results4 = data4.records;
 
 										
-											let total3 = 0; 
 											let ptsBack = 0;
+											let split = [[]]
+											let counter = 0;
 
-											for(var i=0; i < results4.length; i++){
-												let ting = results4[i]._fields[0].properties;
-												total3 += parseInt(ting.pts);
 
-											}
-											ptsBack = (total3/results4.length).toFixed(2);
-											if(ptsBack == "NaN"){
-												ptsBack = 0;
-											}
+											Promise.resolve(true).then(() =>{
+												for(var i=0; i < results4.length; i++){
+													let ting = results4[i]._fields[0].properties;
+													if(!isNaN(ting.pts)){
+														if(i != 0 && ting.stopTime - results4[i - 1]._fields[0].properties.stopTime > hours24){
+															counter += 1
+															split[counter] = [parseInt(ting.pts)];
+														}else{
+															split[counter].push(parseInt(ting.pts));
+														}
+													}
+								
+												}
+											})
+											.then(() => {
+												if(results4.length > 0){
+													for(var i=0; i < split.length; i++){
+														split[i] = split[i].reduce((accumulator, currentValue, currentIndex, array) => {
+														    return accumulator + currentValue;
+														  });
+													}
+												}
+											})
+											.then(() => {
+												console.log('split',split)
+												if(results4.length > 0){
+													counter = split.length;
+													ptsBack = split.reduce((accumulator, currentValue, currentIndex, array) => {
+														    return accumulator + currentValue;
+														  });
+												}
+
+												console.log('/bf/get/points', 'ptsAll', ptsBack);
+											})
+											.then(() => {
+												if(results4.length > 0){
+													ptsBack = (ptsBack/counter).toFixed(2)
+												}
+											})		
 											
 
 							let cypher5 = "MATCH (n:USER {uuid:$id})-[:COMPLETED]->(set {part: $calves}) WHERE set.stopTime > $currentTime - $eightweeksago RETURN DISTINCT set ORDER BY set.stopTime";	// return the list of trainers as an array
@@ -221,19 +341,49 @@ class Analytics {
 								db.close();
 		
 											 
-											let total4 = 0; 
 											let ptsCalves = 0
+											let split = [[]]
+											let counter = 0;
 
-											for(var i=0; i < results5.length; i++){
-												let ting = results5[i]._fields[0].properties;
+											Promise.resolve(true).then(() =>{
+												for(var i=0; i < results5.length; i++){
+													let ting = results5[i]._fields[0].properties;
+													if(!isNaN(ting.pts)){
+														if(i != 0 && ting.stopTime - results5[i - 1]._fields[0].properties.stopTime > hours24){
+															counter += 1
+															split[counter] = [parseInt(ting.pts)];
+														}else{
+															split[counter].push(parseInt(ting.pts));
+														}
+													}
+								
+												}
+											})
+											.then(() => {
+												if(results5.length > 0){
+													for(var i=0; i < split.length; i++){
+														split[i] = split[i].reduce((accumulator, currentValue, currentIndex, array) => {
+														    return accumulator + currentValue;
+														  });
+													}
+												}
+											})
+											.then(() => {
+												console.log('split',split)
+												if(results5.length > 0){
+													counter = split.length;
+													ptsCalves = split.reduce((accumulator, currentValue, currentIndex, array) => {
+														    return accumulator + currentValue;
+														  });
+												}
 
-												total4 += parseInt(ting.pts)
-											}
-
-											ptsCalves = (total4/ results5.length).toFixed(2)
-											if(ptsCalves == "NaN"){
-												ptsCalves = 0;
-											}
+												console.log('/bf/get/points', 'ptsAll', ptsCalves);
+											})
+											.then(() => {
+												if(results5.length > 0){
+													ptsCalves = (ptsCalves/counter).toFixed(2)
+												}
+											})		
 
 							let cypher6 = "MATCH (n:USER {uuid:$id})-[:COMPLETED]->(set {part: $core}) WHERE set.stopTime > $currentTime - $eightweeksago RETURN DISTINCT set ORDER BY set.stopTime";	// return the list of trainers as an array
 
@@ -258,19 +408,48 @@ class Analytics {
 								let results6 = data6.records;
 
 									
-											let total5 = 0; 
 											let ptsCore = 0
+											let split = [[]]
+											let counter = 0;
+											Promise.resolve(true).then(() =>{
+												for(var i=0; i < results6.length; i++){
+													let ting = results6[i]._fields[0].properties;
+													if(!isNaN(ting.pts)){
+														if(i != 0 && ting.stopTime - results6[i - 1]._fields[0].properties.stopTime > hours24){
+															counter += 1
+															split[counter] = [parseInt(ting.pts)];
+														}else{
+															split[counter].push(parseInt(ting.pts));
+														}
+													}
+								
+												}
+											})
+											.then(() => {
+												if(results6.length > 0){
+													for(var i=0; i < split.length; i++){
+														split[i] = split[i].reduce((accumulator, currentValue, currentIndex, array) => {
+														    return accumulator + currentValue;
+														  });
+													}
+												}
+											})
+											.then(() => {
+												console.log('split',split)
+												if(results6.length > 0){
+													counter = split.length;
+													ptsCore = split.reduce((accumulator, currentValue, currentIndex, array) => {
+														    return accumulator + currentValue;
+														  });
+												}
 
-											for(var i=0; i < results6.length; i++){
-												let ting = results6[i]._fields[0].properties;
-											
-												total5 +=  parseInt(ting.pts)
-											}
-
-											ptsCore = (total5/results6.length).toFixed(2)
-											if(ptsCore == "NaN"){
-												ptsCore = 0;
-											}
+												console.log('/bf/get/points', 'ptsAll', ptsCore);
+											})	
+											.then(() => {
+												if(results6.length > 0){
+													(ptsCore = ptsCore/counter).toFixed(2)
+												}
+											})	
 
 							let cypher7 = "MATCH (n:USER {uuid:$id})-[:COMPLETED]->(set {part: $biceps}) WHERE set.stopTime > $currentTime - $eightweeksago RETURN DISTINCT set ORDER BY set.stopTime";	// return the list of trainers as an array
 
@@ -294,18 +473,47 @@ class Analytics {
 								db.close();
 								let results7 = data7.records;
 											
-											let total6 = 0; 
-											let ptsBiceps = 0
-
-											for(var i=0; i < results7.length; i++){
-												let ting = results7[i]._fields[0].properties;
-												total6 += parseInt(ting.pts);
+								let ptsBiceps = 0
+								let split = [[]]
+								let counter = 0;
+									Promise.resolve(true).then(() =>{
+									for(var i=0; i < results7.length; i++){
+										let ting = results7[i]._fields[0].properties;
+										if(!isNaN(ting.pts)){
+											if(i != 0 && ting.stopTime - results7[i - 1]._fields[0].properties.stopTime > hours24){
+												counter += 1
+												split[counter] = [parseInt(ting.pts)];
+											}else{
+												split[counter].push(parseInt(ting.pts));
 											}
+										}
+					
+									}
+								})
+								.then(() => {
+									if(results7.length > 0){
+										for(var i=0; i < split.length; i++){
+											split[i] = split[i].reduce((accumulator, currentValue, currentIndex, array) => {
+											    return accumulator + currentValue;
+											  });
+										}
+									}
+								})
+								.then(() => {
+									console.log('split',split)
+									if(results7.length > 0){
+										counter = split.length;
+										ptsBiceps = split.reduce((accumulator, currentValue, currentIndex, array) => {
+											    return accumulator + currentValue;
+											  });
+									}
+								})
+								.then(() => {
+									if(results7.length > 0){
+										ptsBiceps = (ptsBiceps/counter).toFixed(2)
+									}
+								})
 
-											ptsBiceps = (total6/ results7.length).toFixed(2);
-											if(ptsBiceps == "NaN"){
-												ptsBiceps = 0;
-											}
 
 							let cypher8 = "MATCH (n:USER {uuid:$id})-[:COMPLETED]->(set {part: $quads}) WHERE set.stopTime > $currentTime - $eightweeksago RETURN DISTINCT set ORDER BY set.stopTime";	// return the list of trainers as an array
 
@@ -329,19 +537,46 @@ class Analytics {
 								db.close();
 								let results8 = data8.records;
 
-											let total7 = 0; 
-											let ptsQuads = 0
-
-											for(var i=0; i < results8.length; i++){
-												let ting = results8[i]._fields[0].properties;
-												total7 += parseInt(ting.pts)
-
+									let ptsQuads = 0
+									let split = [[]]
+									let counter = 0;
+									Promise.resolve(true).then(() =>{
+									for(var i=0; i < results8.length; i++){
+										let ting = results8[i]._fields[0].properties;
+										if(!isNaN(ting.pts)){
+											if(i != 0 && ting.stopTime - results8[i - 1]._fields[0].properties.stopTime > hours24){
+												counter += 1
+												split[counter] = [parseInt(ting.pts)];
+											}else{
+												split[counter].push(parseInt(ting.pts));
 											}
-
-											ptsQuads = (total7/ results8.length).toFixed(2);
-											if(ptsQuads == "NaN"){
-												ptsQuads = 0;
-											}
+										}
+					
+									}
+								})
+								.then(() => {
+									if(results8.length > 0){
+										for(var i=0; i < split.length; i++){
+											split[i] = split[i].reduce((accumulator, currentValue, currentIndex, array) => {
+											    return accumulator + currentValue;
+											  });
+										}
+									}
+								})
+								.then(() => {
+									console.log('split',split)
+									if(results8.length > 0){
+										counter = split.length;
+										ptsQuads = split.reduce((accumulator, currentValue, currentIndex, array) => {
+											    return accumulator + currentValue;
+											  });
+									}
+								})
+								.then(() => {
+									if(results8.length > 0){
+										ptsQuads = (ptsQuads/counter).toFixed(2)
+									}
+								})
 
 							let cypher9 = "MATCH (n:USER {uuid:$id})-[:COMPLETED]->(set {part: $triceps}) WHERE set.stopTime > $currentTime - $eightweeksago RETURN DISTINCT set ORDER BY set.stopTime";	// return the list of trainers as an array
 
@@ -365,18 +600,49 @@ class Analytics {
 								db.close();
 								let results9 = data9.records;
 										
-											let total8 = 0; 
-											let ptsTriceps = 0
+									let ptsTriceps = 0
+									let results8 = data8.records;
 
-											for(var i=0; i < results9.length; i++){
-												let ting = results9[i]._fields[0].properties;
-												total8 += parseInt(ting.pts);
+									let ptsQuads = 0
+									let split = [[]]
+									let counter = 0;
+									Promise.resolve(true).then(() =>{
+									for(var i=0; i < results9.length; i++){
+										let ting = results9[i]._fields[0].properties;
+										if(!isNaN(ting.pts)){
+											if(i != 0 && ting.stopTime - results9[i - 1]._fields[0].properties.stopTime > hours24){
+												counter += 1
+												split[counter] = [parseInt(ting.pts)];
+											}else{
+												split[counter].push(parseInt(ting.pts));
 											}
-
-											ptsTriceps = (total8/ results9.length).toFixed(2);
-											if(ptsTriceps == "NaN"){
-												ptsTriceps = 0;
-											}
+										}
+					
+									}
+								})
+								.then(() => {
+									if(results9.length > 0){
+										for(var i=0; i < split.length; i++){
+											split[i] = split[i].reduce((accumulator, currentValue, currentIndex, array) => {
+											    return accumulator + currentValue;
+											  });
+										}
+									}
+								})
+								.then(() => {
+									console.log('split',split)
+									if(results9.length > 0){
+										counter = split.length
+										ptsTriceps = split.reduce((accumulator, currentValue, currentIndex, array) => {
+											    return accumulator + currentValue;
+											  });
+									}
+								})
+								.then(() => {
+									if(results9.length > 0){
+										ptsTriceps = (ptsTriceps/counter).toFixed(2)
+									}
+								})
 		
 							let cypher10 = "MATCH (n:USER {uuid:$id})-[:COMPLETED]->(set {part: $shoulders}) WHERE set.stopTime > $currentTime - $eightweeksago RETURN DISTINCT set ORDER BY set.stopTime";	// return the list of trainers as an array
 
@@ -400,18 +666,46 @@ class Analytics {
 								db.close()
 								let results10 = data10.records;
 										 
-											let total9 = 0; 
-											let ptsShoulders = 0
-
+									let ptsShoulders = 0
+									let split = [[]]
+									let counter = 0;
+									Promise.resolve(true).then(() =>{
 											for(var i=0; i < results10.length; i++){
 												let ting = results10[i]._fields[0].properties;
-												total9 += parseInt(ting.pts)
+												if(!isNaN(ting.pts)){
+													if(i != 0 && ting.stopTime - results10[i - 1]._fields[0].properties.stopTime > hours24){
+														counter += 1
+														split[counter] = [parseInt(ting.pts)];
+													}else{
+														split[counter].push(parseInt(ting.pts));
+													}
+												}
+							
 											}
-
-											ptsShoulders = (total9/ results10.length).toFixed(2);
-											if(ptsShoulders == "NaN"){
-												ptsShoulders = 0;
+										})
+										.then(() => {
+											if(results10.length > 0){
+												for(var i=0; i < split.length; i++){
+													split[i] = split[i].reduce((accumulator, currentValue, currentIndex, array) => {
+													    return accumulator + currentValue;
+													  });
+												}
 											}
+										})
+										.then(() => {
+											console.log('split',split)
+											if(results10.length > 0){
+												counter = split.length
+												ptsShoulders = split.reduce((accumulator, currentValue, currentIndex, array) => {
+													    return accumulator + currentValue;
+													  });
+											}
+										})	
+										.then(() => {
+											if(results10.length > 0){
+												ptsShoulders = (ptsShoulders/counter).toFixed(2)
+											}
+										})
 
 
 							let cypher11 = "MATCH (n:USER {uuid:$id})-[:COMPLETED]->(set {part: $chest}) WHERE set.stopTime > $currentTime - $eightweeksago RETURN DISTINCT set ORDER BY set.stopTime";	// return the list of trainers as an array
@@ -436,19 +730,47 @@ class Analytics {
 									db.close();
 									let results11 = data11.records;
 											 
-												let total10 = 0; 
 												let ptsChest = 0
-												Promise.resolve(true).then(()=>{
-													for(var i=0; i < results11.length; i++){
-														let ting = results11[i]._fields[0].properties;
-														total10 += parseInt(ting.pts)
-													}	
-
-													ptsChest = (total10 / results11.length).toFixed(2); 
-													if(ptsChest == "NaN"){
-														ptsChest = 0;
-													}												
-												}).then(()=>{
+												let split = [[]]
+												let counter = 0;
+												Promise.resolve(true).then(() =>{
+														for(var i=0; i < results11.length; i++){
+															let ting = results11[i]._fields[0].properties;
+															if(!isNaN(ting.pts)){
+																if(i != 0 && ting.stopTime - results11[i - 1]._fields[0].properties.stopTime > hours24){
+																	counter += 1
+																	split[counter] = [parseInt(ting.pts)];
+																}else{
+																	split[counter].push(parseInt(ting.pts));
+																}
+															}
+										
+														}
+													})
+													.then(() => {
+														if(results11.length > 0){
+															for(var i=0; i < split.length; i++){
+																split[i] = split[i].reduce((accumulator, currentValue, currentIndex, array) => {
+																    return accumulator + currentValue;
+																  });
+															}
+														}
+													})
+													.then(() => {
+														console.log('split',split)
+														if(results11.length > 0){
+															counter = split.length;
+															ptsChest = split.reduce((accumulator, currentValue, currentIndex, array) => {
+																    return accumulator + currentValue;
+																  });
+														}
+													})
+													.then(() => {
+														if(results11.length > 0){
+															ptsChest = (ptsChest/counter).toFixed(2)
+														}
+													})
+													.then(()=>{
 													console.log('/bf/get/points','tings here')
 													res.writeHead(200, header);
 											        res.end(JSON.stringify({
