@@ -1250,9 +1250,9 @@ class Analytics {
 		server.post('/bf/set/results/feedback', (req, res, next) => {
 			let body = req.body;
 			console.log('/bf/set/results/feedback', body);
-			let eightweeksago = 4838400000;
+			let eightweeksago = 1209600000;
 			let currentTime = new Date().getTime()
-			let cypher = "MATCH (set1 {part:$bodypart})<-[:COMPLETED]-(u:USER {uuid:$id}) WHERE set1.stopTime < $currentTime - $eightweeksago AND NOT (:RESULT)<-[:RECORDED]-(set1) CREATE (result:RESULT {score: $score})<-[:RECORDED]-(set1) result";	
+			let cypher = "MATCH (set1 {part:$bodypart})<-[:COMPLETED]-(u:USER {uuid:$id}) WHERE set1.stopTime < $currentTime - $eightweeksago CREATE (result:RESULT {score: $score})<-[:RECORDED]-(set1) result";	
 			db.run(cypher, {
 					id: body.userid,
 					bodypart:body.bodypart,
@@ -1290,10 +1290,10 @@ class Analytics {
 
 
 		server.post('/bf/check/need/results/feedback', (req, res, next) => {
-			let eightweeksago = 4838400000;
+			let eightweeksago = 1209600000;
 			let currentTime = new Date().getTime();
 			let body = req.body;
-			let cypher = "MATCH (u:USER {uuid:$id})-[:COMPLETED]->(sets) WHERE sets.stopTime < $currentTime - $eightweeksago AND NOT (sets)-[:RECORDED]->(:RESULT) RETURN sets ";	
+			let cypher = "MATCH (u:USER {uuid:$id})-[:COMPLETED]->(sets) WHERE sets.stopTime < $currentTime - $eightweeksago RETURN sets ";	
 			db.run(cypher, {
 					id: body.userid,
 					currentTime: currentTime,

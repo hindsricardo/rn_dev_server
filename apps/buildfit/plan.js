@@ -154,6 +154,9 @@ class Plan {
 									pattern = pattern.records;
 
 
+
+
+
 									let cypher = "MATCH (trainer:TRAINER {username: $trainer}) "+
 									  "MATCH (trainer)-[:HAS]->(framework:FRAMEWORKS) "+
 									  "WHERE $part = framework.part AND $goal = framework.goal AND $gender = framework.gender "+
@@ -171,6 +174,7 @@ class Plan {
 									}).then((user_exercises) => {
 										db.close();
 										user_exercises = user_exercises.records;
+
 
 									res.writeHead(200, header);
 							        res.end(JSON.stringify({
