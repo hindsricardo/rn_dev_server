@@ -1252,7 +1252,7 @@ class Analytics {
 			console.log('/bf/set/results/feedback', body);
 			let eightweeksago = 1209600000;
 			let currentTime = new Date().getTime()
-			let cypher = "MATCH (set1 {part:$bodypart})<-[:COMPLETED]-(u:USER {uuid:$id}) WHERE set1.stopTime > $currentTime - $eightweeksago CREATE (result:RESULT {score: $score})<-[:RECORDED]-(set1) result";	
+			let cypher = "MATCH (set1 {part:$bodypart})<-[:COMPLETED]-(u:USER {uuid:$id}) WHERE set1.stopTime > $currentTime - $eightweeksago CREATE (result:RESULT {score: $score})<-[:RECORDED]-(set1) RETURN result";	
 			db.run(cypher, {
 					id: body.userid,
 					bodypart:body.bodypart,
@@ -1515,7 +1515,7 @@ class Analytics {
 				let biceps_array = []
 
 				Promise.resolve(true).then(() =>{
-	
+
 				})
 				.then(() => {
 					for(var i=0; i < results.length; i++){
