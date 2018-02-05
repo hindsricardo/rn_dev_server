@@ -1252,7 +1252,7 @@ class Analytics {
 			console.log('/bf/set/results/feedback', body);
 			let eightweeksago = 1209600000;
 			let currentTime = new Date().getTime()
-			let cypher = "MATCH (set1 {part:$bodypart})<-[:COMPLETED]-(u:USER {uuid:$id}) WHERE set1.stopTime < $currentTime - $eightweeksago CREATE (result:RESULT {score: $score})<-[:RECORDED]-(set1) result";	
+			let cypher = "MATCH (set1 {part:$bodypart})<-[:COMPLETED]-(u:USER {uuid:$id}) WHERE set1.stopTime > $currentTime - $eightweeksago CREATE (result:RESULT {score: $score})<-[:RECORDED]-(set1) result";	
 			db.run(cypher, {
 					id: body.userid,
 					bodypart:body.bodypart,
@@ -1289,7 +1289,7 @@ class Analytics {
 		}) //end of '/bf/set/results/feedback'
 
 
-		server.post('/bf/check/need/results/feedback', (req, res, next) => {
+		server.post('/bf/next/workout/results/feedback', (req, res, next) => {
 			let eightweeksago = 1209600000;
 			let currentTime = new Date().getTime();
 			let body = req.body;
@@ -1482,6 +1482,78 @@ class Analytics {
 			          }))
 				});		
 		}) //end of '/bf/get/soreness/feedback'
+
+		server.post('/bf/next/workout/date', (req, res, next) => {
+			let body = req.body;
+			let oneweek = 1209600000/2;
+			let twoweeks = 1209600000;
+			let oneday = 86400000;
+			let currentTime = new Date().getTime()
+			let cypher = "MATCH (sets: SetFeedback)<-[:COMPLETED]-(user:USER {uuid:{id}}) "+
+						 "WHERE sets.stopTime > {currentTime} - {twoweeks} "+
+						 "MATCH (sets)-[:RECORDED]->(feedback:RESULT) "+
+						 "RETURN  sets, feedback";
+			db.run(cypher, {
+				id: body.userid,
+				currentTime: currentTime,
+				twoweeks: twoweeks,
+			})
+			.then((data) =>{
+				console.log(data);
+				let results = data.records;
+				let split = [[]];
+				let counter = 0;
+				let glutes_array = [];
+				let hamstrings_array = [];
+				let quads_array = [];
+				let back_array = [];
+				let shoulders_array = [];
+				let chest_array = [];
+				let calves_array = []
+				let core_array = [];
+				let triceps_array = []
+				let biceps_array = []
+
+				Promise.resolve(true).then(() =>{
+	
+				})
+				.then(() => {
+					for(var i=0; i < results.length; i++){
+						let ting = results[i]._fields[0].properties;
+							if(i != 0 && ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
+								counter += 1
+								split[counter] = [ting];
+							}else{
+								split[counter].push(ting);
+							}
+	
+					}
+				})
+				db.close();
+				res.writeHead(200, header);
+		        res.end(JSON.stringify({
+		        	success:'yes',
+		        	results: results,
+
+	        	}));
+		        console.log(JSON.stringify({
+		        	success:'yes',
+		        	results: results,
+				}))
+				return;
+			})
+			.catch((err)=>{
+				console.log(err);
+				res.writeHead(500, header)
+		        res.end(JSON.stringify({
+		          success:'no',
+		          err: err,
+		          message:'Something went wrong logging in. Check error message to see what happened.'
+		          }))
+			});	
+
+
+		})
 
 		//TODO: CONVERT TO NEW NEO4J DRIVER USING PROMISE
 		/*server.post('/bf/get/mostimportant/factors', (req, res, next) => {     
