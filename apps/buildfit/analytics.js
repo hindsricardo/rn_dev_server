@@ -1489,6 +1489,38 @@ class Analytics {
 			let twoweeks = 1209600000;
 			let oneday = 86400000;
 			let currentTime = new Date().getTime()
+			let splitback = [[]];
+			let splitcore = [[]];
+			let splitglutes = [[]];
+			let splithamstrings = [[]];
+			let splitquads = [[]];
+			let splitshoulders = [[]];
+			let splittriceps = [[]];
+			let splitbiceps = [[]];
+			let splitchest = [[]];
+			let splitcalves = [[]];
+			let counter = 0;
+			let glutes_array = [];
+			let hamstrings_array = [];
+			let quads_array = [];
+			let back_array = [];
+			let shoulders_array = [];
+			let chest_array = [];
+			let calves_array = []
+			let core_array = [];
+			let triceps_array = [];
+			let biceps_array = [];
+			let glutes_time = new Date().getTime();
+			let hamstrings_time = new Date().getTime();
+			let quads_time = new Date().getTime();
+			let back_time = new Date().getTime();
+			let shoulders_time = new Date().getTime();
+			let chest_time = new Date().getTime();
+			let calves_time = new Date().getTime();
+			let core_time = new Date().getTime();
+			let triceps_time = new Date().getTime();
+			let biceps_time = new Date().getTime();
+			let results;
 			let cypher = "MATCH (sets: SetFeedback)<-[:COMPLETED]-(user:USER {uuid:{id}}) "+
 						 "WHERE sets.stopTime > {currentTime} - {twoweeks} "+
 						 "MATCH (sets)-[:RECORDED]->(feedback:RESULT) "+
@@ -1499,48 +1531,484 @@ class Analytics {
 				twoweeks: twoweeks,
 			})
 			.then((data) =>{
-				console.log(data);
-				let results = data.records;
-				let split = [[]];
-				let counter = 0;
-				let glutes_array = [];
-				let hamstrings_array = [];
-				let quads_array = [];
-				let back_array = [];
-				let shoulders_array = [];
-				let chest_array = [];
-				let calves_array = []
-				let core_array = [];
-				let triceps_array = []
-				let biceps_array = []
+				results = data.records;
 
-				Promise.resolve(true).then(() =>{
 
-				})
-				.then(() => {
-					for(var i=0; i < results.length; i++){
-						let ting = results[i]._fields[0].properties;
+				if(results.length >  0 ) {
+					glutes_array = results.filter((val) => {
+						return val._fields[0].properties.part = 'glutes';
+					})
+
+					hamstrings_array = results.filter((val) => {
+						return val._fields[0].properties.part = 'hamstrings';
+					})
+
+					quads_array = results.filter((val) => {
+						return val._fields[0].properties.part = 'quads';
+					})
+
+					back_array = results.filter((val) => {
+						return val._fields[0].properties.part = 'back';
+					})
+
+					shoulders_array = results.filter((val) => {
+						return val._fields[0].properties.part = 'shoulders';
+					})
+
+					chest_array = results.filter((val) => {
+						return val._fields[0].properties.part = 'chest';
+					})
+
+					calves_array = results.filter((val) => {
+						return val._fields[0].properties.part = 'calves';
+					})
+
+					core_array = results.filter((val) => {
+						return val._fields[0].properties.part = 'core';
+					})
+				}
+			})
+
+			.then(() => {
+					let counter1 = 0;
+					let counter2 = 0;
+					let counter3 = 0;
+					let counter4 = 0;
+					let counter5 = 0;
+					let counter6 = 0;
+					let counter7 = 0;
+					let counter8 = 0;
+					let counter9 = 0;
+					let counter10 = 0;
+					
+					for(var i=0; i < back_array.length; i++){
+						let ting = back_array[i]._fields[0].properties;
 							if(i != 0 && ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
-								counter += 1
-								split[counter] = [ting];
+								counter1 += 1
+								splitback[counter1] = [back_array[i]];
 							}else{
-								split[counter].push(ting);
+								splitback[counter1].push(back_array[i]);
 							}
-	
 					}
-				})
-				db.close();
-				res.writeHead(200, header);
-		        res.end(JSON.stringify({
-		        	success:'yes',
-		        	results: results,
 
-	        	}));
-		        console.log(JSON.stringify({
-		        	success:'yes',
-		        	results: results,
-				}))
-				return;
+					for(var i=0; i < core_array.length; i++){
+						let ting = core_array[i]._fields[0].properties;
+							if(i != 0 && ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
+								counter2 += 1
+								splitcore[counter2] = [core_array[i]];
+							}else{
+								splitcore[counter2].push(core_array[i]);
+							}
+					}
+
+					for(var i=0; i < glutes_array.length; i++){
+						let ting = glutes_array[i]._fields[0].properties;
+							if(i != 0 && ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
+								counter3 += 1
+								splitglutes[counter3] = [glutes_array[i]];
+							}else{
+								splitglutes[counter3].push(glutes_array[i]);
+							}
+					}
+					for(var i=0; i < hamstrings_array.length; i++){
+						let ting = hamstrings_array[i]._fields[0].properties;
+							if(i != 0 && ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
+								counter4 += 1
+								splithamstrings[counter4] = [hamstrings_array[i]];
+							}else{
+								splithamstrings[counter4].push(hamstrings_array[i]);
+							}
+					}
+
+					for(var i=0; i < quads_array.length; i++){
+						let ting = quads_array[i]._fields[0].properties;
+							if(i != 0 && ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
+								counter5 += 1
+								splitquads[counter5] = [quads_array[i]];
+							}else{
+								splitquads[counter5].push(quads_array[i]);
+							}
+					}
+
+					for(var i=0; i < chest_array.length; i++){
+						let ting = chest_array[i]._fields[0].properties;
+							if(i != 0 && ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
+								counter6 += 1
+								splitchest[counter6] = [chest_array[i]];
+							}else{
+								splitchest[counter6].push(chest_array[i]);
+							}
+					}
+
+					for(var i=0; i < shoulders_array.length; i++){
+						let ting = shoulders_array[i]._fields[0].properties;
+							if(i != 0 && ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
+								counter7 += 1
+								splitshoulders[counter7] = [shoulders_array[i]];
+							}else{
+								splitshoulders[counter7].push(shoulders_array[i]);
+							}
+					}
+
+					for(var i=0; i < biceps_array.length; i++){
+						let ting = biceps_array[i]._fields[0].properties;
+							if(i != 0 && ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
+								counter8 += 1
+								splitbiceps[counter8] = [biceps_array[i]];
+							}else{
+								splitbiceps[counter8].push(biceps_array[i]);
+							}
+					}
+
+					for(var i=0; i < triceps_array.length; i++){
+						let ting = triceps_array[i]._fields[0].properties;
+							if(i != 0 && ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
+								counter9 += 1
+								splittriceps[counter9] = [triceps_array[i]];
+							}else{
+								splittriceps[counter9].push(triceps_array[i]);
+							}
+					}
+
+					for(var i=0; i < calves_array.length; i++){
+						let ting = calves_array[i]._fields[0].properties;
+							if(i != 0 && ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
+								counter10 += 1
+								splitcalves[counter10] = [calves_array[i]];
+							}else{
+								splitcalves[counter10].push(calves_array[i]);
+							}
+					}
+
+			})
+			.then(() => {
+					let times = {
+						back: {Smaller:(oneday * 3), Tone:(oneday * 5), Bigger: (oneday * 2)},
+						core: {Smaller:(oneday * 2), Tone:(oneday * 2), Bigger: (oneday * 2)},
+						glutes: {Smaller:(oneday * 4), Tone:(oneday * 4), Bigger: (oneday * 2)},
+						hamstrings: {Smaller:(oneday * 6), Tone:(oneday * 4), Bigger: (oneday * 2)},
+						quads: {Smaller:(oneday * 6), Tone:(oneday * 4), Bigger: (oneday * 2)},
+						biceps: {Smaller:(oneday * 6), Tone:(oneday * 4), Bigger: (oneday * 2)},
+						triceps: {Smaller:(oneday * 6), Tone:(oneday * 4), Bigger: (oneday * 2)},
+						shoulders: {Smaller:(oneday * 6), Tone:(oneday * 4), Bigger: (oneday * 2)},
+						calves: {Smaller:(oneday * 6), Tone:(oneday * 4), Bigger: (oneday * 2)},
+						biceps: {Smaller:(oneday * 6), Tone:(oneday * 4), Bigger: (oneday * 2)},
+						chest: {Smaller:(oneday * 6), Tone:(oneday * 4), Bigger: (oneday * 2)},
+
+					}
+
+					// figure out back next workout date
+					if(splitback[0].length > 0){
+						if(splitback[splitback.length - 1][0]._fields[0].properties.startTime < oneweek) {
+							if(splitback.length > 10){
+
+							}else{
+								splitback[splitback.length] = { 
+									soreness: splitback[i].reduce((accumulator, currentValue, currentIndex, array) => {
+								    return accumulator + currentValue[0]._fields[0].properties.soreness;
+								  }) 
+								}
+								if(splitback[splitback.length].soreness / (splitback.length - 1) > 2.5 ){ 
+									back_time = splitback[splitback.length - 2][0]._fields[0].properties.startTime + (times.back[splitback[splitback.length - 2][0]._fields[0].properties.goal] - oneday)
+								}
+								else if(splitback[splitback.length].soreness / (splitback.length - 1) < 1.5 ) {
+									back_time = splitback[splitback.length - 2][0]._fields[0].properties.startTime + (times.back[splitback[splitback.length - 2][0]._fields[0].properties.goal] + oneday)
+								}
+								else{
+									back_time = new Date().getTime();
+								}
+							}
+
+						}else{
+							back_time = splitback[splitback.length - 1][0]._fields[0].properties.startTime + times.back[splitback[splitback.length - 1][0]._fields[0].properties.goal];
+						}
+					}
+					if(splitcore[0].length > 0){
+						// figure next core next workout date
+						if(splitcore[splitcore.length - 1][0]._fields[0].properties.startTime < oneweek) {
+							if(splitcore.length > 10){
+
+							}else{
+								splitcore[splitcore.length] = { 
+									soreness: splitcore[i].reduce((accumulator, currentValue, currentIndex, array) => {
+								    return accumulator + currentValue[0]._fields[0].properties.soreness;
+								  }) 
+								}
+								if(splitcore[splitcore.length].soreness / (splitcore.length - 1) > 2.5 ){ 
+									core_time = splitcore[splitcore.length - 2][0]._fields[0].properties.startTime + (times.core[splitcore[splitcore.length - 2][0]._fields[0].properties.goal] - oneday);
+								}
+								else if(splitcore[splitcore.length].soreness / (splitcore.length - 1) < 1.5 ) {
+									core_time = splitcore[splitcore.length - 2][0]._fields[0].properties.startTime + (times.core[splitcore[splitcore.length - 2][0]._fields[0].properties.goal] + oneday);
+								}
+								else{
+									core_time = splitcore[splitcore.length - 2][0]._fields[0].properties.startTime + times.core[splitcore[splitcore.length - 2][0]._fields[0].properties.goal];
+								}
+							}
+
+						}else{
+							core_time = new Date().getTime();
+						}
+					}
+
+					if(splitglutes[0].length > 0){
+						// figure out glutes next date
+						if(splitglutes[splitglutes.length - 1][0]._fields[0].properties.startTime < oneweek) {
+							if(splitglutes.length > 10){
+
+							}else{
+								splitglutes[splitglutes.length] = { 
+									soreness: splitglutes[i].reduce((accumulator, currentValue, currentIndex, array) => {
+								    return accumulator + currentValue[0]._fields[0].properties.soreness;
+								  }) 
+								}
+								if(splitglutes[splitglutes.length].soreness / (splitglutes.length - 1) > 2.5 ){ 
+									glutes_time = splitglutes[splitcore.length - 2][0]._fields[0].properties.startTime + (times.glutes[splitglutes[splitglutes.length - 2][0]._fields[0].properties.goal] - oneday);
+								}
+								else if(splitglutes[splitglutes.length].soreness / (splitglutes.length - 1) < 1.5 ) {
+									glutes_time = splitglutes[splitglutes.length - 2][0]._fields[0].properties.startTime + (times.glutes[splitglutes[splitglutes.length - 2][0]._fields[0].properties.goal] + oneday);
+								}
+								else{
+									glutes_time = splitglutes[splitglutes.length - 2][0]._fields[0].properties.startTime + times.glutes[splitglutes[splitglutes.length - 2][0]._fields[0].properties.goal];
+								}
+							}
+
+						}else{
+							glutes_time = new Date().getTime();
+						}
+					}
+					if(splithamstrings[0].length > 0){
+
+						// figure out hamstrings next date
+						if(splithamstrings[splithamstrings.length - 1][0]._fields[0].properties.startTime < oneweek) {
+							if(splithamstrings.length > 10){
+
+							}else{
+								splithamstrings[splithamstrings.length] = { 
+									soreness: splithamstrings[i].reduce((accumulator, currentValue, currentIndex, array) => {
+								    return accumulator + currentValue[0]._fields[0].properties.soreness;
+								  }) 
+								}
+								if(splithamstrings[splithamstrings.length].soreness / (splithamstrings.length - 1) > 2.5 ){ 
+									hamstrings_time = splithamstrings[splithamstrings.length - 2][0]._fields[0].properties.startTime + (times.hamstrings[splithamstrings[splithamstrings.length - 2][0]._fields[0].properties.goal] - oneday);
+								}
+								else if(splithamstrings[splithamstrings.length].soreness / (splithamstrings.length - 1) < 1.5 ) {
+									hamstrings_time = splithamstrings[splithamstrings.length - 2][0]._fields[0].properties.startTime + (times.hamstrings[splithamstrings[splithamstrings.length - 2][0]._fields[0].properties.goal] + oneday);
+								}
+								else{
+									hamstrings_time = splithamstrings[splithamstrings.length - 2][0]._fields[0].properties.startTime + times.hamstrings[splithamstrings[splithamstrings.length - 2][0]._fields[0].properties.goal];
+								}
+							}
+
+						}else{
+							hamstrings_time = new Date().getTime();
+						}
+					}
+					if(splitquads[0].length > 0){
+						// figure out quads next date
+						if(splitquads[splitquads.length - 1][0]._fields[0].properties.startTime < oneweek) {
+							if(splitquads.length > 10){
+
+							}else{
+								splitquads[splitquads.length] = { 
+									soreness: splitquads[i].reduce((accumulator, currentValue, currentIndex, array) => {
+								    return accumulator + currentValue[0]._fields[0].properties.soreness;
+								  }) 
+								}
+								if(splitquads[splitquads.length].soreness / (splitquads.length - 1) > 2.5 ){ 
+									quads_time = splitquads[splitquads.length - 2][0]._fields[0].properties.startTime + (times.quads[splitquads[splitquads.length - 2][0]._fields[0].properties.goal] - oneday);
+								}
+								else if(splitquads[splitquads.length].soreness / (splitquads.length - 1) < 1.5 ) {
+									quads_time = splitquads[splitquads.length - 2][0]._fields[0].properties.startTime + (times.quads[splitquads[splitquads.length - 2][0]._fields[0].properties.goal] + oneday);
+								}
+								else{
+									quads_time = splitquads[splitquads.length - 2][0]._fields[0].properties.startTime + times.quads[splitquads[splitquads.length - 2][0]._fields[0].properties.goal];
+								}
+							}
+
+						}else{
+							quads_time = new Date().getTime();
+						}
+					}
+					if(splitshoulders[0].length > 0){
+
+						// figure out shoulders next date
+						if(splitshoulders[splitshoulders.length - 1][0]._fields[0].properties.startTime < oneweek) {
+							if(splitshoulders.length > 10){
+
+							}else{
+								splitshoulders[splitshoulders.length] = { 
+									soreness: splitshoulders[i].reduce((accumulator, currentValue, currentIndex, array) => {
+								    return accumulator + currentValue[0]._fields[0].properties.soreness;
+								  }) 
+								}
+								if(splitshoulders[splitshoulders.length].soreness / (splitshoulders.length - 1) > 2.5 ){ 
+									shoulders_time = splitshoulders[splitshoulders.length - 2][0]._fields[0].properties.startTime + (times.shoulders[splitshoulders[splitshoulders.length - 2][0]._fields[0].properties.goal] - oneday);
+								}
+								else if(splitshoulders[splitshoulders.length].soreness / (splitshoulders.length - 1) < 1.5 ) {
+									shoulders_time = splitshoulders[splitshoulders.length - 2][0]._fields[0].properties.startTime + (times.shoulders[splitshoulders[splitshoulders.length - 2][0]._fields[0].properties.goal] + oneday);
+								}
+								else{
+									shoulders_time = splitshoulders[splitshoulders.length - 2][0]._fields[0].properties.startTime + times.shoulders[splitshoulders[splitshoulders.length - 2][0]._fields[0].properties.goal];
+								}
+							}
+
+						}else{
+							shoulders_time = new Date().getTime();
+						}
+					}
+					if(splitbiceps[0].length > 0){
+
+						// figure out biceps next date
+						if(splitbiceps[splitbiceps.length - 1][0]._fields[0].properties.startTime < oneweek) {
+							if(splitbiceps.length > 10){
+
+							}else{
+								splitbiceps[splitbiceps.length] = { 
+									soreness: splitbiceps[i].reduce((accumulator, currentValue, currentIndex, array) => {
+								    return accumulator + currentValue[0]._fields[0].properties.soreness;
+								  }) 
+								}
+								if(splitbiceps[splitbiceps.length].soreness / (splitbiceps.length - 1) > 2.5 ){ 
+									biceps_time = splitbiceps[splitbiceps.length - 2][0]._fields[0].properties.startTime + (times.biceps[splitbiceps[splitbiceps.length - 2][0]._fields[0].properties.goal] - oneday);
+								}
+								else if(splitbiceps[splitbiceps.length].soreness / (splitbiceps.length - 1) < 1.5 ) {
+									biceps_time = splitbiceps[splitbiceps.length - 2][0]._fields[0].properties.startTime + (times.biceps[splitbiceps[splitbiceps.length - 2][0]._fields[0].properties.goal] + oneday);
+								}
+								else{
+									biceps_time = splitbiceps[splitbiceps.length - 2][0]._fields[0].properties.startTime + times.biceps[splitbiceps[splitbiceps.length - 2][0]._fields[0].properties.goal];
+								}
+							}
+
+						}else{
+							biceps_time = new Date().getTime();
+						}
+					}
+					if(splittriceps[0].length > 0){
+
+						// figure out triceps next date
+						if(splittriceps[splittriceps.length - 1][0]._fields[0].properties.startTime < oneweek) {
+							if(splittriceps.length > 10){
+
+							}else{
+								splittriceps[splittriceps.length] = { 
+									soreness: splittriceps[i].reduce((accumulator, currentValue, currentIndex, array) => {
+								    return accumulator + currentValue[0]._fields[0].properties.soreness;
+								  }) 
+								}
+								if(splittriceps[splittriceps.length].soreness / (splittriceps.length - 1) > 2.5 ){ 
+									triceps_time = splittriceps[splittriceps.length - 2][0]._fields[0].properties.startTime + (times.triceps[splittriceps[splittriceps.length - 2][0]._fields[0].properties.goal] - oneday);
+								}
+								else if(splittriceps[splittriceps.length].soreness / (splittriceps.length - 1) < 1.5 ) {
+									triceps_time = splittriceps[splittriceps.length - 2][0]._fields[0].properties.startTime + (times.triceps[splittriceps[splittriceps.length - 2][0]._fields[0].properties.goal] + oneday);
+								}
+								else{
+									triceps_time = splittriceps[splittriceps.length - 2][0]._fields[0].properties.startTime + times.triceps[splittriceps[splittriceps.length - 2][0]._fields[0].properties.goal];
+								}
+							}
+
+						}else{
+							triceps_time = new Date().getTime();
+						}
+					}
+					if(splitcalves[0].length > 0){
+
+						// figure out calves next date
+						if(splitcalves[splitcalves.length - 1][0]._fields[0].properties.startTime < oneweek) {
+							if(splitcalves.length > 10){
+
+							}else{
+								splitcalves[splitcalves.length] = { 
+									soreness: splitcalves[i].reduce((accumulator, currentValue, currentIndex, array) => {
+								    return accumulator + currentValue[0]._fields[0].properties.soreness;
+								  }) 
+								}
+								if(splitcalves[splitcalves.length].soreness / (splitcalves.length - 1) > 2.5 ){ 
+									calves_time = splitcalves[splitcalves.length - 2][0]._fields[0].properties.startTime + (times.calves[splitcalves[splitcalves.length - 2][0]._fields[0].properties.goal] - oneday);
+								}
+								else if(splitcalves[splitcalves.length].soreness / (splitcalves.length - 1) < 1.5 ) {
+									calves_time = splitcalves[splitcalves.length - 2][0]._fields[0].properties.startTime + (times.calves[splitcalves[splitcalves.length - 2][0]._fields[0].properties.goal] + oneday);
+								}
+								else{
+									calves_time = splitcalves[splitcalves.length - 2][0]._fields[0].properties.startTime + times.calves[splitcalves[splitcalves.length - 2][0]._fields[0].properties.goal];
+								}
+							}
+
+						}else{
+							calves_time = new Date().getTime();
+						}
+					}
+					if(splitchest[0].length > 0){
+
+						// figure out chest next date
+						if(splitchest[splitchest.length - 1][0]._fields[0].properties.startTime < oneweek) {
+							if(splitchest.length > 10){
+
+							}else{
+								splitchest[splitchest.length] = { 
+									soreness: splitchest[i].reduce((accumulator, currentValue, currentIndex, array) => {
+								    return accumulator + currentValue[0]._fields[0].properties.soreness;
+								  }) 
+								}
+								if(splitchest[splitchest.length].soreness / (splitchest.length - 1) > 2.5 ){ 
+									chest_time = splitchest[splitchest.length - 2][0]._fields[0].properties.startTime + (times.chest[splitchest[splitchest.length - 2][0]._fields[0].properties.goal] - oneday);
+								}
+								else if(splitchest[splitchest.length].soreness / (splitchest.length - 1) < 1.5 ) {
+									chest_time = splitchest[splitchest.length - 2][0]._fields[0].properties.startTime + (times.chest[splitchest[splitchest.length - 2][0]._fields[0].properties.goal] + oneday);
+								}
+								else{
+									chest_time = splitchest[splitchest.length - 2][0]._fields[0].properties.startTime + times.chest[splitchest[splitchest.length - 2][0]._fields[0].properties.goal];
+								}
+							}
+
+						}else{
+							chest_time = new Date().getTime();
+						}
+					}
+			})
+			.then(() => {
+
+
+					
+			})
+			.then(() => {
+					db.close();
+					res.writeHead(200, header);
+			        res.end(JSON.stringify({
+			        	success:'yes',
+			        	results: {
+			        		back: back_time,
+			        		core: core_time,
+			        		hamstrings: hamstrings_time,
+			        		quads: quads_time,
+			        		biceps: biceps_time,
+			        		triceps: triceps_time,
+			        		shoulders: shoulders_time,
+			        		calves: calves_time,
+			        		chest: chest_time,
+			        		glutes: glutes_time,
+			        	},
+
+		        	}));
+			        console.log(JSON.stringify({
+			        	success:'yes',
+			        	results: {
+			        		back: back_time,
+			        		core: core_time,
+			        		hamstrings: hamstrings_time,
+			        		quads: quads_time,
+			        		biceps: biceps_time,
+			        		triceps: triceps_time,
+			        		shoulders: shoulders_time,
+			        		calves: calves_time,
+			        		chest: chest_time,
+			        		glutes: glutes_time,
+
+			        	},
+
+					}))
+					return;
+
+
 			})
 			.catch((err)=>{
 				console.log(err);
