@@ -1568,85 +1568,91 @@ class Analytics {
 
 					if(results.length >  0) {
 						glutes_array = results.filter((val) => {
-							return val._fields[0].properties.part = 'glutes';
+							return val._fields[0].properties.part == 'glutes';
 						})
 
 						hamstrings_array = results.filter((val) => {
-							return val._fields[0].properties.part = 'hamstrings';
+							return val._fields[0].properties.part == 'hamstrings';
 						})
 
 						quads_array = results.filter((val) => {
-							return val._fields[0].properties.part = 'quads';
+							return val._fields[0].properties.part == 'quads';
 						})
 
 						back_array = results.filter((val) => {
-							return val._fields[0].properties.part = 'back';
+							return val._fields[0].properties.part == 'back';
 						})
 
 						shoulders_array = results.filter((val) => {
-							return val._fields[0].properties.part = 'shoulders';
+							return val._fields[0].properties.part == 'shoulders';
 						})
 
 						chest_array = results.filter((val) => {
-							return val._fields[0].properties.part = 'chest';
+							return val._fields[0].properties.part == 'chest';
 						})
 
 						calves_array = results.filter((val) => {
-							return val._fields[0].properties.part = 'calves';
+							return val._fields[0].properties.part == 'calves';
 						})
 
 						core_array = results.filter((val) => {
-							return val._fields[0].properties.part = 'core';
+							return val._fields[0].properties.part == 'core';
 						})
 
 						biceps_array = results.filter((val) => {
-							return val._fields[0].properties.part = 'core';
+							return val._fields[0].properties.part == 'biceps';
 						})
 
 						triceps_array = results.filter((val) => {
-							return val._fields[0].properties.part = 'core';
+							return val._fields[0].properties.part == 'triceps';
 						})
 					}
 					if(info.length > 0){
 
-						iglutes_array = results.filter((val) => {
-							return val._fields[0].properties.part = 'glutes';
+						iglutes_array = info.filter((val) => {
+							return val._fields[0].properties.part == 'glutes';
 						})
 
 						ihamstrings_array = info.filter((val) => {
-							return val._fields[0].properties.part = 'hamstrings';
+							return val._fields[0].properties.part == 'hamstrings';
 						})
 
 						iquads_array = info.filter((val) => {
-							return val._fields[0].properties.part = 'quads';
+							return val._fields[0].properties.part == 'quads';
 						})
 
 						iback_array = info.filter((val) => {
-							return val._fields[0].properties.part = 'back';
+							return val._fields[0].properties.part == 'back';
 						})
 
 						ishoulders_array = info.filter((val) => {
-							return val._fields[0].properties.part = 'shoulders';
+							return val._fields[0].properties.part == 'shoulders';
 						})
 
 						ichest_array = info.filter((val) => {
-							return val._fields[0].properties.part = 'chest';
+							return val._fields[0].properties.part == 'chest';
 						})
 
 						icalves_array = info.filter((val) => {
-							return val._fields[0].properties.part = 'calves';
+							return val._fields[0].properties.part == 'calves';
 						})
 
 						icore_array = info.filter((val) => {
-							return val._fields[0].properties.part = 'core';
+							if(val._fields[0].properties.part == 'core'){
+								return val
+							}
 						})
 
-						ibiceps_array = results.filter((val) => {
-							return val._fields[0].properties.part = 'core';
+						ibiceps_array = info.filter((val) => {
+							if(val._fields[0].properties.part == 'biceps'){
+								return val;
+							}
 						})
 
-						itriceps_array = results.filter((val) => {
-							return val._fields[0].properties.part = 'core';
+						itriceps_array = info.filter((val) => {
+							if(val._fields[0].properties.part == 'triceps'){
+								return val;
+							}
 						})
 					}
 				})
@@ -1666,9 +1672,11 @@ class Analytics {
 						if(back_array.length === iback_array.length){
 							for(var i=0; i < back_array.length; i++){
 								let ting = back_array[i]._fields[0].properties;
-									if(i != 0 && ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
-										counter1 += 1
-										splitback[counter1] = [back_array[i]];
+									if(back_array.length > 1){
+										if(ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
+											counter1 += 1
+											splitback[counter1] = [back_array[i]];
+										}
 									}else{
 										splitback[counter1].push(back_array[i]);
 									}
@@ -1676,103 +1684,266 @@ class Analytics {
 						}else{
 							for(var i=0; i < iback_array.length; i++){
 								let ting = iback_array[i]._fields[0].properties;
-									if(i != 0 && ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
-										counter1 += 1
-										splitback[counter1] = [iback_array[i]];
+									if(i > 0 && iback_array.length > 1){
+										if(ting.stopTime - info[i - 1]._fields[0].properties.stopTime > oneday){
+											counter1 += 1
+											splitback[counter1] = [iback_array[i]];
+										}
 									}else{
 										splitback[counter1].push(iback_array[i]);
 									}
 							}
 						}
 
+						if(core_array.length === icore_array.length){
 							for(var i=0; i < core_array.length; i++){
 								let ting = core_array[i]._fields[0].properties;
-									if(i != 0 && ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
+								if(i > 0 && core_array.length > 1){
+
+									if(ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
 										counter2 += 1
 										splitcore[counter2] = [core_array[i]];
-									}else{
-										splitcore[counter2].push(core_array[i]);
 									}
+								}else{
+										splitcore[counter2].push(core_array[i]);
+								}
 							}
+						}else{
+							for(var i=0; i < icore_array.length; i++){
+								let ting = icore_array[i]._fields[0].properties;
+								if(i > 0){
 
+									if(ting.stopTime - info[i - 1]._fields[0].properties.stopTime > oneday){
+										counter2 += 1
+										splitcore[counter2] = [icore_array[i]];
+									}
+								}else{
+										splitcore[counter2].push(icore_array[i]);
+								}
+							}
+						}
+
+						if(glutes_array.length === iglutes_array.length){
 							for(var i=0; i < glutes_array.length; i++){
 								let ting = glutes_array[i]._fields[0].properties;
-									if(i != 0 && ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
+								if(i > 0 && glutes_array.length > 1){
+									if(ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
 										counter3 += 1
 										splitglutes[counter3] = [glutes_array[i]];
-									}else{
-										splitglutes[counter3].push(glutes_array[i]);
 									}
+								}else{
+										splitglutes[counter3].push(glutes_array[i]);
+								}
 							}
+							console.log('glutes_array', glutes_array)
+						}
+						else{
+							for(var i=0; i < iglutes_array.length; i++){
+								let ting = iglutes_array[i]._fields[0].properties;
+								if(i > 0 && results.length){
+									if(ting.stopTime - info[i - 1]._fields[0].properties.stopTime > oneday){
+										counter3 += 1
+										splitglutes[counter3] = [iglutes_array[i]];
+									}
+								}else{
+										splitglutes[counter3].push(iglutes_array[i]);
+								}
+							}
+
+							console.log('iglutes_array',iglutes_array)
+						}
+
+						if(hamstrings_array.length === ihamstrings_array.length) {
 							for(var i=0; i < hamstrings_array.length; i++){
 								let ting = hamstrings_array[i]._fields[0].properties;
-									if(i != 0 && ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
+								if(i > 0){
+									if(ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
 										counter4 += 1
 										splithamstrings[counter4] = [hamstrings_array[i]];
-									}else{
-										splithamstrings[counter4].push(hamstrings_array[i]);
 									}
+								}else{
+										splithamstrings[counter4].push(hamstrings_array[i]);
+								}
 							}
+						}else{
+							for(var i=0; i < ihamstrings_array.length; i++){
+								let ting = ihamstrings_array[i]._fields[0].properties;
+								if(i > 0){
+									if(ting.stopTime - info[i - 1]._fields[0].properties.stopTime > oneday){
+										counter4 += 1
+										splithamstrings[counter4] = [ihamstrings_array[i]];
+									}
+								}else{
+										splithamstrings[counter4].push(ihamstrings_array[i]);
+								}
+							}
+						}
 
+						if(quads_array.length === iquads_array) {
 							for(var i=0; i < quads_array.length; i++){
 								let ting = quads_array[i]._fields[0].properties;
-									if(i != 0 && ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
+								if(i > 0){
+									if(ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
 										counter5 += 1
 										splitquads[counter5] = [quads_array[i]];
-									}else{
-										splitquads[counter5].push(quads_array[i]);
 									}
+								}else{
+										splitquads[counter5].push(quads_array[i]);
+								}
 							}
 
+							console.log('quads_array', quads_array)
+						}else{
+							for(var i=0; i < iquads_array.length; i++){
+								let ting = iquads_array[i]._fields[0].properties;
+								if(i > 0){
+									if(ting.stopTime - info[i - 1]._fields[0].properties.stopTime > oneday){
+										counter5 += 1
+										splitquads[counter5] = [iquads_array[i]];
+									}
+								}else{
+										splitquads[counter5].push(iquads_array[i]);
+								}
+							}
+							console.log('iquads_array', iquads_array)
+						}
+
+
+						if(chest_array.length === ichest_array.length) {
 							for(var i=0; i < chest_array.length; i++){
 								let ting = chest_array[i]._fields[0].properties;
-									if(i != 0 && ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
+								if(i > 0){
+									if(ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
 										counter6 += 1
 										splitchest[counter6] = [chest_array[i]];
-									}else{
+									}
+								}else{
 										splitchest[counter6].push(chest_array[i]);
 									}
 							}
+							console.log('chest_array', chest_array)
+						}else{
+							for(var i=0; i < ichest_array.length; i++){
+								let ting = ichest_array[i]._fields[0].properties;
+								if(i > 0){
+									if(ting.stopTime - info[i - 1]._fields[0].properties.stopTime > oneday){
+										counter6 += 1
+										splitchest[counter6] = [ichest_array[i]];
+									}
+								}else{
+										splitchest[counter6].push(ichest_array[i]);
+									}
+							}
+							console.log('ichest_array', ichest_array)
+						}
+
+						if(shoulders_array.length === ishoulders_array.length) {
+
 
 							for(var i=0; i < shoulders_array.length; i++){
 								let ting = shoulders_array[i]._fields[0].properties;
-									if(i != 0 && ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
+								if(i > 0){
+									if(ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
 										counter7 += 1
 										splitshoulders[counter7] = [shoulders_array[i]];
-									}else{
+									}
+								}else{
 										splitshoulders[counter7].push(shoulders_array[i]);
 									}
 							}
+						}else{
+							for(var i=0; i < ishoulders_array.length; i++){
+								let ting = ishoulders_array[i]._fields[0].properties;
+								if(i > 0){
+									if(ting.stopTime - info[i - 1]._fields[0].properties.stopTime > oneday){
+										counter7 += 1
+										splitshoulders[counter7] = [ishoulders_array[i]];
+									}
+								}else{
+										splitshoulders[counter7].push(ishoulders_array[i]);
+									}
+							}
+						}
 
+						if(biceps_array.length === ibiceps_array.length){
 							for(var i=0; i < biceps_array.length; i++){
 								let ting = biceps_array[i]._fields[0].properties;
-									if(i != 0 && ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
+								if(i > 0){
+									if(ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
 										counter8 += 1
 										splitbiceps[counter8] = [biceps_array[i]];
-									}else{
+									}
+								}else{
 										splitbiceps[counter8].push(biceps_array[i]);
 									}
 							}
+						}else{
+							for(var i=0; i < ibiceps_array.length; i++){
+								let ting = ibiceps_array[i]._fields[0].properties;
+								if(i > 0){
+									if(ting.stopTime - info[i - 1]._fields[0].properties.stopTime > oneday){
+										counter8 += 1
+										splitbiceps[counter8] = [ibiceps_array[i]];
+									}
+								}else{
+										splitbiceps[counter8].push(ibiceps_array[i]);
+									}
+							}
+						}
 
+
+						if(triceps_array.length === itriceps_array){
 							for(var i=0; i < triceps_array.length; i++){
 								let ting = triceps_array[i]._fields[0].properties;
-									if(i != 0 && ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
+								if(i > 0){
+									if(ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
 										counter9 += 1
 										splittriceps[counter9] = [triceps_array[i]];
-									}else{
+									}
+								}else{
 										splittriceps[counter9].push(triceps_array[i]);
 									}
 							}
+						}else{
+							for(var i=0; i < itriceps_array.length; i++){
+								let ting = itriceps_array[i]._fields[0].properties;
+								if(i > 0){
+									if(ting.stopTime - info[i - 1]._fields[0].properties.stopTime > oneday){
+										counter9 += 1
+										splittriceps[counter9] = [itriceps_array[i]];
+									}
+								}else{
+										splittriceps[counter9].push(itriceps_array[i]);
+									}
+							}
+						}
+
+						if(calves_array.length === icalves_array){
 
 							for(var i=0; i < calves_array.length; i++){
 								let ting = calves_array[i]._fields[0].properties;
-									if(i != 0 && ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
+								if(i > 0){
+									if(ting.stopTime - results[i - 1]._fields[0].properties.stopTime > oneday){
 										counter10 += 1
 										splitcalves[counter10] = [calves_array[i]];
-									}else{
+									}
+								}else{
 										splitcalves[counter10].push(calves_array[i]);
 									}
 							}
+						}else{
+							for(var i=0; i < icalves_array.length; i++){
+								let ting = icalves_array[i]._fields[0].properties;
+								if(i > 0){
+									if(ting.stopTime - info[i - 1]._fields[0].properties.stopTime > oneday){
+										counter10 += 1
+										splitcalves[counter10] = [icalves_array[i]];
+									}
+								}else{
+										splitcalves[counter10].push(icalves_array[i]);
+									}
+							}
+						}
 
 				})
 				.then(() => {
@@ -1791,7 +1962,7 @@ class Analytics {
 
 						}
 
-						console.log('check start time', splitback[splitback.length - 1][0]._fields[0].properties.startTime)
+						console.log('check start time', splitback)
 
 						// figure out back next workout date
 						if(splitback[0].length > 0){
@@ -2371,6 +2542,8 @@ class Analytics {
 				        		calves: calves_time,
 				        		chest: chest_time,
 				        		glutes: glutes_time,
+				        		splitback: splitback,
+				        		splitshoulders: splitshoulders
 				        	},
 
 			        	}));
