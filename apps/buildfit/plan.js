@@ -124,7 +124,7 @@ class Plan {
 						  "MATCH (trainer)-[:HAS]->(framework:FRAMEWORKS) "+
 						  "WHERE $part = framework.part AND $goal = framework.goal AND $gender = framework.gender "+
 						  "MATCH (framework)-[:HAS]->(pattern:PATTERN) "+
-						  "MATCH (trainer)-[:CREATED]->(exercise:EXERCISE) "+
+						  "MATCH ()-[:CREATED]->(exercise:EXERCISE) "+
 						  "WHERE {location} in exercise.location AND $gender in exercise.gender AND $part = exercise.part "+
 						  "RETURN DISTINCT exercise";
 				db.run(cypher, {
@@ -141,7 +141,7 @@ class Plan {
 								  "MATCH (trainer)-[:HAS]->(framework:FRAMEWORKS) "+
 								  "WHERE $part = framework.part AND $goal = framework.goal AND $gender = framework.gender "+
 								  "MATCH (framework)-[:HAS]->(pattern:PATTERN {soreness: $soreness}) "+
-								  "MATCH (trainer)-[:CREATED]->(exercise:EXERCISE) "+
+								  "MATCH ()-[:CREATED]->(exercise:EXERCISE) "+
 								  "WHERE $location in exercise.location AND $gender in exercise.gender AND $part = exercise.part "+
 								  "RETURN DISTINCT pattern";
 				db.run(cypher, {
