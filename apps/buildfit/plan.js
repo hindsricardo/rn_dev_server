@@ -1,8 +1,10 @@
 /* apps/buildfit/plan*/
 import {secret} from './config';
-import {exercises_core_pack, exercises_back_pack} from './config';
-import {frameworks} from './config';
-import {patterns} from './config';
+import {exercises_core_pack} from './config';
+import {exercises_core_pack2} from './config2';
+
+import {frameworks} from './frameworks';
+import {patterns} from './patterns';
 
 
 import jwt from 'jsonwebtoken';
@@ -64,7 +66,7 @@ class Plan {
 						  "WHERE $part = framework.part AND $gender = framework.gender "+
 						  "MATCH (framework)-[:HAS]->(pattern:PATTERN) "+
 						  "UNWIND pattern.movements AS level "+
-						  "MATCH (trainer)-[:CREATED]->(exercise:EXERCISE) "+
+						  "MATCH ()-[:CREATED]->(exercise:EXERCISE) "+
 						  "WHERE $location in exercise.location AND $gender in exercise.gender AND level in exercise.levels AND $part = exercise.part "+
 						  "RETURN framework";
 
@@ -353,10 +355,10 @@ class Plan {
 		server.post('/admin/seed/exercises', (req, res, next)=>{
 			//if(req.header['token'] == secret){
 				//console.log('/admin/seed/exercises', exercises_core_pack)
-				let array = [exercises_core_pack];// add exercise packs here.
-					array.forEach((pack)=>{
+				//let array = [exercises_core_pack, exercises_core_pack];// add exercise packs here.
 						let cypher = 	'MATCH (trainer:TRAINER {username: $username}) '+
-										'UNWIND '+pack + ' AS move '+
+										'WITH '+exercises_core_pack + ' AS core,'+exercises_core_pack2+' AS core2 '+
+										'UNWIND (core + core2) AS move '+
 										'MERGE (exercise:EXERCISE {name: move.name} ) '+
 										'MERGE (trainer)-[:CREATED]->(exercise) '+
 										'SET exercise += move '+
@@ -392,7 +394,6 @@ class Plan {
 						          message:'Something went wrong logging in. Check error message to see what happened.'
 						          }))
 						});	
-					})
 			/*}
 			else{
 				console.log('/admin/seed/exercises', 'NOT AUTHORIZED TO ACCESS ROUTE');
