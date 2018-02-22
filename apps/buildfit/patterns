@@ -50,7 +50,7 @@ export const patterns = "["+
 						 "{soreness: 3, movements: ['medium','medium','low'], part: 'back', goal: 'Tone', gender: 'female'}, "+
 						 "{soreness: 1, movements: ['high','superset','medium','superset','medium'], part: 'back', goal: 'Bigger', gender: 'male'}, "+
 						 "{soreness: 2, movements: ['medium','superset','medium','superset'], part: 'back', goal: 'Bigger', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['low','superset'], part: 'back', goal: 'Bigger', gender: 'male'}, "+
+						 "{soreness: 3, movements: ['low','superset'], part: 'back', goal: 'Bigger', gender: 'male'}, "+ 
 						 "{soreness: 1, movements: ['high','superset','medium','superset','low'], part: 'back', goal: 'Bigger', gender: 'female'}, "+
 						 "{soreness: 2, movements: ['medium','superset','medium','superset'], part: 'back', goal: 'Bigger', gender: 'female'}, "+
 						 "{soreness: 3, movements: ['medium','superset'], part: 'back', goal: 'Bigger', gender: 'female'}, "+
