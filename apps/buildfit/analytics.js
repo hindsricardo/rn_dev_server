@@ -17,69 +17,20 @@ class Analytics {
 
 
 		server.post('/bf/get/points', (req, res, next) => {	
-			let twoweeksago = 1209600000;
-			let fourweeksago = 2419200000;
-			let sixweeksago = 3628800000;
-			let eightweeksago = 4838400000;
-			let hours24 = 86400000;
-			let currentTime = new Date().getTime()
-			let glutes = 0;
-			let	hamstrings = 0;
-			let	back = 0;
-			let	calves = 0;
-			let	core = 0;
-			let	biceps = 0;
-			let	quads = 0;
-			let	triceps = 0;
-			let chest = 0;
-			let	shoulders = 0;
 			let body = req.body;			
-			let cypher1 = "MATCH (n:USER {uuid: $id})-[:COMPLETED]->(set) WHERE set.stopTime > $currentTime - $eightweeksago RETURN DISTINCT set ORDER BY set.stopTime";	
 
-				db.run(cypher1, {
-					id: body.userid,
-					currentTime: currentTime,
-					eightweeksago: eightweeksago,
-					glutes: 'glutes',
-					hamstrings: 'hamstrings',
-					back: 'back',
-					calves: 'calves',
-					core: 'core',
-					biceps: 'biceps',
-					quads: 'quads',
-					triceps: 'triceps',
-					shoulders: 'shoulders',
-					chest: 'chest'
-
-
-				})
-				.then((data)=>{
-					db.close();
+				
 					res.writeHead(200, header);
 
 			        console.log(JSON.stringify({
 			        	success:'yes',
-			        	sets: data,
+			        	sets: [],
 					}))
 					res.end(JSON.stringify({
 			        	success:'yes',
-			        	sets: data,
+			        	sets: [],
 
 		        	}));
-
-					
-				}) //1
-				.catch((err)=>{
-					log.error(err, '/bf/get/points')
-					console.log('/bf/get/points',err);
-					res.writeHead(500, header)
-			        res.end(JSON.stringify({
-			          success:'no',
-			          err: err,
-			          message:'Something went wrong logging in. Check error message to see what happened.'
-			          }))
-				});
-
 
 		}) // end of '/bf/get/points' ***************************************************************************************
 
