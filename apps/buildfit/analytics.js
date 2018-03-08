@@ -64,49 +64,42 @@ class Analytics {
 						let avgtime = 0;
 						let avgrest = 0;
 						let timeperRep = 0;
+						let part = null;
+						let goal = null;
+						let date = 0;
+						let planUUID = 0;
+						let workouts_remaining = 0;
+						let more_credits_time = 0;
+						let timelapse = 0;
 
 						Promise.resolve(true).then(()=>{
-							for(var i=0; i < results2.length; i++){
-								let ting = results2[i]._fields[0].properties;
-								if(results2[i - 1]){
-									 totalrest += (parseInt(ting.startTime) - parseInt(results2[i -1]._fields[0].properties.stopTime)); //current set stop time versus pervious set stop time. ASSUMING response in order of oldest record last.
-								}
-
-								totalweight += parseInt(ting.weightDone);
-								totalreps += parseInt(ting.repsDone);									
-								totaltime += parseInt(ting.stopTime - ting.startTime);
-								avgweight = Math.round((totalweight/results2.length));
-								avgreps = Math.round((totalreps/results2.length));
-								avgtime = Math.round(totaltime/results2.length);
-								avgrest = Math.round(totalrest/results2.length);
-								timeperRep =  Math.round(totaltime/totalreps);
-								console.log('/bf/get/lastworkout','totalweight1', totalweight, 'totalreps1', totalreps, 'totaltime1', totaltime, 'avgweight1', avgweight, 'avgreps1', avgreps, 'avgtime1', avgtime, 'avgrest1', avgrest);
+							if(results2.length < 1){
+								workouts_remaining = 4;
+								
+							}else{
+								part= results2[0]._fields[0].properties.part;
+					        	goal= results2[0]._fields[0].properties.goal;
+					        	date= results2[0]._fields[0].properties.stopTime;
+					        	planUUID= results2[0]._fields[0].properties.planUUID;
+					        	if(results2[0]._fields[0].properties.workouts_remaining == 0){
+					        		timelapse = Date.now() - results2[0]._fields[0].properties.stopTime;
+					        		if(timelapse >= 172800000){
+					        			workouts_remaining = 4;
+					        		}else{
+					        			more_credits_time = 172800000 - timelapse;
+					        		}
+					        	}else{
+					        		workouts_remaining = results2[0]._fields[0].properties.workouts_remaining;
+					        	}
 							}
 						}).then(()=>{
 							res.writeHead(200, header);
 					        res.end(JSON.stringify({
 					        	success:'yes',
-					        	part: results2[0]._fields[0].properties.part,
-					        	goal: results2[0]._fields[0].properties.goal,
-					        	date: results2[0]._fields[0].properties.stopTime,
-					        	planUUID: results2[0]._fields[0].properties.planUUID,
-					        	totalweight: totalweight,
-					        	totalreps: totalreps,
-					        	totaltime: totaltime,
-					        	avgweight: avgweight,
-					        	avgreps: avgreps,
-					        	avgtime: avgtime,
-					        	avgrest: avgrest,
-					        	timeperRep: timeperRep
-
-
-				        	}));
-					        console.log('/bf/get/lastworkout',JSON.stringify({
-					        	success:'yes',
-					        	part: results2[0]._fields[0].properties.part,
-					        	goal: results2[0]._fields[0].properties.goal,
-					        	date: results2[0]._fields[0].properties.stopTime,
-					        	planUUID: results2[0]._fields[0].properties.planUUID,
+					        	part: part,
+					        	goal: goal,
+					        	date: date,
+					        	planUUID: planUUID,
 					        	totalweight: totalweight,
 					        	totalreps: totalreps,
 					        	totaltime: totaltime,
@@ -115,6 +108,29 @@ class Analytics {
 					        	avgtime: avgtime,
 					        	avgrest: avgrest,
 					        	timeperRep: timeperRep,
+					        	workouts_remaining: workouts_remaining.low,
+					        	more_credits_time: more_credits_time,
+					        	timelapse: timelapse
+
+
+
+				        	}));
+					        console.log('/bf/get/lastworkout',JSON.stringify({
+					        	success:'yes',
+					        	part: part,
+					        	goal: goal,
+					        	date: date,
+					        	planUUID: planUUID,
+					        	totalweight: totalweight,
+					        	totalreps: totalreps,
+					        	totaltime: totaltime,
+					        	avgweight: avgweight,
+					        	avgreps: avgreps,
+					        	avgtime: avgtime,
+					        	avgrest: avgrest,
+					        	timeperRep: timeperRep,
+					        	workouts_remaining: workouts_remaining,
+					        	more_credits_time: more_credits_time,
 							}))
 						})
 
@@ -132,13 +148,63 @@ class Analytics {
 					 
 				}//end of check if any exist
 				else{
-					    console.log('/bf/get/lastworkout',results);
-						res.writeHead(401, header)
-				        res.end(JSON.stringify({
-				          success:'no',
-				          results: results,
-				          message:'No Records found'
-				          }))
+
+						let totalweight = 0; 
+						let totalreps = 0; 
+						let totaltime = 0; 
+						let totalrest = 0; 
+						let avgweight = 0;
+						let avgreps = 0;
+						let avgtime = 0;
+						let avgrest = 0;
+						let timeperRep = 0;
+						let part = null;
+						let goal = null;
+						let date = 0;
+						let planUUID = 0;
+						let workouts_remaining = 4;
+						let more_credits_time = 0;
+
+								
+							
+							res.writeHead(200, header);
+					        res.end(JSON.stringify({
+					        	success:'yes',
+					        	part: part,
+					        	goal: goal,
+					        	date: date,
+					        	planUUID: planUUID,
+					        	totalweight: totalweight,
+					        	totalreps: totalreps,
+					        	totaltime: totaltime,
+					        	avgweight: avgweight,
+					        	avgreps: avgreps,
+					        	avgtime: avgtime,
+					        	avgrest: avgrest,
+					        	timeperRep: timeperRep,
+					        	workouts_remaining: workouts_remaining,
+					        	more_credits_time: more_credits_time,
+					        	
+
+
+				        	}));
+					        console.log('/bf/get/lastworkout',JSON.stringify({
+					        	success:'yes',
+					        	part: part,
+					        	goal: goal,
+					        	date: date,
+					        	planUUID: planUUID,
+					        	totalweight: totalweight,
+					        	totalreps: totalreps,
+					        	totaltime: totaltime,
+					        	avgweight: avgweight,
+					        	avgreps: avgreps,
+					        	avgtime: avgtime,
+					        	avgrest: avgrest,
+					        	timeperRep: timeperRep,
+					        	workouts_remaining: workouts_remaining,
+					        	more_credits_time: more_credits_time,
+							}))
 				}
 			}) //data1
 			.catch((err)=>{
