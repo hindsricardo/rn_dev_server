@@ -108,7 +108,7 @@ class Analytics {
 					        	avgtime: avgtime,
 					        	avgrest: avgrest,
 					        	timeperRep: timeperRep,
-					        	workouts_remaining: workouts_remaining.low,
+					        	workouts_remaining: workouts_remaining,
 					        	more_credits_time: more_credits_time,
 					        	timelapse: timelapse
 
