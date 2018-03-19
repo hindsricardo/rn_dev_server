@@ -81,7 +81,7 @@ class Analytics {
 					        	goal= results2[0]._fields[0].properties.goal;
 					        	date= results2[0]._fields[0].properties.stopTime;
 					        	planUUID= results2[0]._fields[0].properties.planUUID;
-					        	if(results2[0]._fields[0].properties.workouts_remaining < 1){
+					        	if(results2[0]._fields[0].properties.workouts_remaining < 1 || isNaN(results2[0]._fields[0].properties.workouts_remaining) || results2[0]._fields[0].properties.workouts_remaining == undefined ){
 					        		timelapse = Date.now() - results2[0]._fields[0].properties.stopTime;
 					        		if(timelapse >= 172800000){
 					        			workouts_remaining = 4;
