@@ -86,7 +86,7 @@ class Analytics {
 					        		if(timelapse >= 172800000){
 					        			workouts_remaining = 4;
 					        		}else{
-					        			more_credits_time = 172800000 - timelapse;
+					        			more_credits_time = 172800000 + results2[0]._fields[0].properties.stopTime;
 					        		}
 					        	}else{
 					        		workouts_remaining = results2[0]._fields[0].properties.workouts_remaining;
