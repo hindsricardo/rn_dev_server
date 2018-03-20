@@ -133,6 +133,16 @@ class Analytics {
 					        	more_credits_time: more_credits_time,
 							}))
 						})
+						.catch((err) => {
+							log.error(err, '/bf/get/lastworkout')
+								console.log('/bf/get/lastworkout',err);
+								res.writeHead(500, header)
+						        res.end(JSON.stringify({
+						          success:'no',
+						          err: err,
+						          message:'Something went wrong logging in. Check error message to see what happened.'
+					          }))
+						})
 
 				    }) //data2
 				    .catch((err)=>{
