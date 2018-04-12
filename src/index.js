@@ -2,7 +2,6 @@ import http from 'http';
 import restify from 'restify';
 import {parse} from 'url';
 import seraph from 'seraph';
-import Messages from '../apps/assembly/messages';
 import Conversations from '../apps/assembly/conversations';
 import Plan from '../apps/buildfit/plan';
 import User from '../apps/buildfit/user';
@@ -45,7 +44,6 @@ class Server {
 		this.server.listen(process.env.PORT || port, () => {
 		    console.log("Server started @ ", process.env.PORT || port);
 		});
-		this.messagesRouter = new Messages(this.db, this.server);
 		this.conversationsRouter = new Conversations(this.db, this.server);
 		this.planRouter = new Plan(this.db, this.server);
 		this.userRouter = new User(this.db, this.server);

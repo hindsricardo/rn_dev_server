@@ -15,7 +15,50 @@ class User {
 	constructor(db, server) {
 		this.name = 'User'; 
 
-		// FIND LIST OF TRAINERS THAT MATCH GOALS
+		//UPDATE GENDER
+		server.post('/bf/update/user/gender', (req, res, next) => {
+			let body = req.body;
+			db.run("MATCH (user:USER {uuid: $id }) SET user.gender = $gender RETURN user",{
+				id: body.userid,
+				gender: body.gender
+			})
+			.then((results) => {
+				results = results.records;
+				db.close()
+				res.writeHead(200, header);
+		        res.end(JSON.stringify({
+			        	results: results,
+		        	}));
+		        console.log(JSON.stringify({
+		        	results: results,
+		        }));
+		        return
+			})
+		})
+
+		//UPDATE GOAL
+		server.post('/bf/update/user/goal', (req, res, next) => {
+			let body = req.body;
+			db.run("MATCH (user:USER {uuid: $id }) SET user.goal = $goal RETURN user",{
+				id: body.userid,
+				goal: body.goal
+			})
+			.then((results) => {
+				results = results.records;
+				db.close()
+				res.writeHead(200, header);
+		        res.end(JSON.stringify({
+			        	results: results,
+		        	}));
+		        console.log(JSON.stringify({
+		        	results: results,
+		        }));
+		        return
+			})
+		})
+
+
+		// LOGIN / USER CREATION
 		server.post('/create/user/v1', (req, res, next) => {	
 			let body = req.body;	
 			db.run("MATCH (n:SENDGRIDPK) RETURN n",{})

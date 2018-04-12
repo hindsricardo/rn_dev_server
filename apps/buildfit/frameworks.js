@@ -2,16 +2,16 @@ import jwt from 'jsonwebtoken';
 import uuid from 'node-uuid';
 const uuidV4 = require('uuid');
 export const frameworks = "["+
-						 "{gender: 'female', part: 'core', goal: 'Smaller'}, "+
-						 "{gender: 'female', part: 'core', goal: 'Tone'}, "+
-						 //"{gender: 'female', part: 'core', goal: 'Bigger'}, "+
-						 "{gender: 'male', part: 'core', goal: 'Smaller'}, "+
-						 "{gender: 'male', part: 'core', goal: 'Tone'}, "+
+						 "{gender: 'female', part: 'core', goal: 'Smaller', calorie: -500, protein:.23, fat:.25, carbs:.52, meals:5 }, "+
+						 "{gender: 'female', part: 'core', goal: 'Tone', calorie: 0, protein:.23, fat:.25, carbs:.52, meals:4 }, "+
+						 //"{gender: 'female', part: 'core', goal: 'Bigger'}, "+ 
+						 "{gender: 'male', part: 'core', goal: 'Smaller', calorie: -500, protein:.25, fat:.25, carbs:.50, meals:5}, "+
+						 "{gender: 'male', part: 'core', goal: 'Tone', calorie: 0, protein:.25, fat:.25, carbs:.50, meals:4 }, "+
 						 //"{gender: 'male', part: 'core', goal: 'Bigger'}, "+
-						 "{gender: 'female', part: 'glutes', goal: 'Smaller'}, "+
-						 "{gender: 'female', part: 'glutes', goal: 'Tone'}, "+
-						 "{gender: 'female', part: 'glutes', goal: 'Bigger'}, "+
-						 "{gender: 'male', part: 'glutes', goal: 'Smaller'}, "+
+						 "{gender: 'female', part: 'glutes', goal: 'Smaller', calorie: -500, protein:.24, fat:.25, carbs:.51, meals:4 }, "+
+						 "{gender: 'female', part: 'glutes', goal: 'Tone', calorie: 0, protein:.24, fat:.25, carbs:.51, meals:4 }, "+
+						 "{gender: 'female', part: 'glutes', goal: 'Bigger', calorie: 500, protein:.24, fat:.25, carbs:.51, meals:5 }, "+
+						 "{gender: 'male', part: 'glutes', goal: 'Smaller', calorie: -500, protein:.24, fat:.25, carbs:.51, meals:5}, "+
 						 "{gender: 'male', part: 'glutes', goal: 'Tone'}, "+
 						 "{gender: 'male', part: 'glutes', goal: 'Bigger'}, "+
 						 "{gender: 'female', part: 'back', goal: 'Smaller'}, "+

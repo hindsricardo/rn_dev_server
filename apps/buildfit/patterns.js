@@ -6,179 +6,528 @@ export const secret = 'lukeiamyourfather';
 
 
 export const patterns = "["+
-						 "{soreness: 1, movements: ['high','high', 'high'], part: 'core', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['high','high'], part: 'core', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['medium'], part: 'core', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 1, movements: ['high','high', 'high'], part: 'core', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['high','medium'], part: 'core', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['medium'], part: 'core', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 1, movements: ['high', 'high'], part: 'core', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['medium','medium'], part: 'core', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['low'], part: 'core', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 1, movements: ['high','high'], part: 'core', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['medium', 'medium'], part: 'core', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['low'], part: 'core', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 1, movements: ['medium','medium','medium','low'], part: 'glutes', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['medium','superset','low'], part: 'glutes', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['medium','medium','low'], part: 'glutes', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 1, movements: ['medium','medium','medium','low'], part: 'glutes', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['medium','medium','low'], part: 'glutes', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['medium','medium','low'], part: 'glutes', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 1, movements: ['high','medium','medium','low'], part: 'glutes', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['high','medium','low'], part: 'glutes', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['high','low'], part: 'glutes', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 1, movements: ['high','medium','medium','low'], part: 'glutes', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['high','medium','low'], part: 'glutes', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['high', 'low'], part: 'glutes', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 1, movements: ['high', 'superset','medium','superset', 'medium'], part: 'glutes', goal: 'Bigger', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['medium', 'superset','medium','superset'], part: 'glutes', goal: 'Bigger', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['medium', 'superset','low','superset'], part: 'glutes', goal: 'Bigger', gender: 'male'}, "+
-						 "{soreness: 1, movements: ['high', 'medium', 'superset','medium','superset','low'], part: 'glutes', goal: 'Bigger', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['medium', 'superset','medium','superset'], part: 'glutes', goal: 'Bigger', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['medium', 'superset', 'low','superset'], part: 'glutes', goal: 'Bigger', gender: 'female'}, "+
-						 "{soreness: 1, movements: ['medium','low','low','low', 'low'], part: 'back', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['medium','low','low','low'], part: 'back', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['medium','low','low'], part: 'back', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 1, movements: ['medium','low','low','low', 'low'], part: 'back', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['medium','low','low','low'], part: 'back', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['medium','low','low'], part: 'back', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 1, movements: ['medium', 'superset','medium','medium'], part: 'back', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['high','medium','medium'], part: 'back', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['medium','medium','low'], part: 'back', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 1, movements: ['medium', 'superset','medium','medium'], part: 'back', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['high','medium','medium'], part: 'back', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['medium','medium','low'], part: 'back', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 1, movements: ['high','superset','medium','superset','medium'], part: 'back', goal: 'Bigger', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['medium','superset','medium','superset'], part: 'back', goal: 'Bigger', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['low','superset'], part: 'back', goal: 'Bigger', gender: 'male'}, "+ 
-						 "{soreness: 1, movements: ['high','superset','medium','superset','low'], part: 'back', goal: 'Bigger', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['medium','superset','medium','superset'], part: 'back', goal: 'Bigger', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['medium','superset'], part: 'back', goal: 'Bigger', gender: 'female'}, "+
-						 "{soreness: 1, movements: ['medium','low','low','low'], part: 'hamstrings', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['low','low','low','low'], part: 'hamstrings', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['low','low','low'], part: 'hamstrings', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 1, movements: ['medium','low','low','low'], part: 'hamstrings', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['low','low','low','low'], part: 'hamstrings', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['low','low'], part: 'hamstrings', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 1, movements: ['high','medium','medium','low'], part: 'hamstrings', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['medium','medium','low','low'], part: 'hamstrings', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['medium','low'], part: 'hamstrings', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 1, movements: ['high','medium','medium','low'], part: 'hamstrings', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['medium','medium','low','low'], part: 'hamstrings', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['medium','low'], part: 'hamstrings', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 1, movements: ['high','superset','high','superset'], part: 'hamstrings', goal: 'Bigger', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['medium','superset','medium'], part: 'hamstrings', goal: 'Bigger', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['medium','superset'], part: 'hamstrings', goal: 'Bigger', gender: 'male'}, "+
-						 "{soreness: 1, movements: ['high','superset','medium','superset'], part: 'hamstrings', goal: 'Bigger', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['medium','superset','medium'], part: 'hamstrings', goal: 'Bigger', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['low','superset'], part: 'hamstrings', goal: 'Bigger', gender: 'female'}, "+
-						 "{soreness: 1, movements: ['medium','low','low'], part: 'calves', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['low','low','low'], part: 'calves', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['low','low'], part: 'calves', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 1, movements: ['medium','low','low'], part: 'calves', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['low','low','low'], part: 'calves', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['low', 'low'], part: 'calves', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 1, movements: ['medium','medium','low'], part: 'calves', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['medium','low','low'], part: 'calves', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['medium','low'], part: 'calves', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 1, movements: ['medium','medium','low'], part: 'calves', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['medium','low','low'], part: 'calves', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['medium','low'], part: 'calves', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 1, movements: ['high','superset','medium'], part: 'calves', goal: 'Bigger', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['high','superset'], part: 'calves', goal: 'Bigger', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['high'], part: 'calves', goal: 'Bigger', gender: 'male'}, "+
-						 "{soreness: 1, movements: ['high','superset','low'], part: 'calves', goal: 'Bigger', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['high','superset'], part: 'calves', goal: 'Bigger', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['high'], part: 'calves', goal: 'Bigger', gender: 'female'}, "+
-						 "{soreness: 1, movements: ['medium','low','low'], part: 'biceps', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['low','low','low'], part: 'biceps', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['low','low'], part: 'biceps', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 1, movements: ['medium','low','low'], part: 'biceps', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['low','low','low'], part: 'biceps', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['low','low'], part: 'biceps', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 1, movements: ['high','medium','medium'], part: 'biceps', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['high','medium','low'], part: 'biceps', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['high','low'], part: 'biceps', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 1, movements: ['high','medium','medium'], part: 'biceps', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['high','medium','low'], part: 'biceps', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['medium','low'], part: 'biceps', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 1, movements: ['high','superset','high'], part: 'biceps', goal: 'Bigger', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['high','superset','low'], part: 'biceps', goal: 'Bigger', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['medium','superset'], part: 'biceps', goal: 'Bigger', gender: 'male'}, "+
-						 "{soreness: 1, movements: ['high','superset','high'], part: 'biceps', goal: 'Bigger', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['high','superset','low'], part: 'biceps', goal: 'Bigger', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['medium','superset'], part: 'biceps', goal: 'Bigger', gender: 'female'}, "+
-						  "{soreness: 1, movements: ['medium','low','low','low'], part: 'quads', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['low','low','low','low'], part: 'quads', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['low','low','low'], part: 'quads', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 1, movements: ['medium','low','low','low'], part: 'quads', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['low','low','low','low'], part: 'quads', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['low','low','low'], part: 'quads', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 1, movements: ['high','high','medium','medium'], part: 'quads', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['high','medium','medium','low'], part: 'quads', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['medium','medium','low'], part: 'quads', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 1, movements: ['high','high','medium','medium'], part: 'quads', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['high','medium','medium'], part: 'quads', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['medium','medium','low'], part: 'quads', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 1, movements: ['high','superset','high','superset','low'], part: 'quads', goal: 'Bigger', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['high','superset','medium','superset'], part: 'quads', goal: 'Bigger', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['medium','superset','medium'], part: 'quads', goal: 'Bigger', gender: 'male'}, "+
-						 "{soreness: 1, movements: ['high','superset','high','superset','low'], part: 'quads', goal: 'Bigger', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['high','superset','medium','superset'], part: 'quads', goal: 'Bigger', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['medium','superset','medium'], part: 'quads', goal: 'Bigger', gender: 'female'}, "+
-						  "{soreness: 1, movements: ['medium','medium','low'], part: 'triceps', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['medium','low','low'], part: 'triceps', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['low','low','low'], part: 'triceps', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 1, movements: ['medium','medium','low'], part: 'triceps', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['medium','low','low'], part: 'triceps', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['low','low','low'], part: 'triceps', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 1, movements: ['high','medium','low'], part: 'triceps', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['high','low','low'], part: 'triceps', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['high','low'], part: 'triceps', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 1, movements: ['high','medium','low'], part: 'triceps', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['high','low','low'], part: 'triceps', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['medium','low'], part: 'triceps', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 1, movements: ['high','superset','medium'], part: 'triceps', goal: 'Bigger', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['high','superset'], part: 'triceps', goal: 'Bigger', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['medium','superset'], part: 'triceps', goal: 'Bigger', gender: 'male'}, "+
-						 "{soreness: 1, movements: ['high','superset','medium'], part: 'triceps', goal: 'Bigger', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['high','superset'], part: 'triceps', goal: 'Bigger', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['medium','superset'], part: 'triceps', goal: 'Bigger', gender: 'female'}, "+
-						 "{soreness: 1, movements: ['medium','low','low'], part: 'shoulders', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['low','low','low'], part: 'shoulders', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['low','low'], part: 'shoulders', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 1, movements: ['medium','low','low'], part: 'shoulders', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['low','low','low'], part: 'shoulders', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['low','low'], part: 'shoulders', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 1, movements: ['high','medium','low'], part: 'shoulders', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['high','medium'], part: 'shoulders', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['medium','medium'], part: 'shoulders', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 1, movements: ['high','medium','low'], part: 'shoulders', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['high','medium'], part: 'shoulders', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['medium','medium'], part: 'shoulders', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 1, movements: ['high','superset','high','superset'], part: 'shoulders', goal: 'Bigger', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['high','superset','medium','low'], part: 'shoulders', goal: 'Bigger', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['medium','superset','low'], part: 'shoulders', goal: 'Bigger', gender: 'male'}, "+
-						 "{soreness: 1, movements: ['high','superset','high','superset'], part: 'shoulders', goal: 'Bigger', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['high','superset','medium','low'], part: 'shoulders', goal: 'Bigger', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['medium','superset','low'], part: 'shoulders', goal: 'Bigger', gender: 'female'}, "+
-						  "{soreness: 1, movements: ['medium','medium','low'], part: 'chest', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['medium','low','low'], part: 'chest', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['medium','low'], part: 'chest', goal: 'Smaller', gender: 'male'}, "+
-						 "{soreness: 1, movements: ['medium','medium','low'], part: 'chest', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['medium','low','low'], part: 'chest', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['medium','low'], part: 'chest', goal: 'Smaller', gender: 'female'}, "+
-						 "{soreness: 1, movements: ['high','medium','medium'], part: 'chest', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['high','medium','low'], part: 'chest', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['medium','medium','low'], part: 'chest', goal: 'Tone', gender: 'male'}, "+
-						 "{soreness: 1, movements: ['high','medium','medium'], part: 'chest', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['high','medium','low'], part: 'chest', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['medium','medium','low'], part: 'chest', goal: 'Tone', gender: 'female'}, "+
-						 "{soreness: 1, movements: ['high','superset','high','superset'], part: 'chest', goal: 'Bigger', gender: 'male'}, "+
-						 "{soreness: 2, movements: ['high','superset'], part: 'chest', goal: 'Bigger', gender: 'male'}, "+
-						 "{soreness: 3, movements: ['medium','superset'], part: 'chest', goal: 'Bigger', gender: 'male'}, "+
-						 "{soreness: 1, movements: ['high','superset','high','superset'], part: 'chest', goal: 'Bigger', gender: 'female'}, "+
-						 "{soreness: 2, movements: ['high','superset'], part: 'chest', goal: 'Bigger', gender: 'female'}, "+
-						 "{soreness: 3, movements: ['medium','superset'], part: 'chest', goal: 'Bigger', gender: 'female'} "+
-						
+						 "{soreness: '1', movements: ['high','high', 'high'], part: 'core', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['high','high'], part: 'core', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium'], part: 'core', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','high', 'high'], part: 'core', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['high','medium'], part: 'core', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium'], part: 'core', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high', 'high'], part: 'core', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['medium','medium'], part: 'core', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['low'], part: 'core', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','high'], part: 'core', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['medium', 'medium'], part: 'core', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['low'], part: 'core', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '1', movements: ['medium','medium','medium','low'], part: 'glutes', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['medium','superset','low'], part: 'glutes', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','medium','low'], part: 'glutes', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '1', movements: ['medium','medium','medium','low'], part: 'glutes', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['medium','medium','low'], part: 'glutes', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','medium','low'], part: 'glutes', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','medium','medium','low'], part: 'glutes', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['high','medium','low'], part: 'glutes', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['high','low'], part: 'glutes', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','medium','medium','low'], part: 'glutes', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['high','medium','low'], part: 'glutes', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['high', 'low'], part: 'glutes', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high', 'superset','medium','superset', 'medium'], part: 'glutes', goal: 'Bigger', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['medium', 'superset','medium','superset'], part: 'glutes', goal: 'Bigger', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium', 'superset','low','superset'], part: 'glutes', goal: 'Bigger', gender: 'male', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high', 'medium', 'superset','medium','superset','low'], part: 'glutes', goal: 'Bigger', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['medium', 'superset','medium','superset'], part: 'glutes', goal: 'Bigger', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium', 'superset', 'low','superset'], part: 'glutes', goal: 'Bigger', gender: 'female', priority:'1'}, "+
+						 "{soreness: '1', movements: ['medium','low','low','low', 'low'], part: 'back', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['medium','low','low','low'], part: 'back', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','low','low'], part: 'back', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '1', movements: ['medium','low','low','low', 'low'], part: 'back', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['medium','low','low','low'], part: 'back', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','low','low'], part: 'back', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '1', movements: ['medium', 'superset','medium','medium'], part: 'back', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['high','medium','medium'], part: 'back', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','medium','low'], part: 'back', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '1', movements: ['medium', 'superset','medium','medium'], part: 'back', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['high','medium','medium'], part: 'back', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','medium','low'], part: 'back', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','superset','medium','superset','medium'], part: 'back', goal: 'Bigger', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['medium','superset','medium','superset'], part: 'back', goal: 'Bigger', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['low','superset'], part: 'back', goal: 'Bigger', gender: 'male', priority:'1'}, "+ 
+						 "{soreness: '1', movements: ['high','superset','medium','superset','low'], part: 'back', goal: 'Bigger', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['medium','superset','medium','superset'], part: 'back', goal: 'Bigger', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','superset'], part: 'back', goal: 'Bigger', gender: 'female', priority:'1'}, "+
+						 "{soreness: '1', movements: ['medium','low','low','low'], part: 'hamstrings', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['low','low','low','low'], part: 'hamstrings', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['low','low','low'], part: 'hamstrings', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '1', movements: ['medium','low','low','low'], part: 'hamstrings', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['low','low','low','low'], part: 'hamstrings', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['low','low'], part: 'hamstrings', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','medium','medium','low'], part: 'hamstrings', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['medium','medium','low','low'], part: 'hamstrings', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','low'], part: 'hamstrings', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','medium','medium','low'], part: 'hamstrings', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['medium','medium','low','low'], part: 'hamstrings', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','low'], part: 'hamstrings', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','superset','high','superset'], part: 'hamstrings', goal: 'Bigger', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['medium','superset','medium'], part: 'hamstrings', goal: 'Bigger', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','superset'], part: 'hamstrings', goal: 'Bigger', gender: 'male', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','superset','medium','superset'], part: 'hamstrings', goal: 'Bigger', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['medium','superset','medium'], part: 'hamstrings', goal: 'Bigger', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['low','superset'], part: 'hamstrings', goal: 'Bigger', gender: 'female', priority:'1'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'calves', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['low','low','low'], part: 'calves', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['low','low'], part: 'calves', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'calves', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['low','low','low'], part: 'calves', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['low', 'low'], part: 'calves', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '1', movements: ['medium','medium','low'], part: 'calves', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['medium','low','low'], part: 'calves', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','low'], part: 'calves', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '1', movements: ['medium','medium','low'], part: 'calves', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['medium','low','low'], part: 'calves', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','low'], part: 'calves', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','superset','medium'], part: 'calves', goal: 'Bigger', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['high','superset'], part: 'calves', goal: 'Bigger', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['high'], part: 'calves', goal: 'Bigger', gender: 'male', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','superset','low'], part: 'calves', goal: 'Bigger', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['high','superset'], part: 'calves', goal: 'Bigger', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['high'], part: 'calves', goal: 'Bigger', gender: 'female', priority:'1'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'biceps', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['low','low','low'], part: 'biceps', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['low','low'], part: 'biceps', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'biceps', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['low','low','low'], part: 'biceps', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['low','low'], part: 'biceps', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','medium','medium'], part: 'biceps', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['high','medium','low'], part: 'biceps', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['high','low'], part: 'biceps', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','medium','medium'], part: 'biceps', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['high','medium','low'], part: 'biceps', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','low'], part: 'biceps', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','superset','high'], part: 'biceps', goal: 'Bigger', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['high','superset','low'], part: 'biceps', goal: 'Bigger', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','superset'], part: 'biceps', goal: 'Bigger', gender: 'male', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','superset','high'], part: 'biceps', goal: 'Bigger', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['high','superset','low'], part: 'biceps', goal: 'Bigger', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','superset'], part: 'biceps', goal: 'Bigger', gender: 'female', priority:'1'}, "+
+						  "{soreness: '1', movements: ['medium','low','low','low'], part: 'quads', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['low','low','low','low'], part: 'quads', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['low','low','low'], part: 'quads', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '1', movements: ['medium','low','low','low'], part: 'quads', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['low','low','low','low'], part: 'quads', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['low','low','low'], part: 'quads', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','high','medium','medium'], part: 'quads', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['high','medium','medium','low'], part: 'quads', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','medium','low'], part: 'quads', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','high','medium','medium'], part: 'quads', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['high','medium','medium'], part: 'quads', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','medium','low'], part: 'quads', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','superset','high','superset','low'], part: 'quads', goal: 'Bigger', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['high','superset','medium','superset'], part: 'quads', goal: 'Bigger', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','superset','medium'], part: 'quads', goal: 'Bigger', gender: 'male', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','superset','high','superset','low'], part: 'quads', goal: 'Bigger', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['high','superset','medium','superset'], part: 'quads', goal: 'Bigger', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','superset','medium'], part: 'quads', goal: 'Bigger', gender: 'female', priority:'1'}, "+
+						  "{soreness: '1', movements: ['medium','medium','low'], part: 'triceps', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['medium','low','low'], part: 'triceps', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['low','low','low'], part: 'triceps', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '1', movements: ['medium','medium','low'], part: 'triceps', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['medium','low','low'], part: 'triceps', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['low','low','low'], part: 'triceps', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','medium','low'], part: 'triceps', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['high','low','low'], part: 'triceps', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['high','low'], part: 'triceps', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','medium','low'], part: 'triceps', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['high','low','low'], part: 'triceps', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','low'], part: 'triceps', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','superset','medium'], part: 'triceps', goal: 'Bigger', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['high','superset'], part: 'triceps', goal: 'Bigger', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','superset'], part: 'triceps', goal: 'Bigger', gender: 'male', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','superset','medium'], part: 'triceps', goal: 'Bigger', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['high','superset'], part: 'triceps', goal: 'Bigger', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','superset'], part: 'triceps', goal: 'Bigger', gender: 'female', priority:'1'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'shoulders', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['low','low','low'], part: 'shoulders', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['low','low'], part: 'shoulders', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'shoulders', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['low','low','low'], part: 'shoulders', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['low','low'], part: 'shoulders', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','medium','low'], part: 'shoulders', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['high','medium'], part: 'shoulders', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','medium'], part: 'shoulders', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','medium','low'], part: 'shoulders', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['high','medium'], part: 'shoulders', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','medium'], part: 'shoulders', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','superset','high','superset'], part: 'shoulders', goal: 'Bigger', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['high','superset','medium','low'], part: 'shoulders', goal: 'Bigger', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','superset','low'], part: 'shoulders', goal: 'Bigger', gender: 'male', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','superset','high','superset'], part: 'shoulders', goal: 'Bigger', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['high','superset','medium','low'], part: 'shoulders', goal: 'Bigger', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','superset','low'], part: 'shoulders', goal: 'Bigger', gender: 'female', priority:'1'}, "+
+						  "{soreness: '1', movements: ['medium','medium','low'], part: 'chest', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['medium','low','low'], part: 'chest', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','low'], part: 'chest', goal: 'Smaller', gender: 'male', priority:'1'}, "+
+						 "{soreness: '1', movements: ['medium','medium','low'], part: 'chest', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['medium','low','low'], part: 'chest', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','low'], part: 'chest', goal: 'Smaller', gender: 'female', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','medium','medium'], part: 'chest', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['high','medium','low'], part: 'chest', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','medium','low'], part: 'chest', goal: 'Tone', gender: 'male', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','medium','medium'], part: 'chest', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['high','medium','low'], part: 'chest', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','medium','low'], part: 'chest', goal: 'Tone', gender: 'female', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','superset','high','superset'], part: 'chest', goal: 'Bigger', gender: 'male', priority:'1'}, "+
+						 "{soreness: '2', movements: ['high','superset'], part: 'chest', goal: 'Bigger', gender: 'male', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','superset'], part: 'chest', goal: 'Bigger', gender: 'male', priority:'1'}, "+
+						 "{soreness: '1', movements: ['high','superset','high','superset'], part: 'chest', goal: 'Bigger', gender: 'female', priority:'1'}, "+
+						 "{soreness: '2', movements: ['high','superset'], part: 'chest', goal: 'Bigger', gender: 'female', priority:'1'}, "+
+						 "{soreness: '3', movements: ['medium','superset'], part: 'chest', goal: 'Bigger', gender: 'female', priority:'1'}, "+
+						 //PRIORITY'2'
+						 "{soreness: '1', movements: ['high','high'], part: 'core', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['high'], part: 'core', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['low'], part: 'core', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '1', movements: ['high','high'], part: 'core', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['high','low'], part: 'core', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['low'], part: 'core', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '1', movements: ['high', 'high'], part: 'core', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','medium'], part: 'core', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['low'], part: 'core', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '1', movements: ['high'], part: 'core', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium'], part: 'core', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['low'], part: 'core', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','medium','low'], part: 'glutes', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','superset'], part: 'glutes', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium'], part: 'glutes', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','low'], part: 'glutes', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium'], part: 'glutes', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['low'], part: 'glutes', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','low'], part: 'glutes', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['high'], part: 'glutes', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium'], part: 'glutes', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'glutes', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','low'], part: 'glutes', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium'], part: 'glutes', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium', 'superset','low','superset', 'medium'], part: 'glutes', goal: 'Bigger', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium', 'superset','low','superset'], part: 'glutes', goal: 'Bigger', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium', 'superset','low','superset'], part: 'glutes', goal: 'Bigger', gender: 'male', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium', 'medium', 'superset','low','superset','low'], part: 'glutes', goal: 'Bigger', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium', 'superset','low','superset'], part: 'glutes', goal: 'Bigger', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium', 'superset', 'low','superset'], part: 'glutes', goal: 'Bigger', gender: 'female', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','low','low','low', 'low'], part: 'back', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','low','low','low'], part: 'back', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','low','low'], part: 'back', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','low','low','low', 'low'], part: 'back', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','low','low','low'], part: 'back', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','low','low'], part: 'back', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium', 'superset','low','low'], part: 'back', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','low','low'], part: 'back', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','low','low'], part: 'back', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium', 'superset','low','low'], part: 'back', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','low','low'], part: 'back', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','low','low'], part: 'back', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','superset','low','superset','low'], part: 'back', goal: 'Bigger', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','superset','low','superset'], part: 'back', goal: 'Bigger', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['low','superset'], part: 'back', goal: 'Bigger', gender: 'male', priority:'2'}, "+ 
+						 "{soreness: '1', movements: ['medium','superset','low','superset','low'], part: 'back', goal: 'Bigger', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','superset','low','superset'], part: 'back', goal: 'Bigger', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','superset'], part: 'back', goal: 'Bigger', gender: 'female', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','low','low','low'], part: 'hamstrings', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['low','low','low','low'], part: 'hamstrings', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['low','low','low'], part: 'hamstrings', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','low','low','low'], part: 'hamstrings', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['low','low','low','low'], part: 'hamstrings', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['low','low'], part: 'hamstrings', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','low','low','low'], part: 'hamstrings', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','low','low','low'], part: 'hamstrings', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','low'], part: 'hamstrings', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','low','low','low'], part: 'hamstrings', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','low','low','low'], part: 'hamstrings', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','low'], part: 'hamstrings', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','superset','medium','superset'], part: 'hamstrings', goal: 'Bigger', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','superset','low'], part: 'hamstrings', goal: 'Bigger', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','superset'], part: 'hamstrings', goal: 'Bigger', gender: 'male', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','superset','low','superset'], part: 'hamstrings', goal: 'Bigger', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','superset','low'], part: 'hamstrings', goal: 'Bigger', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['low','superset'], part: 'hamstrings', goal: 'Bigger', gender: 'female', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'calves', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['low','low','low'], part: 'calves', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['low','low'], part: 'calves', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'calves', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['low','low','low'], part: 'calves', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['low', 'low'], part: 'calves', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'calves', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','low','low'], part: 'calves', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','low'], part: 'calves', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'calves', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','low','low'], part: 'calves', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','low'], part: 'calves', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','superset','low'], part: 'calves', goal: 'Bigger', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','superset'], part: 'calves', goal: 'Bigger', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['high'], part: 'calves', goal: 'Bigger', gender: 'male', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','superset','low'], part: 'calves', goal: 'Bigger', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','superset'], part: 'calves', goal: 'Bigger', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['high'], part: 'calves', goal: 'Bigger', gender: 'female', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'biceps', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['low','low','low'], part: 'biceps', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['low','low'], part: 'biceps', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'biceps', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['low','low','low'], part: 'biceps', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['low','low'], part: 'biceps', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'biceps', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','low','low'], part: 'biceps', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','low'], part: 'biceps', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'biceps', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','low','low'], part: 'biceps', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','low'], part: 'biceps', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','superset','high'], part: 'biceps', goal: 'Bigger', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','superset','low'], part: 'biceps', goal: 'Bigger', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','superset'], part: 'biceps', goal: 'Bigger', gender: 'male', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','superset','high'], part: 'biceps', goal: 'Bigger', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','superset','low'], part: 'biceps', goal: 'Bigger', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','superset'], part: 'biceps', goal: 'Bigger', gender: 'female', priority:'2'}, "+
+						  "{soreness: '1', movements: ['medium','low','low','low'], part: 'quads', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['low','low','low','low'], part: 'quads', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['low','low','low'], part: 'quads', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','low','low','low'], part: 'quads', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['low','low','low','low'], part: 'quads', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['low','low','low'], part: 'quads', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','medium','low','low'], part: 'quads', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','low','low','low'], part: 'quads', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','low','low'], part: 'quads', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','medium','low','low'], part: 'quads', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','low','low'], part: 'quads', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','low','low'], part: 'quads', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','superset','medium','superset','low'], part: 'quads', goal: 'Bigger', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','superset','low','superset'], part: 'quads', goal: 'Bigger', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','superset','low'], part: 'quads', goal: 'Bigger', gender: 'male', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','superset','medium','superset','low'], part: 'quads', goal: 'Bigger', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','superset','low','superset'], part: 'quads', goal: 'Bigger', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','superset','low'], part: 'quads', goal: 'Bigger', gender: 'female', priority:'2'}, "+
+						  "{soreness: '1', movements: ['medium','low','low'], part: 'triceps', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','low','low'], part: 'triceps', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['low','low','low'], part: 'triceps', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'triceps', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','low','low'], part: 'triceps', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['low','low','low'], part: 'triceps', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'triceps', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','low','low'], part: 'triceps', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','low'], part: 'triceps', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'triceps', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','low','low'], part: 'triceps', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','low'], part: 'triceps', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','superset','low'], part: 'triceps', goal: 'Bigger', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','superset'], part: 'triceps', goal: 'Bigger', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','superset'], part: 'triceps', goal: 'Bigger', gender: 'male', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','superset','low'], part: 'triceps', goal: 'Bigger', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','superset'], part: 'triceps', goal: 'Bigger', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','superset'], part: 'triceps', goal: 'Bigger', gender: 'female', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'shoulders', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['low','low','low'], part: 'shoulders', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['low','low'], part: 'shoulders', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'shoulders', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['low','low','low'], part: 'shoulders', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['low','low'], part: 'shoulders', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'shoulders', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','low'], part: 'shoulders', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','low'], part: 'shoulders', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'shoulders', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','low'], part: 'shoulders', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','low'], part: 'shoulders', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','superset','medium','superset'], part: 'shoulders', goal: 'Bigger', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','superset','low','low'], part: 'shoulders', goal: 'Bigger', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','superset','low'], part: 'shoulders', goal: 'Bigger', gender: 'male', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','superset','medium','superset'], part: 'shoulders', goal: 'Bigger', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','superset','low','low'], part: 'shoulders', goal: 'Bigger', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','superset','low'], part: 'shoulders', goal: 'Bigger', gender: 'female', priority:'2'}, "+
+						  "{soreness: '1', movements: ['medium','low','low'], part: 'chest', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','low','low'], part: 'chest', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','low'], part: 'chest', goal: 'Smaller', gender: 'male', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'chest', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','low','low'], part: 'chest', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','low'], part: 'chest', goal: 'Smaller', gender: 'female', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'chest', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','low','low'], part: 'chest', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','low','low'], part: 'chest', goal: 'Tone', gender: 'male', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'chest', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','low','low'], part: 'chest', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','low','low'], part: 'chest', goal: 'Tone', gender: 'female', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','superset','medium','superset'], part: 'chest', goal: 'Bigger', gender: 'male', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','superset'], part: 'chest', goal: 'Bigger', gender: 'male', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','superset'], part: 'chest', goal: 'Bigger', gender: 'male', priority:'2'}, "+
+						 "{soreness: '1', movements: ['medium','superset','medium','superset'], part: 'chest', goal: 'Bigger', gender: 'female', priority:'2'}, "+
+						 "{soreness: '2', movements: ['medium','superset'], part: 'chest', goal: 'Bigger', gender: 'female', priority:'2'}, "+
+						 "{soreness: '3', movements: ['medium','superset'], part: 'chest', goal: 'Bigger', gender: 'female', priority:'2'}, "+
+						 //PRIORITY'3'
+						"{soreness: '1', movements: ['high'], part: 'core', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['high'], part: 'core', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['low'], part: 'core', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '1', movements: ['high'], part: 'core', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['high'], part: 'core', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['low'], part: 'core', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '1', movements: ['high', 'high'], part: 'core', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium'], part: 'core', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['low'], part: 'core', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '1', movements: ['high'], part: 'core', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium'], part: 'core', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['low'], part: 'core', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','medium'], part: 'glutes', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','superset'], part: 'glutes', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium'], part: 'glutes', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium'], part: 'glutes', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium'], part: 'glutes', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['low'], part: 'glutes', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium'], part: 'glutes', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['high'], part: 'glutes', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium'], part: 'glutes', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'glutes', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium'], part: 'glutes', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium'], part: 'glutes', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium', 'superset','low','superset', 'medium'], part: 'glutes', goal: 'Bigger', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium', 'superset','low','superset'], part: 'glutes', goal: 'Bigger', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium', 'superset','low','superset'], part: 'glutes', goal: 'Bigger', gender: 'male', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium', 'medium', 'superset','low','superset'], part: 'glutes', goal: 'Bigger', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium', 'superset','low','superset'], part: 'glutes', goal: 'Bigger', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium', 'superset', 'low','superset'], part: 'glutes', goal: 'Bigger', gender: 'female', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','low','low','low', 'low'], part: 'back', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','low','low'], part: 'back', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium','low'], part: 'back', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','low','low','low', 'low'], part: 'back', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','low','low'], part: 'back', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium','low'], part: 'back', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium', 'superset','low'], part: 'back', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','low'], part: 'back', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium','low'], part: 'back', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium', 'superset','low'], part: 'back', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','low'], part: 'back', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium','low'], part: 'back', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','superset','low','superset'], part: 'back', goal: 'Bigger', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','superset','low','superset'], part: 'back', goal: 'Bigger', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['low','superset'], part: 'back', goal: 'Bigger', gender: 'male', priority:'3'}, "+ 
+						 "{soreness: '1', movements: ['medium','superset','low','superset'], part: 'back', goal: 'Bigger', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','superset','low','superset'], part: 'back', goal: 'Bigger', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium','superset'], part: 'back', goal: 'Bigger', gender: 'female', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'hamstrings', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['low','low','low'], part: 'hamstrings', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['low','low'], part: 'hamstrings', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','low','low','low'], part: 'hamstrings', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['low','low','low'], part: 'hamstrings', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['low'], part: 'hamstrings', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'hamstrings', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','low','low'], part: 'hamstrings', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium'], part: 'hamstrings', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'hamstrings', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','low','low'], part: 'hamstrings', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium'], part: 'hamstrings', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','superset','medium','superset'], part: 'hamstrings', goal: 'Bigger', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','superset'], part: 'hamstrings', goal: 'Bigger', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium','superset'], part: 'hamstrings', goal: 'Bigger', gender: 'male', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','superset','low','superset'], part: 'hamstrings', goal: 'Bigger', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','superset'], part: 'hamstrings', goal: 'Bigger', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['low','superset'], part: 'hamstrings', goal: 'Bigger', gender: 'female', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','low'], part: 'calves', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['low','low'], part: 'calves', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['low'], part: 'calves', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','low'], part: 'calves', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['low','low'], part: 'calves', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['low', 'low'], part: 'calves', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','low'], part: 'calves', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','low'], part: 'calves', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium'], part: 'calves', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','low'], part: 'calves', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','low'], part: 'calves', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium'], part: 'calves', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','superset'], part: 'calves', goal: 'Bigger', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','superset'], part: 'calves', goal: 'Bigger', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['high'], part: 'calves', goal: 'Bigger', gender: 'male', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','superset'], part: 'calves', goal: 'Bigger', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','superset'], part: 'calves', goal: 'Bigger', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['high'], part: 'calves', goal: 'Bigger', gender: 'female', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','low'], part: 'biceps', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['low','low'], part: 'biceps', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['low'], part: 'biceps', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','low'], part: 'biceps', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['low','low'], part: 'biceps', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['low'], part: 'biceps', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','low'], part: 'biceps', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','low'], part: 'biceps', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium'], part: 'biceps', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','low'], part: 'biceps', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','low'], part: 'biceps', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium'], part: 'biceps', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','superset'], part: 'biceps', goal: 'Bigger', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','superset'], part: 'biceps', goal: 'Bigger', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium','superset'], part: 'biceps', goal: 'Bigger', gender: 'male', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','superset'], part: 'biceps', goal: 'Bigger', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','superset'], part: 'biceps', goal: 'Bigger', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium','superset'], part: 'biceps', goal: 'Bigger', gender: 'female', priority:'3'}, "+
+						  "{soreness: '1', movements: ['medium','low','low'], part: 'quads', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['low','low','low'], part: 'quads', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['low','low'], part: 'quads', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','low','low'], part: 'quads', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['low','low','low'], part: 'quads', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['low','low'], part: 'quads', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','medium','low'], part: 'quads', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','low','low'], part: 'quads', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium','low'], part: 'quads', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','medium','low'], part: 'quads', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','low'], part: 'quads', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium','low'], part: 'quads', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','superset','medium','superset'], part: 'quads', goal: 'Bigger', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','superset','low','superset'], part: 'quads', goal: 'Bigger', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium','superset'], part: 'quads', goal: 'Bigger', gender: 'male', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','superset','medium','superset'], part: 'quads', goal: 'Bigger', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','superset','low','superset'], part: 'quads', goal: 'Bigger', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium','superset'], part: 'quads', goal: 'Bigger', gender: 'female', priority:'3'}, "+
+						  "{soreness: '1', movements: ['medium','low'], part: 'triceps', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','low'], part: 'triceps', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['low','low'], part: 'triceps', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','low'], part: 'triceps', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','low'], part: 'triceps', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['low','low'], part: 'triceps', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','low'], part: 'triceps', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','low'], part: 'triceps', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium'], part: 'triceps', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','low'], part: 'triceps', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','low'], part: 'triceps', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium'], part: 'triceps', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','superset'], part: 'triceps', goal: 'Bigger', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','superset'], part: 'triceps', goal: 'Bigger', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium','superset'], part: 'triceps', goal: 'Bigger', gender: 'male', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','superset'], part: 'triceps', goal: 'Bigger', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','superset'], part: 'triceps', goal: 'Bigger', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium','superset'], part: 'triceps', goal: 'Bigger', gender: 'female', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','low'], part: 'shoulders', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['low','low'], part: 'shoulders', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['low'], part: 'shoulders', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','low'], part: 'shoulders', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['low','low'], part: 'shoulders', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['low'], part: 'shoulders', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','low'], part: 'shoulders', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium'], part: 'shoulders', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium'], part: 'shoulders', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','low'], part: 'shoulders', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium'], part: 'shoulders', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium'], part: 'shoulders', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','superset','medium','superset'], part: 'shoulders', goal: 'Bigger', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','superset','low'], part: 'shoulders', goal: 'Bigger', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium','superset'], part: 'shoulders', goal: 'Bigger', gender: 'male', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','superset','medium','superset'], part: 'shoulders', goal: 'Bigger', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','superset','low'], part: 'shoulders', goal: 'Bigger', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium','superset'], part: 'shoulders', goal: 'Bigger', gender: 'female', priority:'3'}, "+
+						  "{soreness: '1', movements: ['medium','low'], part: 'chest', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','low'], part: 'chest', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium'], part: 'chest', goal: 'Smaller', gender: 'male', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','low'], part: 'chest', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','low'], part: 'chest', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium'], part: 'chest', goal: 'Smaller', gender: 'female', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','low'], part: 'chest', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','low'], part: 'chest', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium','low'], part: 'chest', goal: 'Tone', gender: 'male', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','low'], part: 'chest', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','low'], part: 'chest', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium','low'], part: 'chest', goal: 'Tone', gender: 'female', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','superset','medium','superset'], part: 'chest', goal: 'Bigger', gender: 'male', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','superset'], part: 'chest', goal: 'Bigger', gender: 'male', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium','superset'], part: 'chest', goal: 'Bigger', gender: 'male', priority:'3'}, "+
+						 "{soreness: '1', movements: ['medium','superset','medium','superset'], part: 'chest', goal: 'Bigger', gender: 'female', priority:'3'}, "+
+						 "{soreness: '2', movements: ['medium','superset'], part: 'chest', goal: 'Bigger', gender: 'female', priority:'3'}, "+
+						 "{soreness: '3', movements: ['medium','superset'], part: 'chest', goal: 'Bigger', gender: 'female', priority:'3'} "+
 "]";
