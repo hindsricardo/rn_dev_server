@@ -190,7 +190,11 @@ class Plan {
 							  	num: results[0]._fields[0].properties.movements.length
 							  	})
 						  	.then((results2) => {
-							  	results2 = results2.records;
+							  	results2 = results2.records.map((x, index) => { 
+							  		x._fields[0].properties.sets = JSON.parse(x._fields[0].properties.sets);
+							  		x._fields[0].properties.level = results[0]._fields[0].properties.movements[index];
+							  		return x = x._fields[0].properties;
+							  	});
 							  	res.writeHead(200, header);
 						        res.end(JSON.stringify({
 							        	success:'yes',
@@ -374,7 +378,11 @@ class Plan {
 									}
 									//console.log('sets last 7 days ', data2.length, nextworkout, moment().startOf('day'))
 									if(data2.length < times[body.part2][body.goal2] && nextworkout <= moment().startOf('day') || body.force_workout){ //if less workouts than allowed in the week defined in times var per part and goal and next workout date is equal to or less than current date or user has force requested a workout
-								  	results2 = results2.records;
+								  	results2 = results2.records.map((x, index) => { 
+								  		x._fields[0].properties.sets = JSON.parse(x._fields[0].properties.sets);
+								  		x._fields[0].properties.level = results[0]._fields[0].properties.movements[index];
+								  		return x = x._fields[0].properties;
+								  	});
 								  	db.close;
 								  	db.run(cypher3, {
 								  		pattern: results[0]._fields[1].properties,
@@ -388,7 +396,11 @@ class Plan {
 									  	num: results[0]._fields[1].properties.movements.length,
 									  	})
 								  		.then((results3) => {
-										  	results3 = results3.records;
+										  	results3 = results3.records.map((x, index) => { 
+										  		x._fields[0].properties.sets = JSON.parse(x._fields[0].properties.sets);
+										  		x._fields[0].properties.level = results[0]._fields[1].properties.movements[index];
+										  		return x = x._fields[0].properties;
+										  	});
 										  	db.close;
 										  	res.writeHead(200, header);
 									        res.end(JSON.stringify({
@@ -493,7 +505,11 @@ class Plan {
 							  	today: new Date().getTime()
 							  	})
 						  		.then((results2) => {
-						  			results2 = results2.records;
+						  			results2 = results2.records.map((x, index) => { 
+								  		x._fields[0].properties.sets = JSON.parse(x._fields[0].properties.sets);
+								  		x._fields[0].properties.level = results[0]._fields[0].properties.movements[index];
+								  		return x = x._fields[0].properties;
+								  	});
 						  			db.close;
 						  			res.writeHead(200, header);
 							        res.end(JSON.stringify({
@@ -667,7 +683,11 @@ class Plan {
 									}
 									//console.log('sets last 7 days ', data2.length, nextworkout, moment().startOf('day'))
 									if(data2.length < times[body.part2][body.goal2] && nextworkout <= moment().startOf('day') || body.force_workout){ //if less workouts than allowed in the week defined in times var per part and goal and next workout date is equal to or less than current date or user has force requested a workout
-								  	results2 = results2.records;
+								  	results2 = results2.records.map((x, index) => { 
+								  		x._fields[0].properties.sets = JSON.parse(x._fields[0].properties.sets);
+								  		x._fields[0].properties.level = results[0]._fields[0].properties.movements[index];
+								  		return x = x._fields[0].properties;
+								  	});
 								  	db.close;
 								  	db.run(cypher3, {
 								  		pattern: results[0]._fields[1].properties,
@@ -681,7 +701,11 @@ class Plan {
 									  	num: results[0]._fields[1].properties.movements.length,
 									  	})
 								  		.then((results3) => {
-										  	results3 = results3.records;
+										  	results3 = results3.records.map((x, index) => { 
+										  		x._fields[0].properties.sets = JSON.parse(x._fields[0].properties.sets);
+										  		x._fields[0].properties.level = results[0]._fields[1].properties.movements[index];
+										  		return x = x._fields[0].properties;
+										  	});
 										  	db.close;
 										  	let lastworkouts3 = "MATCH (sets: SetFeedback)<-[:COMPLETED]-(user:USER {uuid: $id}) "+
 											   "WHERE $goal3 = sets.goal AND $part3 = sets.part AND $today - $week < sets.stopTime  "+
@@ -727,7 +751,11 @@ class Plan {
 													  	num: results[0]._fields[2].properties.movements.length,
 													})
 													.then((results4) => {
-														results4 = results4.records;
+														results4 = results4.records.map((x, index) => { 
+													  		x._fields[0].properties.sets = JSON.parse(x._fields[0].properties.sets);
+													  		x._fields[0].properties.level = results[0]._fields[2].properties.movements[index];
+													  		return x = x._fields[0].properties;
+													  	});
 												  		db.close;
 														res.writeHead(200, header);
 												        res.end(JSON.stringify({
@@ -758,8 +786,6 @@ class Plan {
 												  	})
 												}// END OF CHECK PRIORTY 3 NEXT DAY
 												else{
-													results4 = results4.records;
-											  		db.close;
 													res.writeHead(200, header);
 											        res.end(JSON.stringify({
 												        	success:'yes',
@@ -850,7 +876,11 @@ class Plan {
 											  	num: results3[1]._fields[0].properties.movements.length,
 											})
 											.then((results4) => {
-												results4 = results4.records;
+												results4 = results4.records.map((x, index) => { 
+											  		x._fields[0].properties.sets = JSON.parse(x._fields[0].properties.sets);
+											  		x._fields[0].properties.level = results3[1]._fields[0].properties.movements[index];
+											  		return x = x._fields[0].properties;
+											  	});
 										  		db.close;
 												res.writeHead(200, header);
 										        res.end(JSON.stringify({
@@ -982,7 +1012,11 @@ class Plan {
 									}
 									//console.log('sets last 7 days ', data2.length, nextworkout, moment().startOf('day'))
 									if(data2.length < times[body.part2][body.goal2] && nextworkout <= moment().startOf('day') || body.force_workout){ //if less workouts than allowed in the week defined in times var per part and goal and next workout date is equal to or less than current date or user has force requested a workout
-						  			results2 = results2.records;
+						  			results2 = results2.records.map((x, index) => { 
+								  		x._fields[0].properties.sets = JSON.parse(x._fields[0].properties.sets);
+								  		x._fields[0].properties.level = results[0]._fields[0].properties.movements[index];
+								  		return x = x._fields[0].properties;
+								  	});
 						  			db.close;
 						  			db.run(cypher3, {
 								  		pattern: results[0]._fields[1].properties,
@@ -996,7 +1030,11 @@ class Plan {
 									  	num: results[0]._fields[1].properties.movements.length,
 									  	})
 								  		.then((results3) => {
-										  	results3 = results3.records;
+										  	results3 = results3.records.map((x, index) => { 
+										  		x._fields[0].properties.sets = JSON.parse(x._fields[0].properties.sets);
+										  		x._fields[0].properties.level = results[0]._fields[1].properties.movements[index];
+										  		return x = x._fields[0].properties;
+										  	});
 										  	db.close;
 										  	let lastworkouts3 = "MATCH (sets: SetFeedback)<-[:COMPLETED]-(user:USER {uuid: $id}) "+
 										   "WHERE $goal3 = sets.goal AND $part3 = sets.part AND $today - $week < sets.stopTime  "+
@@ -1041,7 +1079,11 @@ class Plan {
 												  	num: results[0]._fields[2].properties.movements.length,
 												})
 												.then((results4) => {
-													results4 = results4.records;
+													results4 = results4.records.map((x, index) => { 
+												  		x._fields[0].properties.sets = JSON.parse(x._fields[0].properties.sets);
+												  		x._fields[0].properties.level = results[0]._fields[2].properties.movements[index];
+												  		return x = x._fields[0].properties;
+												  	});
 											  		db.close;
 													res.writeHead(200, header);
 											        res.end(JSON.stringify({
@@ -1062,8 +1104,6 @@ class Plan {
 												})
 										} //END OF CHECKING NEXTWORKOUT
 										else{
-											results4 = results4.records;
-									  		db.close;
 											res.writeHead(200, header);
 									        res.end(JSON.stringify({
 										        	success:'yes',
@@ -1142,7 +1182,11 @@ class Plan {
 											  	num: results3[1]._fields[0].properties.movements.length,
 											})
 											.then((results4) => {
-												results4 = results4.records;
+												results4 = results4.records.map((x, index) => { 
+											  		x._fields[0].properties.sets = JSON.parse(x._fields[0].properties.sets);
+											  		x._fields[0].properties.level = results3[1]._fields[0].properties.movements[index];
+											  		return x = x._fields[0].properties;
+											  	});
 										  		db.close;
 												res.writeHead(200, header);
 										        res.end(JSON.stringify({
@@ -1214,7 +1258,7 @@ class Plan {
 
 		server.post('/bf/get/dietplan/v1', (req, res, next) => {
 			let body = req.body;
-			
+
 
 		}) //bf/get/dietplan/v1
 
