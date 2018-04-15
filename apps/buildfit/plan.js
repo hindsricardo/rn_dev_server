@@ -118,6 +118,7 @@ class Plan {
 			}
 
 			let body = req.body;
+			console.log('body', body);
 			if(body.part1 &&  !body.part2 ){
 				let cypher2 = "MATCH (trainer:TRAINER {username: $trainer}) "+
 						  "MATCH (trainer)-[:HAS]->(framework:FRAMEWORKS) "+
