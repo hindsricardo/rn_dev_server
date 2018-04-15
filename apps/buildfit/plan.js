@@ -121,10 +121,7 @@ class Plan {
 			console.log('body', body);
 			if(body.part1 &&  !body.part2 ){
 				let cypher2 = "MATCH (trainer:TRAINER {username: $trainer}) "+
-						  "MATCH (trainer)-[:HAS]->(framework:FRAMEWORKS) "+
-						  "WHERE $part1 = framework.part AND $goal1 = framework.goal AND $gender = framework.gender "+
-						  "MATCH (framework)-[:HAS]->(pattern:PATTERN {soreness: $soreness, priority: '1'}) "+
-						  "UNWIND pattern.movements as move "+
+						  "UNWIND $pattern.movements as move "+
 						  "MATCH (trainer)-[:CREATED]->(exercise:EXERCISE) "+
 						  "WHERE $part1 = exercise.part AND $location in exercise.location AND $gender in exercise.gender AND move in exercise.levels "+
 						  "WITH exercise, rand() AS r ORDER BY r "+
@@ -183,6 +180,7 @@ class Plan {
 						  	console.log('results',results);
 						  	db.close;
 						  	db.run(cypher2, {
+						  		pattern: results[0]._fields[0].properties,
 						  		part1: body.part1,
 							  	goal1: body.goal1,
 							  	id: body.userid,
@@ -193,6 +191,7 @@ class Plan {
 							  	num: results[0]._fields[0].properties.movements.length
 							  	})
 						  	.then((results2) => {
+						  		console.log('results2', results2.records)
 							  	results2 = results2.records.map((x, index) => { 
 							  		x._fields[0].properties.sets = JSON.parse(x._fields[0].properties.sets);
 							  		x._fields[0].properties.level = results[0]._fields[0].properties.movements[index];
