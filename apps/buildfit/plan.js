@@ -144,6 +144,7 @@ class Plan {
 					today: new Date().getTime()
 				})
 				.then((data) => {
+					console.log('data', data.records);
 					data = data.records.filter((x, index) => {
 						if(index == 0){
 							return x;
@@ -155,13 +156,14 @@ class Plan {
 									}
 							}
 						}
-					})
+					});
+
 					db.close;
 					if(data.length > 0){
 						var nextworkout = moment(data[0]._fields[0].properties.stopTime + (oneday *(7/times[body.part1][body.goal1]))).startOf('day')
 					}
 					else{
-						nextworkout = moment().startOf('day')
+						var nextworkout = moment().startOf('day')
 					}
 					console.log('sets last 7 days ', data.length, nextworkout, moment().startOf('day'))
 					if(data.length < times[body.part1][body.goal1] && nextworkout <= moment().startOf('day') || body.force_workout){
@@ -177,7 +179,7 @@ class Plan {
 						  })
 						  .then((results) => {
 						  	results = results.records;
-						  	console.log(results);
+						  	console.log('results',results);
 						  	db.close;
 						  	db.run(cypher2, {
 						  		part1: body.part1,
@@ -314,7 +316,7 @@ class Plan {
 						var nextworkout = moment(data[0]._fields[0].properties.stopTime + (oneday *(7/times[body.part1][body.goal1]))).startOf('day')
 					}
 					else{
-						nextworkout = moment().startOf('day')
+						var nextworkout = moment().startOf('day')
 					}
 					console.log('sets last 7 days ', data.length, nextworkout, moment().startOf('day'))
 					if(data.length < times[body.part1][body.goal1] && nextworkout <= moment().startOf('day') || body.force_workout){
@@ -374,7 +376,7 @@ class Plan {
 										var nextworkout = moment(data2[0]._fields[0].properties.stopTime + (oneday *(7/times[body.part2][body.goal2]))).startOf('day')
 									}
 									else{
-										nextworkout = moment().startOf('day')
+										var nextworkout = moment().startOf('day')
 									}
 									//console.log('sets last 7 days ', data2.length, nextworkout, moment().startOf('day'))
 									if(data2.length < times[body.part2][body.goal2] && nextworkout <= moment().startOf('day') || body.force_workout){ //if less workouts than allowed in the week defined in times var per part and goal and next workout date is equal to or less than current date or user has force requested a workout
@@ -619,7 +621,7 @@ class Plan {
 						var nextworkout = moment(data[0]._fields[0].properties.stopTime + (oneday *(7/times[body.part1][body.goal1]))).startOf('day')
 					}
 					else{
-						nextworkout = moment().startOf('day')
+						var nextworkout = moment().startOf('day')
 					}
 					console.log('sets last 7 days ', data.length, nextworkout, moment().startOf('day'))
 					if(data.length < times[body.part1][body.goal1] && nextworkout <= moment().startOf('day') || body.force_workout){
@@ -679,7 +681,7 @@ class Plan {
 										var nextworkout = moment(data2[0]._fields[0].properties.stopTime + (oneday *(7/times[body.part2][body.goal2]))).startOf('day')
 									}
 									else{
-										nextworkout = moment().startOf('day')
+										var nextworkout = moment().startOf('day')
 									}
 									//console.log('sets last 7 days ', data2.length, nextworkout, moment().startOf('day'))
 									if(data2.length < times[body.part2][body.goal2] && nextworkout <= moment().startOf('day') || body.force_workout){ //if less workouts than allowed in the week defined in times var per part and goal and next workout date is equal to or less than current date or user has force requested a workout
@@ -735,7 +737,7 @@ class Plan {
 													var nextworkout = moment(data3[0]._fields[0].properties.stopTime + (oneday *(7/times[body.part3][body.goal3]))).startOf('day')
 												}
 												else{
-													nextworkout = moment().startOf('day')
+													var nextworkout = moment().startOf('day')
 												}
 												//console.log('sets last 7 days ', data2.length, nextworkout, moment().startOf('day'))
 												if(data3.length < times[body.part3][body.goal3] && nextworkout <= moment().startOf('day') || body.force_workout){ //if less workouts than allowed in the week defined in times var per part and goal and next workout date is equal to or less than current date or user has force requested a workout
@@ -860,7 +862,7 @@ class Plan {
 												var nextworkout = moment(data3[0]._fields[0].properties.stopTime + (oneday *(7/times[body.part3][body.goal3]))).startOf('day')
 											}
 											else{
-												nextworkout = moment().startOf('day')
+												var nextworkout = moment().startOf('day')
 											}
 											//console.log('sets last 7 days ', data2.length, nextworkout, moment().startOf('day'))
 											if(data3.length < times[body.part3][body.goal3] && nextworkout <= moment().startOf('day') || body.force_workout){ //if less workouts than allowed in the week defined in times var per part and goal and next workout date is equal to or less than current date or user has force requested a workout
@@ -1008,7 +1010,7 @@ class Plan {
 										var nextworkout = moment(data2[0]._fields[0].properties.stopTime + (oneday *(7/times[body.part2][body.goal2]))).startOf('day')
 									}
 									else{
-										nextworkout = moment().startOf('day')
+										var nextworkout = moment().startOf('day')
 									}
 									//console.log('sets last 7 days ', data2.length, nextworkout, moment().startOf('day'))
 									if(data2.length < times[body.part2][body.goal2] && nextworkout <= moment().startOf('day') || body.force_workout){ //if less workouts than allowed in the week defined in times var per part and goal and next workout date is equal to or less than current date or user has force requested a workout
@@ -1063,7 +1065,7 @@ class Plan {
 													var nextworkout = moment(data3[0]._fields[0].properties.stopTime + (oneday *(7/times[body.part3][body.goal3]))).startOf('day')
 												}
 												else{
-													nextworkout = moment().startOf('day')
+													var nextworkout = moment().startOf('day')
 												}
 												//console.log('sets last 7 days ', data2.length, nextworkout, moment().startOf('day'))
 												if(data3.length < times[body.part3][body.goal3] && nextworkout <= moment().startOf('day') || body.force_workout){ //if less workouts than allowed in the week defined in times var per part and goal and next workout date is equal to or less than current date or user has force requested a workout
@@ -1166,7 +1168,7 @@ class Plan {
 												var nextworkout = moment(data3[0]._fields[0].properties.stopTime + (oneday *(7/times[body.part3][body.goal3]))).startOf('day')
 											}
 											else{
-												nextworkout = moment().startOf('day')
+												var nextworkout = moment().startOf('day')
 											}
 											//console.log('sets last 7 days ', data2.length, nextworkout, moment().startOf('day'))
 											if(data3.length < times[body.part3][body.goal3] && nextworkout <= moment().startOf('day') || body.force_workout){ //if less workouts than allowed in the week defined in times var per part and goal and next workout date is equal to or less than current date or user has force requested a workout
