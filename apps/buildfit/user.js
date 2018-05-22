@@ -5,6 +5,10 @@ import _ from 'underscore';
 const nodemailer = require('nodemailer');
 const header = {'Content-Type':'application/json; charset=utf-8'};
 var lowerCase = require('lower-case');
+var stripe = require("stripe")(
+  "sk_test_jjMsr7JRvBqis3InsnqaKJSx"
+	);
+
 const log = require('simple-node-logger').createSimpleLogger('node-error.log');
 
 
@@ -13,7 +17,7 @@ const log = require('simple-node-logger').createSimpleLogger('node-error.log');
 class User {
 
 	constructor(db, server) {
-		this.name = 'User'; 
+		this.name = 'User';
 
 		//UPDATE GENDER
 		server.post('/bf/update/user/gender', (req, res, next) => {
@@ -57,10 +61,70 @@ class User {
 			})
 		})
 
+		//Register a new Trainer
+		server.post('/bf/urfittrainer/add/trainer', (req, res, next) => {
+			let body = req.body;
+			stripe.accounts.create({
+			  type: 'custom',
+			  country: body.country,
+			  email: body.email,
+				legal_entity: {
+					first_name: body.fname,
+					last_name: body.lname
+				},
+				tos_acceptance: {
+					date: Math.floor(Date.now() / 1000),
+					ip: req.connection.remoteAddress
+				}
+			}, (err, account) => {
+			  // asynchronously called
+				if(err){
+					res.writeHead(500, header);
+					res.end(JSON.stringify({
+							results: err,
+						}));
+					console.log(JSON.stringify({
+						results: err,
+					}));
+				}
 
-		// LOGIN / USER CREATION
-		server.post('/create/user/v1', (req, res, next) => {	
-			let body = req.body;	
+					db.run("CREATE (user:TRAINER {uuid:$id, fname: $fname, lname: $lname, email: $email, tos_acceptance: $tos_acceptance}) RETURN user", {
+						id: account.id,
+						fname: body.fname,
+						lname: body.lname,
+						email: body.email,
+						tos_acceptance: Math.floor(Date.now() / 1000)
+					})
+					.then((trainer)=> {
+						trainer = trainer.records;
+						db.close();
+						res.writeHead(200, header);
+		        res.end(JSON.stringify({
+			        	results: trainer[0]._fields[0].properties,
+								strip_info: account,
+		        	}));
+		        console.log(JSON.stringify({
+		        	results: trainer[0]._fields[0].properties,
+							strip_info: account,
+		        }));
+		        return
+					})
+					.catch((err) => {
+						res.writeHead(500, header);
+						res.end(JSON.stringify({
+								results: err,
+							}));
+						console.log(JSON.stringify({
+							results: err,
+						}));
+					})
+			});
+		})
+
+
+		// LOGIN / USER CREATION URFIT
+		server.post('/create/user/v1', (req, res, next) => {
+			let body = req.body;
 			db.run("MATCH (n:SENDGRIDPK) RETURN n",{})
 			.then((results) =>{
 					db.close();
@@ -74,10 +138,10 @@ class User {
 					        pass: results.records[0]._fields[0].properties.key
 					    }
 				};
-				let transporter = nodemailer.createTransport(smtpConfig);	
+				let transporter = nodemailer.createTransport(smtpConfig);
 				let cypher = "MATCH (user:USER {uuid: $id }) RETURN user";
 
-				
+
 						let cypher2 = "MATCH (user:USER {email:$email }) RETURN user";
 							db.run(cypher2, {
 								email: lowerCase(body.email)
@@ -195,7 +259,7 @@ class User {
 
 									}
 								}
-																	
+
 
 							})
 							.catch((err)=>{
@@ -210,12 +274,12 @@ class User {
 							});
 
 						})
-						
-	
+
+
 			})
 
-				// FIND LIST OF TRAINERS THAT MATCH GOALS
-		server.post('/sendpassword/user/v1', (req, res, next) => {	
+				// SEND PASSWORD
+		server.post('/sendpassword/user/v1', (req, res, next) => {
 			let body = req.body;
 			db.run("MATCH (n:SENDGRIDPK) RETURN n",{})
 			.then((results) =>{
@@ -256,8 +320,8 @@ class User {
 								        }
 								        console.log('Message sent: %s', info.messageId);
 								    });
-									
-								}	
+
+								}
 								res.writeHead(200, header);
 						        res.end(JSON.stringify({
 							        	results: results2
@@ -267,7 +331,7 @@ class User {
 						        	results: results2,
 						        	//token: token
 						        }));
-						        return								
+						        return
 
 							})
 							.catch((err)=>{
@@ -281,9 +345,9 @@ class User {
 						          }))
 							});
 
-				})	
-						
-	
+				})
+
+
 			})
 
 
@@ -295,6 +359,3 @@ class User {
 
 
 export default User
-
-
-

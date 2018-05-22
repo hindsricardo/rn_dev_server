@@ -20,30 +20,18 @@ export const frameworks = "["+
 						 "{gender: 'male', part: 'back', goal: 'Smaller'}, "+
 						 "{gender: 'male', part: 'back', goal: 'Tone'}, "+
 						 "{gender: 'male', part: 'back', goal: 'Bigger'}, "+
-						 "{gender: 'female', part: 'hamstrings', goal: 'Smaller'}, "+
-						 "{gender: 'female', part: 'hamstrings', goal: 'Tone'}, "+
-						 "{gender: 'female', part: 'hamstrings', goal: 'Bigger'}, "+
-						 "{gender: 'male', part: 'hamstrings', goal: 'Smaller'}, "+
-						 "{gender: 'male', part: 'hamstrings', goal: 'Tone'}, "+
-						 "{gender: 'male', part: 'hamstrings', goal: 'Bigger'}, "+
-						 "{gender: 'female', part: 'calves', goal: 'Smaller'}, "+
-						 "{gender: 'female', part: 'calves', goal: 'Tone'}, "+
-						 "{gender: 'female', part: 'calves', goal: 'Bigger'}, "+
-						 "{gender: 'male', part: 'calves', goal: 'Smaller'}, "+
-						 "{gender: 'male', part: 'calves', goal: 'Tone'}, "+
-						 "{gender: 'male', part: 'calves', goal: 'Bigger'}, "+
+						 "{gender: 'female', part: 'legs', goal: 'Smaller'}, "+
+						 "{gender: 'female', part: 'legs', goal: 'Tone'}, "+
+						 "{gender: 'female', part: 'legs', goal: 'Bigger'}, "+
+						 "{gender: 'male', part: 'legs', goal: 'Smaller'}, "+
+						 "{gender: 'male', part: 'legs', goal: 'Tone'}, "+
+						 "{gender: 'male', part: 'legs', goal: 'Bigger'}, "+
 						 "{gender: 'female', part: 'biceps', goal: 'Smaller'}, "+
 						 "{gender: 'female', part: 'biceps', goal: 'Tone'}, "+
 						 "{gender: 'female', part: 'biceps', goal: 'Bigger'}, "+
 						 "{gender: 'male', part: 'biceps', goal: 'Smaller'}, "+
 						 "{gender: 'male', part: 'biceps', goal: 'Tone'}, "+
 						 "{gender: 'male', part: 'biceps', goal: 'Bigger'}, "+
-						 "{gender: 'female', part: 'quads', goal: 'Smaller'}, "+
-						 "{gender: 'female', part: 'quads', goal: 'Tone'}, "+
-						 "{gender: 'female', part: 'quads', goal: 'Bigger'}, "+
-						 "{gender: 'male', part: 'quads', goal: 'Smaller'}, "+
-						 "{gender: 'male', part: 'quads', goal: 'Tone'}, "+
-						 "{gender: 'male', part: 'quads', goal: 'Bigger'}, "+
 						 "{gender: 'female', part: 'triceps', goal: 'Smaller'}, "+
 						 "{gender: 'female', part: 'triceps', goal: 'Tone'}, "+
 						 "{gender: 'female', part: 'triceps', goal: 'Bigger'}, "+
