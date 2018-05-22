@@ -122,6 +122,37 @@ class User {
 		})
 
 
+		//Get Trainer
+		server.post('/bf/urfittrainer/get/trainer', (req, res, next) => {
+			let body = req.body;
+
+			db.run("MATCH (user:TRAINER {uuid:$id}) RETURN user", {
+				id: body.id,
+			})
+			.then((trainer)=> {
+				trainer = trainer.records;
+				db.close();
+				res.writeHead(200, header);
+				res.end(JSON.stringify({
+						results: trainer[0]._fields[0].properties,
+					}));
+				console.log(JSON.stringify({
+					results: trainer[0]._fields[0].properties,
+				}));
+				return
+			})
+			.catch((err) => {
+				res.writeHead(500, header);
+				res.end(JSON.stringify({
+						results: err,
+					}));
+				console.log(JSON.stringify({
+					results: err,
+				}));
+			})
+		})
+
+
 		// LOGIN / USER CREATION URFIT
 		server.post('/create/user/v1', (req, res, next) => {
 			let body = req.body;
