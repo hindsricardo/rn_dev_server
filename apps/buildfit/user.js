@@ -61,6 +61,38 @@ class User {
 			})
 		})
 
+		//Return Strip accounts
+		server.post('/bf/urfittrainer/get/trainer/stripe/account', (req, res, next) => {
+			let body = req.body;
+			stripe.accounts.retrieve(
+			  body.id,
+			  function(err, account) {
+			    // asynchronously called
+					if(err){
+						res.writeHead(500, header);
+						res.end(JSON.stringify({
+								status:'error',
+								results: err,
+							}));
+						console.log(JSON.stringify({
+							results: err,
+						}));
+					}
+					else{
+						res.writeHead(200, header);
+		        res.end(JSON.stringify({
+								status: 'success',
+			        	results: account,
+		        	}));
+		        console.log(JSON.stringify({
+		        	results: account,
+		        }));
+		        return
+					}
+			  }
+			);
+		})
+
 		//Register a new Trainer
 		server.post('/bf/urfittrainer/add/trainer', (req, res, next) => {
 			let body = req.body;
@@ -70,7 +102,8 @@ class User {
 			  email: body.email,
 				legal_entity: {
 					first_name: body.fname,
-					last_name: body.lname
+					last_name: body.lname,
+					type:'individual'
 				},
 				tos_acceptance: {
 					date: Math.floor(Date.now() / 1000),
