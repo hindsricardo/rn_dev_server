@@ -61,6 +61,65 @@ class User {
 			})
 		})
 
+		// add bank account info to stripe
+		server.post('/bf/urfittrainer/add/trainer/bank/account', (req, res, next) => {
+			let body = req.body;
+			let currency = 'USD'
+			if(body.country == 'CA'){
+				currency = 'CAD'
+			}
+			stripe.accounts.update(
+				body.id, {
+					external_account:{
+						object: 'bank_account',
+						country: body.country,
+						currency: currency,
+						account_holder_name: body.account_holder_name,
+						account_holder_type: 'individual',
+						routing_number: body.routing_number,
+						account_number: body.account_number
+					},
+					legal_entity: {
+						address: {
+							city:body.city,
+							postal_code: body.postal_code,
+							state: body.state,
+							line1: body.line1
+						},
+						ssn_last_4: body.social,
+						dob: {
+							day: body.DOBday,
+							month: body.DOBmonth,
+							year: body.DOByear
+						}
+					}
+				},
+				function(err, account) {
+					// asynchronously called
+					if(err){
+						res.writeHead(500, header);
+						res.end(JSON.stringify({
+								status:'error',
+								results: err,
+							}));
+						console.log(JSON.stringify({
+							results: err,
+						}));
+					}
+					else{
+						res.writeHead(200, header);
+						res.end(JSON.stringify({
+								status: 'success',
+								results: account,
+							}));
+						console.log(JSON.stringify({
+							results: account,
+						}));
+						return
+					}
+				}
+			);
+		})
 		//Return Strip accounts
 		server.post('/bf/urfittrainer/get/trainer/stripe/account', (req, res, next) => {
 			let body = req.body;
