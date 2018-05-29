@@ -142,14 +142,101 @@ class User {
 		        res.end(JSON.stringify({
 								status: 'success',
 			        	results: account,
+								route: '/bf/urfittrainer/get/trainer/stripe/account'
 		        	}));
 		        console.log(JSON.stringify({
 		        	results: account,
+							route: '/bf/urfittrainer/get/trainer/stripe/account'
 		        }));
 		        return
 					}
 			  }
 			);
+		})
+
+		//Return Strip payouts to trainer
+		server.post('/bf/urfittrainer/get/trainer/stripe/payouts', (req, res, next) => {
+			let body = req.body;
+			stripe.accounts.retrieve(
+			  body.id,
+			  function(err, account) {
+			    // asynchronously called
+					stripe.payouts.list(body.id,{
+					  external_account:account.external_accounts.data[0].id},
+					  function(payouts) {
+					    // asynchronously called
+								res.writeHead(200, header);
+								res.end(JSON.stringify({
+										status: 'success',
+										results: payouts,
+										route: '/bf/urfittrainer/get/trainer/stripe/payouts'
+									}));
+								console.log(JSON.stringify({
+									results: payouts,
+									route: '/bf/urfittrainer/get/trainer/stripe/payouts'
+								}));
+								return
+					  }
+					);
+				})
+		});
+
+		//get stripe balance
+		server.post('/bf/urfittrainer/get/trainer/stripe/balances', (req, res, next) => {
+			let body = req.body;
+			stripe.balance.retrieve({
+				stripe_account: body.id
+			}, function(err, balance) {
+			  // asynchronously called
+				if(err){
+					res.writeHead(500, header);
+					res.end(JSON.stringify({
+							status:'error',
+							results: err,
+							route: '/bf/urfittrainer/get/trainer/stripe/balances'
+						}));
+					console.log(JSON.stringify({
+						results: err,
+						route: '/bf/urfittrainer/get/trainer/stripe/balances'
+					}));
+				}
+				else{
+					res.writeHead(200, header);
+					res.end(JSON.stringify({
+							status: 'success',
+							results: balance,
+							route: '/bf/urfittrainer/get/trainer/stripe/balances'
+						}));
+					console.log(JSON.stringify({
+						results: balance,
+						route: '/bf/urfittrainer/get/trainer/stripe/balances'
+					}));
+					return
+				}
+			});
+		})
+
+		// returns a list of subscribers to the trainer provided.
+		server.post('/bf/urfittrainer/get/trainer/subscribers', (req, res, next) => {
+			let body = req.body;
+			db.run("MATCH (user:USER) WHERE user.subscribed = $id RETURN user",{
+				id: body.id
+			})
+			.then((results) => {
+				results = results.records;
+				db.close()
+				res.writeHead(200, header);
+		        res.end(JSON.stringify({
+			        	results: results,
+								route: '/bf/urfittrainer/get/trainer/subscribers'
+		        	}));
+		        console.log(JSON.stringify({
+		        	results: results,
+							route: '/bf/urfittrainer/get/trainer/subscribers'
+		        }));
+		        return
+			})
+
 		})
 
 		//Register a new Trainer
