@@ -19,45 +19,40 @@ class Plan {
 	constructor(db, server) {
 		this.name = 'Plan'
 
-		// FIND LIST OF TRAINERS THAT MATCH GOALS
-		server.post('/client/find/trainer', (req, res, next) => {	
-			let body = { client:"user1", sex:"M", goals:[{part:"back", goal:"B"}]} //fake goal input from user			
-			let cypher = "UNWIND $goals AS x "+   //iterate through list of goals
-						   "MATCH (f:FRAMEWORKS) "+	//set variable f to frameworks
-						   "MATCH (e:EXERCISE) "+
-						   "WHERE f.part = x.part AND f.goal = x.goal AND e.part = x.part AND x.goal in e.goals "+	// find all frameworks where framework parts is same as user input parts and framework goals match user input goals TODO: add , f.status = 'valid' for testing 
-						   "MATCH (f {part:x.part, goal:x.goal})<-[:CREATED]-(trainers:TRAINER)-[:CREATED]->(e {part:x.part}) "+	// find all the trainers that created frameworks that meet the users parts and goals AND exercises that meet parts and goals
-						   "RETURN DISTINCT trainers ";	// return the list of trainers as an array
-
-				db.run(cypher, {
-					goals: body.goals	//set goals variable in cypher to body.goals
-				})
-				.then((results) => {
-					results = results.records;
-					db.close();
-					res.writeHead(200, header);
-			        res.end(JSON.stringify({
-				        	success:'yes',
-				        	results: results
-				        	//token: token
-			        	}));
-			        console.log('/client/find/trainer',JSON.stringify({
-			        	success:'yes',
-			        	results: results,
-			        	//token: token
-			        }));
-			        return
-				})
-				.catch((err)=>{
-					console.log('/client/find/trainer', err);
-					res.writeHead(500, header)
-			        res.end(JSON.stringify({
-			          success:'no',
-			          err: err,
-			          message:'Something went wrong logging in. Check error message to see what happened.'
-			        }))
-				});			
+		//GET ALL PUBLIC
+		server.post('/bf/get/public/exercises', (req, res, next) => {
+			let body = req.body;
+			let cypher = "MATCH (n:EXERCISE) WHERE NOT exists(n.public) OR n.public = false OR n.public = true RETURN n ";
+			db.run(cypher).then((results) => {
+				db.close();
+				results = results.records.map((x) => {
+					return x = x._fields[0].properties;
+				});
+				res.writeHead(200, header);
+        res.end(JSON.stringify({
+	        	results: results,
+						route: '/bf/get/public/exercises'
+        	}));
+        console.log(JSON.stringify({
+        	results: results,
+					route: '/bf/get/public/exercises'
+        }));
+        return
 			})
+			.catch((err) => {
+				res.writeHead(500, header);
+        res.end(JSON.stringify({
+	        	results: err,
+						route: '/bf/get/public/exercises'
+        	}));
+        console.log(JSON.stringify({
+        	results: err,
+					route: '/bf/get/public/exercises'
+        }));
+			})
+		})
+
+
 
 		server.post('/frameworks/el/v1', (req, res, next) => { //Return pattern, exercise and frameworks for a target part where location (gym or home), any pattern movement in level and gender in gender
 			let body = req.body;
@@ -192,7 +187,7 @@ class Plan {
 							  	})
 						  	.then((results2) => {
 						  		console.log('results2', results2.records)
-							  	results2 = results2.records.map((x, index) => { 
+							  	results2 = results2.records.map((x, index) => {
 							  		x._fields[0].properties.sets = JSON.parse(x._fields[0].properties.sets);
 							  		x._fields[0].properties.level = results[0]._fields[0].properties.movements[index];
 							  		return x = x._fields[0].properties;
@@ -222,7 +217,7 @@ class Plan {
 						          }))
 
 						  	})
-						  	
+
 						  })
 						  .catch((err) =>{
 							console.log(err);
@@ -380,7 +375,7 @@ class Plan {
 									}
 									//console.log('sets last 7 days ', data2.length, nextworkout, moment().startOf('day'))
 									if(data2.length < times[body.part2][body.goal2] && nextworkout <= moment().startOf('day') || body.force_workout){ //if less workouts than allowed in the week defined in times var per part and goal and next workout date is equal to or less than current date or user has force requested a workout
-								  	results2 = results2.records.map((x, index) => { 
+								  	results2 = results2.records.map((x, index) => {
 								  		x._fields[0].properties.sets = JSON.parse(x._fields[0].properties.sets);
 								  		x._fields[0].properties.level = results[0]._fields[0].properties.movements[index];
 								  		return x = x._fields[0].properties;
@@ -398,7 +393,7 @@ class Plan {
 									  	num: results[0]._fields[1].properties.movements.length,
 									  	})
 								  		.then((results3) => {
-										  	results3 = results3.records.map((x, index) => { 
+										  	results3 = results3.records.map((x, index) => {
 										  		x._fields[0].properties.sets = JSON.parse(x._fields[0].properties.sets);
 										  		x._fields[0].properties.level = results[0]._fields[1].properties.movements[index];
 										  		return x = x._fields[0].properties;
@@ -465,7 +460,7 @@ class Plan {
 						          }))
 
 						  	})
-						  	
+
 						  })
 						  .catch((err) =>{
 							console.log(err);
@@ -507,7 +502,7 @@ class Plan {
 							  	today: new Date().getTime()
 							  	})
 						  		.then((results2) => {
-						  			results2 = results2.records.map((x, index) => { 
+						  			results2 = results2.records.map((x, index) => {
 								  		x._fields[0].properties.sets = JSON.parse(x._fields[0].properties.sets);
 								  		x._fields[0].properties.level = results[0]._fields[0].properties.movements[index];
 								  		return x = x._fields[0].properties;
@@ -685,7 +680,7 @@ class Plan {
 									}
 									//console.log('sets last 7 days ', data2.length, nextworkout, moment().startOf('day'))
 									if(data2.length < times[body.part2][body.goal2] && nextworkout <= moment().startOf('day') || body.force_workout){ //if less workouts than allowed in the week defined in times var per part and goal and next workout date is equal to or less than current date or user has force requested a workout
-								  	results2 = results2.records.map((x, index) => { 
+								  	results2 = results2.records.map((x, index) => {
 								  		x._fields[0].properties.sets = JSON.parse(x._fields[0].properties.sets);
 								  		x._fields[0].properties.level = results[0]._fields[0].properties.movements[index];
 								  		return x = x._fields[0].properties;
@@ -703,7 +698,7 @@ class Plan {
 									  	num: results[0]._fields[1].properties.movements.length,
 									  	})
 								  		.then((results3) => {
-										  	results3 = results3.records.map((x, index) => { 
+										  	results3 = results3.records.map((x, index) => {
 										  		x._fields[0].properties.sets = JSON.parse(x._fields[0].properties.sets);
 										  		x._fields[0].properties.level = results[0]._fields[1].properties.movements[index];
 										  		return x = x._fields[0].properties;
@@ -753,7 +748,7 @@ class Plan {
 													  	num: results[0]._fields[2].properties.movements.length,
 													})
 													.then((results4) => {
-														results4 = results4.records.map((x, index) => { 
+														results4 = results4.records.map((x, index) => {
 													  		x._fields[0].properties.sets = JSON.parse(x._fields[0].properties.sets);
 													  		x._fields[0].properties.level = results[0]._fields[2].properties.movements[index];
 													  		return x = x._fields[0].properties;
@@ -878,7 +873,7 @@ class Plan {
 											  	num: results3[1]._fields[0].properties.movements.length,
 											})
 											.then((results4) => {
-												results4 = results4.records.map((x, index) => { 
+												results4 = results4.records.map((x, index) => {
 											  		x._fields[0].properties.sets = JSON.parse(x._fields[0].properties.sets);
 											  		x._fields[0].properties.level = results3[1]._fields[0].properties.movements[index];
 											  		return x = x._fields[0].properties;
@@ -911,7 +906,7 @@ class Plan {
 									        	results: results3,
 										        exercises: results2
 									        }));
-										}//end of prioty 3 nextworkout else 
+										}//end of prioty 3 nextworkout else
 									}) //END OF DATA 3 THEN
 							  	}) //END OF RESULTS3
 
@@ -939,7 +934,7 @@ class Plan {
 						          }))
 
 						  	})
-						  	
+
 						  })
 						  .catch((err) =>{
 							console.log(err);
@@ -1014,7 +1009,7 @@ class Plan {
 									}
 									//console.log('sets last 7 days ', data2.length, nextworkout, moment().startOf('day'))
 									if(data2.length < times[body.part2][body.goal2] && nextworkout <= moment().startOf('day') || body.force_workout){ //if less workouts than allowed in the week defined in times var per part and goal and next workout date is equal to or less than current date or user has force requested a workout
-						  			results2 = results2.records.map((x, index) => { 
+						  			results2 = results2.records.map((x, index) => {
 								  		x._fields[0].properties.sets = JSON.parse(x._fields[0].properties.sets);
 								  		x._fields[0].properties.level = results[0]._fields[0].properties.movements[index];
 								  		return x = x._fields[0].properties;
@@ -1032,7 +1027,7 @@ class Plan {
 									  	num: results[0]._fields[1].properties.movements.length,
 									  	})
 								  		.then((results3) => {
-										  	results3 = results3.records.map((x, index) => { 
+										  	results3 = results3.records.map((x, index) => {
 										  		x._fields[0].properties.sets = JSON.parse(x._fields[0].properties.sets);
 										  		x._fields[0].properties.level = results[0]._fields[1].properties.movements[index];
 										  		return x = x._fields[0].properties;
@@ -1081,7 +1076,7 @@ class Plan {
 												  	num: results[0]._fields[2].properties.movements.length,
 												})
 												.then((results4) => {
-													results4 = results4.records.map((x, index) => { 
+													results4 = results4.records.map((x, index) => {
 												  		x._fields[0].properties.sets = JSON.parse(x._fields[0].properties.sets);
 												  		x._fields[0].properties.level = results[0]._fields[2].properties.movements[index];
 												  		return x = x._fields[0].properties;
@@ -1184,7 +1179,7 @@ class Plan {
 											  	num: results3[1]._fields[0].properties.movements.length,
 											})
 											.then((results4) => {
-												results4 = results4.records.map((x, index) => { 
+												results4 = results4.records.map((x, index) => {
 											  		x._fields[0].properties.sets = JSON.parse(x._fields[0].properties.sets);
 											  		x._fields[0].properties.level = results3[1]._fields[0].properties.movements[index];
 											  		return x = x._fields[0].properties;
@@ -1217,7 +1212,7 @@ class Plan {
 									        	results: results3,
 										        exercises: []
 									        }));
-										}//end of prioty 3 nextworkout else 
+										}//end of prioty 3 nextworkout else
 									}) //end of data3
 							    	})
 							    	.catch((err) => {
@@ -1229,7 +1224,7 @@ class Plan {
 								          message:'error is '+err
 								         }))
 							    	})
-							    } //END OF Priorty 2check else 
+							    } //END OF Priorty 2check else
 							    })//end of data2
 
 						  		})//end of result2
@@ -1255,7 +1250,7 @@ class Plan {
 					} //END OF ELSE
 				})
 			}
-			
+
 		}) // 'bf/pick/exercises/v1'
 
 		server.post('/bf/get/dietplan/v1', (req, res, next) => {
@@ -1350,7 +1345,7 @@ class Plan {
 							        	success:'yes',
 							        	results: {exercises:exercises.concat(user_exercises), frameworks:frameworks, pattern:pattern, /*high: high*/ },
 							        }));
-						        				
+
 								}) //user_exercises
 								.catch((err)=>{
 										console.log(err);
@@ -1371,7 +1366,7 @@ class Plan {
 							          message:'Something went wrong logging in. Check error message to see what happened.'
 							          }))
 							});
-						}) //exercises	
+						}) //exercises
 						.catch((err)=>{
 								console.log(err);
 								res.writeHead(500, header)
@@ -1380,7 +1375,7 @@ class Plan {
 						          err: err,
 						          message:'Something went wrong logging in. Check error message to see what happened.'
 						          }))
-						});	
+						});
 					}) //framework
 					.catch((err)=>{
 							console.log(err);
@@ -1390,25 +1385,25 @@ class Plan {
 					          err: err,
 					          message:'Something went wrong logging in. Check error message to see what happened.'
 					          }))
-					});		
+					});
 
 		})
 
 			// GENERATE A PLAN FROM A TRAINER //TODO DELETE ROUTE. THIS ROUTE IS NOT IN USE ************************************
 			/*server.post('/client/generate/plan', (req, res, next) => {
-				let body = { client:"user1", sex:"M", goals:[{part:"back", goal:"B"}], trainerid: "hindsricardo@gmail.com"} //fake goal input from user	
+				let body = { client:"user1", sex:"M", goals:[{part:"back", goal:"B"}], trainerid: "hindsricardo@gmail.com"} //fake goal input from user
 				let cypher = ["UNWIND {goals} AS x",
 							  "MATCH (trainer:TRAINER {username: {trainer_username}})",
 							  "MATCH (trainer)-[:CREATED]->(framework:FRAMEWORK)",
 							  "WHERE framework.part = x.part AND framework.goal = x.goal",
 							  "MATCH (trainer)-[:CREATED]->(exercise:EXERCISE)",
 							  "WHERE exercise.part = x.part",
-							  "RETURN DISTINCT framework, exercise"].join('\n');	
+							  "RETURN DISTINCT framework, exercise"].join('\n');
 				db.query(cypher, {
 				goals: body.goals,	//set goals variable in cypher to body.goals
 				trainer_username: body.trainerid
 				},	(err, results) => {
-					
+
 					let days = {day1:[],
 								day2:[],
 								day3:[],
@@ -1426,14 +1421,14 @@ class Plan {
 								for(z = 0; z < movements.length;z++){
 									let level = movements[z];
 									//for(d = 0; d < results.length; d++){
-										
+
 									//}
 
 								}
 							}
 						}
 					}*/
-					
+
 
 				/*	if(err) {
 						console.log(err);
@@ -1460,15 +1455,15 @@ class Plan {
 				        	//token: token
 				        }));
 				        return
-						}	
+						}
 					})
-		
+
 			}) // GENERATE A PLAN FROM A TRAINER
 			/************************************************************************/
 
 		// add USER CREATED EXERCISE
-		server.post('/client/create/exercise', (req, res, next) => {	
-			let body = req.body			
+		server.post('/client/create/exercise', (req, res, next) => {
+			let body = req.body
 			let cypher = "MATCH (u:USER {uuid:$id}) "+
 						  "CREATE (exercise:EXERCISE {uuid:$uuid, VideoURL:'null', location: $location, description: $description, sets: $sets, part: $part, name: $name, gender: $gender, goal: $goal, levels: $levels }) "+
 						  "CREATE (u)-[:CREATED]->(exercise) "+
@@ -1509,7 +1504,7 @@ class Plan {
 				          err: err,
 				          message:'Something went wrong logging in. Check error message to see what happened.'
 				          }))
-				});	
+				});
 			})
 
 		/************************************************************* THE FOLLOWING ROUTES IS TO SEED THE DATABASE WITH EXERCISES & PATTERNS AND SHOULD BE CALLED WHENEVER A NEW EXERCISE OR PATTERN IS ADDED RESPECTIVELY*****************************************************************/
@@ -1546,7 +1541,7 @@ class Plan {
 					        	//token: token
 					        }));
 					        return
-							
+
 						})
 						.catch((err)=>{
 								console.log('/admin/seed/exercises', err);
@@ -1556,7 +1551,7 @@ class Plan {
 						          err: err,
 						          message:'Something went wrong logging in. Check error message to see what happened.'
 						          }))
-						});	
+						});
 			/*}
 			else{
 				console.log('/admin/seed/exercises', 'NOT AUTHORIZED TO ACCESS ROUTE');
@@ -1603,7 +1598,7 @@ class Plan {
 					        	//token: token
 					        }));
 					        return
-							
+
 						})
 						.catch((err)=>{
 								console.log('/admin/seed/framworks', err);
@@ -1613,7 +1608,7 @@ class Plan {
 						          err: err,
 						          message:'Something went wrong logging in. Check error message to see what happened.'
 						          }))
-						});	
+						});
 					})
 			/*}
 			else{
@@ -1661,7 +1656,7 @@ class Plan {
 					        	//token: token
 					        }));
 					        return
-							
+
 						})
 						.catch((err)=>{
 								console.log('/admin/seed/patterns', err);
@@ -1671,7 +1666,7 @@ class Plan {
 						          err: err,
 						          message:'Something went wrong logging in. Check error message to see what happened.'
 						          }))
-						});	
+						});
 					})
 			/*}
 			else{
