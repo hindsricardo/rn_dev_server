@@ -53,6 +53,134 @@ class Plan {
 		})
 
 
+		//GET TRAINERS METHODS
+		server.post('/bf/urfittrainer/get/methods', (req, res, next) => {
+			let body = req.body;
+			let cypher = "MATCH (n:METHOD {trainer:$trainerID}) RETURN n ";
+			db.run(cypher, {trainerID:body.id}).then((results) => {
+				db.close();
+				results = results.records.map((x) => {
+					return x = x._fields[0].properties;
+				});
+				res.writeHead(200, header);
+				res.end(JSON.stringify({
+						results: results,
+						route: '/bf/urfittrainer/get/methods'
+					}));
+				console.log(JSON.stringify({
+					results: results,
+					route: '/bf/urfittrainer/get/methods'
+				}));
+				return
+			})
+			.catch((err) => {
+				res.writeHead(500, header);
+				res.end(JSON.stringify({
+						results: err,
+						route: '/bf/urfittrainer/get/methods'
+					}));
+				console.log(JSON.stringify({
+					results: err,
+					route: '/bf/urfittrainer/get/methods'
+				}));
+			})
+		})
+
+		//CREATE TRAINERS METHODS
+		server.post('/bf/urfittrainer/create/method', (req, res, next) => {
+			let body = req.body;
+			let cypher = "MATCH (trainer:TRAINER {uuid:$trainerID}) CREATE (trainer)-[:CREATED]->(n:METHOD {trainer:$trainerID, focus:$focus, gender: $gender, descipline:$descipline, location:$location, pattern: $pattern, daysAweek:$daysAweek, selectedExercise:$selectedExercise, soreness2:$soreness2, soreness3:$soreness3, methodDescription:$methodDescription, uuid:$uuid, duration:$duration}) RETURN n ";
+			db.run(cypher, {
+				trainerID:body.id,
+				focus: body.focus,
+        gender: body.gender,
+        descipline: body.descipline,
+        location: body.location,
+        pattern: JSON.stringify(body.pattern),
+        daysAweek: body.daysAweek,
+        selectedExercise: JSON.stringify(body.selectedExercise),
+        soreness2: body.soreness2,
+        soreness3: body.soreness3,
+        methodDescription: body.methodDescription,
+				uuid: uuidV4(),
+				duration: body.duration
+			}).then((results) => {
+				db.close();
+				results = results.records.map((x) => {
+					return x = x._fields[0].properties;
+				});
+				res.writeHead(200, header);
+				res.end(JSON.stringify({
+						results: results,
+						route: '/bf/urfittrainer/create/method'
+					}));
+				console.log(JSON.stringify({
+					results: results,
+					route: '/bf/urfittrainer/create/method'
+				}));
+				return
+			})
+			.catch((err) => {
+				res.writeHead(500, header);
+				res.end(JSON.stringify({
+						results: err,
+						route: '/bf/urfittrainer/create/method'
+					}));
+				console.log(JSON.stringify({
+					results: err,
+					route: '/bf/urfittrainer/create/method'
+				}));
+			})
+		})
+
+
+		//EDIT TRAINERS METHODS
+		server.post('/bf/urfittrainer/edit/method', (req, res, next) => {
+			let body = req.body;
+			let cypher = "MATCH (n:METHOD {uuid:$uuid}) SET  n.focus = $focus, n.gender = $gender, n.descipline = $descipline, n.location = $location, n.pattern = $pattern, n.daysAweek = $daysAweek, n.selectedExercise = $selectedExercise, n.soreness2 = $soreness2, n.soreness3 = $soreness3, n.methodDescription = $methodDescription, n.duration = $duration RETURN n ";
+			db.run(cypher, {
+				focus: body.focus,
+        gender: body.gender,
+        descipline: body.descipline,
+        location: body.location,
+        pattern: JSON.stringify(body.pattern),
+        daysAweek: body.daysAweek,
+        selectedExercise: JSON.stringify(body.selectedExercise),
+        soreness2: body.soreness2,
+        soreness3: body.soreness3,
+        methodDescription: body.methodDescription,
+				uuid: body.methodID,
+				duration: body.duration
+			}).then((results) => {
+				db.close();
+				results = results.records.map((x) => {
+					return x = x._fields[0].properties;
+				});
+				res.writeHead(200, header);
+				res.end(JSON.stringify({
+						results: results,
+						route: '/bf/urfittrainer/edit/method'
+					}));
+				console.log(JSON.stringify({
+					results: results,
+					route: '/bf/urfittrainer/edit/method'
+				}));
+				return
+			})
+			.catch((err) => {
+				res.writeHead(500, header);
+				res.end(JSON.stringify({
+						results: err,
+						route: '/bf/urfittrainer/edit/method'
+					}));
+				console.log(JSON.stringify({
+					results: err,
+					route: '/bf/urfittrainer/edit/method'
+				}));
+			})
+		})
+
+
 
 		server.post('/frameworks/el/v1', (req, res, next) => { //Return pattern, exercise and frameworks for a target part where location (gym or home), any pattern movement in level and gender in gender
 			let body = req.body;
