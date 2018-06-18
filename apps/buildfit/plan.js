@@ -85,10 +85,46 @@ class Plan {
 			})
 		})
 
-		//GET SUBSCRIBERS FOR METHODS
-		server.post('/bf/urfittrainer/get/subscribers/for/methods', (req, res, next) => {
+		//GET ALL TRAINER SUBSCRIBERS
+		server.post('/bf/urfittrainer/get/trainer/subscribers', (req, res, next) => {
 			let body = req.body;
-			let cypher = "MATCH (users:USER)-[:SUBSCRIBED]->(:METHOD {uuid:$methodID}) RETURN users ";
+			let cypher = "MATCH (trainer:TRAINER {uuid:$trainerID})-[:CREATED]->(methods:METHOD)"+
+									 "MATCH (users:USER)-[:SUBSCRIBED]->(methods) RETURN users ";
+			db.run(cypher, {
+					trainerID:body.trainerID,
+				}).then((results) => {
+				db.close();
+				results = results.records.map((x) => {
+					return x = x._fields[0].properties;
+				});
+				res.writeHead(200, header);
+				res.end(JSON.stringify({
+						results: results,
+						route: '/bf/urfittrainer/get/trainer/subscribers'
+					}));
+				console.log(JSON.stringify({
+					results: results,
+					route: '/bf/urfittrainer/get/trainer/subscribers'
+				}));
+				return
+			})
+			.catch((err) => {
+				res.writeHead(500, header);
+				res.end(JSON.stringify({
+						results: err,
+						route: '/bf/urfittrainer/get/trainer/subscribers'
+					}));
+				console.log(JSON.stringify({
+					results: err,
+					route: '/bf/urfittrainer/get/trainer/subscribers'
+				}));
+			})
+		})
+
+		//GET ALL TRAINER SUBSCRIBERS BY METHOD ID
+		server.post('/bf/urfittrainer/get/trainer/subscribers/to/method', (req, res, next) => {
+			let body = req.body;
+			let cypher = "MATCH (users:USER)-[:SUBSCRIBED]->(methods:METHOD {uuid:$methodID}) RETURN users ";
 			db.run(cypher, {
 					methodID:body.methodID,
 				}).then((results) => {
@@ -99,11 +135,11 @@ class Plan {
 				res.writeHead(200, header);
 				res.end(JSON.stringify({
 						results: results,
-						route: '/bf/urfittrainer/get/subscribers/for/methods'
+						route: '/bf/urfittrainer/get/trainer/subscribers/to/method'
 					}));
 				console.log(JSON.stringify({
 					results: results,
-					route: '/bf/urfittrainer/get/subscribers/for/methods'
+					route: '/bf/urfittrainer/get/trainer/subscribers/to/method'
 				}));
 				return
 			})
@@ -111,11 +147,11 @@ class Plan {
 				res.writeHead(500, header);
 				res.end(JSON.stringify({
 						results: err,
-						route: '/bf/urfittrainer/get/subscribers/for/methods'
+						route: '/bf/urfittrainer/get/trainer/subscribers/to/method'
 					}));
 				console.log(JSON.stringify({
 					results: err,
-					route: '/bf/urfittrainer/get/subscribers/for/methods'
+					route: '/bf/urfittrainer/get/trainer/subscribers/to/method'
 				}));
 			})
 		})
