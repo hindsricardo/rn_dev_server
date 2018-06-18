@@ -52,6 +52,73 @@ class Plan {
 			})
 		})
 
+		//GET METHODS
+		server.post('/bf/urfittrainer/get/methods', (req, res, next) => {
+			let body = req.body;
+			let cypher = "MATCH (n:METHOD {trainer:$trainerID}) RETURN n ";
+			db.run(cypher, {trainerID:body.id}).then((results) => {
+				db.close();
+				results = results.records.map((x) => {
+					return x = x._fields[0].properties;
+				});
+				res.writeHead(200, header);
+				res.end(JSON.stringify({
+						results: results,
+						route: '/bf/urfittrainer/get/methods'
+					}));
+				console.log(JSON.stringify({
+					results: results,
+					route: '/bf/urfittrainer/get/methods'
+				}));
+				return
+			})
+			.catch((err) => {
+				res.writeHead(500, header);
+				res.end(JSON.stringify({
+						results: err,
+						route: '/bf/urfittrainer/get/methods'
+					}));
+				console.log(JSON.stringify({
+					results: err,
+					route: '/bf/urfittrainer/get/methods'
+				}));
+			})
+		})
+
+		//GET SUBSCRIBERS FOR METHODS
+		server.post('/bf/urfittrainer/get/subscribers/for/methods', (req, res, next) => {
+			let body = req.body;
+			let cypher = "MATCH (users:USER)-[:SUBSCRIBED]->(:METHOD {uuid:$methodID}) RETURN users ";
+			db.run(cypher, {
+					methodID:body.methodID,
+				}).then((results) => {
+				db.close();
+				results = results.records.map((x) => {
+					return x = x._fields[0].properties;
+				});
+				res.writeHead(200, header);
+				res.end(JSON.stringify({
+						results: results,
+						route: '/bf/urfittrainer/get/subscribers/for/methods'
+					}));
+				console.log(JSON.stringify({
+					results: results,
+					route: '/bf/urfittrainer/get/subscribers/for/methods'
+				}));
+				return
+			})
+			.catch((err) => {
+				res.writeHead(500, header);
+				res.end(JSON.stringify({
+						results: err,
+						route: '/bf/urfittrainer/get/subscribers/for/methods'
+					}));
+				console.log(JSON.stringify({
+					results: err,
+					route: '/bf/urfittrainer/get/subscribers/for/methods'
+				}));
+			})
+		})
 
 		//GET TRAINERS METHODS
 		server.post('/bf/urfittrainer/get/methods', (req, res, next) => {
