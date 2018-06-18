@@ -1462,7 +1462,7 @@ class Plan {
 						  "MATCH (framework)-[:HAS]->(pattern:PATTERN) "+
 						  "MATCH ()-[:CREATED]->(exercise:EXERCISE) "+
 						  "WHERE $part = exercise.part AND $location in exercise.location AND $gender in exercise.gender "+
-						  "RETURN DISTINCT parttern";
+						  "RETURN DISTINCT pattern";
 			db.run(cypher, {
 				trainer:"hindsricardo@gmail.com",
 				location:body.location,
