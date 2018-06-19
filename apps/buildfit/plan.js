@@ -61,6 +61,12 @@ class Plan {
 				results = results.records.map((x) => {
 					return x = x._fields[0].properties;
 				});
+				let results2 = results.map((x) => {
+					return x.pattern = JSON.parse(x.pattern), x.selectedExercise = JSON.parse(x.selectedExercise);
+				})
+			/*	results = results.map((x) => {
+					return x.pattern = JSON.parse(x.pattern), x.selectedExercise = JSON.parse(x.selectedExercise);
+				})*/
 				res.writeHead(200, header);
 				res.end(JSON.stringify({
 						results: results,
