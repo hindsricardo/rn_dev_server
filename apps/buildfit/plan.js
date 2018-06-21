@@ -91,6 +91,40 @@ class Plan {
 			})
 		})
 
+		server.post('/bf/urfittrainer/delete/method', (req, res, next) => {
+			let body = req.body;
+			let cypher = "MATCH (n:METHOD {uuid:$uuid}) DETACH DELETE n RETURN n"+
+			db.run(cypher, {
+					uuid:body.methodID,
+				}).then((results) => {
+				db.close();
+				results = results.records.map((x) => {
+					return x = x._fields[0].properties;
+				});
+				res.writeHead(200, header);
+				res.end(JSON.stringify({
+						results: results,
+						route: '/bf/urfittrainer/delete/method'
+					}));
+				console.log(JSON.stringify({
+					results: results,
+					route: '/bf/urfittrainer/delete/method'
+				}));
+				return
+			})
+			.catch((err) => {
+				res.writeHead(500, header);
+				res.end(JSON.stringify({
+						results: err,
+						route: '/bf/urfittrainer/delete/method'
+					}));
+				console.log(JSON.stringify({
+					results: err,
+					route: '/bf/urfittrainer/delete/method'
+				}));
+			})
+		})
+
 		//GET ALL TRAINER SUBSCRIBERS
 		server.post('/bf/urfittrainer/get/trainer/subscribers', (req, res, next) => {
 			let body = req.body;
