@@ -98,9 +98,7 @@ class Plan {
 					uuid:body.methodID,
 				}).then((results) => {
 				db.close();
-				results = results.records.map((x) => {
-					return x = x._fields[0].properties;
-				});
+
 				res.writeHead(200, header);
 				res.end(JSON.stringify({
 						results: results,
