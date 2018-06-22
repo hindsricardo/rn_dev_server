@@ -93,7 +93,7 @@ class Plan {
 
 		server.post('/bf/urfittrainer/delete/method', (req, res, next) => {
 			let body = req.body;
-			let cypher = "MATCH (n:METHOD {uuid:$uuid}) DETACH DELETE n"+
+			let cypher = "MATCH (n:METHOD {uuid:$uuid}) DETACH DELETE n RETURN n"
 			db.run(cypher, {
 					uuid:body.methodID,
 				}).then((results) => {
