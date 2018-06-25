@@ -154,6 +154,43 @@ class User {
 			);
 		})
 
+    server.post('/bf/urfittrainer/get/subscribed/user/details', (req, res, next) => {
+      let body = req.body;
+      let cypher = "MATCH (user:USER {uuid:$userID})-[:COMPLETED]->(n:SetFeedback {method:$methodID}) RETURN n";
+      db.run(cypher, {
+					userID:body.userID,
+          methodID: body.methodID,
+				}).then((results) => {
+				db.close();
+        results = results.records.map((x) => {
+					return x = x._fields[0].properties;
+				});
+
+        cypher2 = "MATCH (user:USER {uuid:$userID})-[:SUBSCRIBED]->(n:METHOD) RETURN n"; //get other methods attached currently attached to this user
+        db.run(cypher2, {
+          userID:body.userID,
+        }).then((results2) => {
+          db.close();
+          results2 = results2.records.map((x) => {
+  					return x = x._fields[0].properties;
+  				});
+
+          res.writeHead(200, header);
+  				res.end(JSON.stringify({
+  						workouts: results2,
+              currentMethods: results,
+  						route: '/bf/urfittrainer/get/subscribed/user/details'
+  					}));
+  				console.log(JSON.stringify({
+            workouts: results2,
+            currentMethods: results,
+  					route: '/bf/urfittrainer/get/subscribed/user/details'
+  				}));
+        })
+      })
+
+    })
+
 		//Return Strip payouts to trainer
 		server.post('/bf/urfittrainer/get/trainer/stripe/payouts', (req, res, next) => {
 			let body = req.body;
