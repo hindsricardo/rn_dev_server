@@ -19,11 +19,55 @@ class Plan {
 	constructor(db, server) {
 		this.name = 'Plan'
 
+
+		//CREATE EXERCISES
+		server.post('bf/urfittrainer/create/new/exercise', (req, res, next) => {
+			let body = req.body;
+			let cypher = "MATCH (trainer:TRAINER {uuid:$id}) CREATE (n:EXERCISE {name:$name, description:$description, public:$public, VideoURL:$VideoURL, part: $part})<-[:CREATED]-(trainer) RETURN n ";
+			db.run(cypher,{
+				id:body.id,
+				description:body.description,
+				VideoURL: body.VideoURL,
+				name: body.name,
+				public: body.public,
+				part:body.part,
+			}).then((results) => {
+				db.close();
+				results = results.records.map((x) => {
+					return x = x._fields[0].properties;
+				});
+				res.writeHead(200, header);
+        res.end(JSON.stringify({
+	        	results: results,
+						route: 'bf/urfittrainer/create/new/exercise'
+        	}));
+        console.log(JSON.stringify({
+        	results: results,
+					route: 'bf/urfittrainer/create/new/exercise'
+        }));
+        return
+			})
+			.catch((err) => {
+				res.writeHead(500, header);
+        res.end(JSON.stringify({
+	        	results: err,
+						route: 'bf/urfittrainer/create/new/exercise'
+        	}));
+        console.log(JSON.stringify({
+        	results: err,
+					route: 'bf/urfittrainer/create/new/exercise'
+        }));
+			})
+		})
+
+
 		//GET ALL PUBLIC
 		server.post('/bf/get/public/exercises', (req, res, next) => {
 			let body = req.body;
-			let cypher = "MATCH (n:EXERCISE) WHERE NOT exists(n.public) OR n.public = false OR n.public = true RETURN n ";
-			db.run(cypher).then((results) => {
+			let cypher = "MATCH (n:EXERCISE) WHERE NOT exists(n.public) OR n.public = 'Public' OR (n)<-[:CREATED]-(trainer:TRAINER {uuid:$id}) RETURN n ";
+			db.run(cypher,{
+				id:body.id
+			}).then((results) => {
 				db.close();
 				results = results.records.map((x) => {
 					return x = x._fields[0].properties;

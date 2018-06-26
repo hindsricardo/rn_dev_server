@@ -368,6 +368,41 @@ class User {
 			})
 		})
 
+    //'/bf/urfittrainer/get/trainer/messages'
+    server.post('/bf/urfittrainer/get/trainer/messages', (req, res, next) => {
+      let body = req.body;
+
+      db.run("MATCH (trainer:TRAINER {uuid:$id}) WHERE (n:MESSAGE)-[:SENT]->(trainer) AND (n)<-[:RECEIVED]-(trainer) RETURN n", {
+        id: body.id,
+      })
+      .then((results)=> {
+        db.close();
+        results = results.records.map((x) => {
+					return x = x._fields[0].properties;
+				});
+        res.writeHead(200, header);
+        res.end(JSON.stringify({
+            results: results,
+          }));
+        console.log(JSON.stringify({
+          results: trainer[0]._fields[0].properties,
+          route: '/bf/urfittrainer/get/trainer/messages',
+        }));
+        return
+      })
+      .catch((err) => {
+        res.writeHead(500, header);
+        res.end(JSON.stringify({
+            results: err,
+            route: '/bf/urfittrainer/get/trainer/messages',
+          }));
+        console.log(JSON.stringify({
+          results: err,
+          route: '/bf/urfittrainer/get/trainer/messages',
+        }));
+      })
+    })
+
 
 		// LOGIN / USER CREATION URFIT
 		server.post('/create/user/v1', (req, res, next) => {
