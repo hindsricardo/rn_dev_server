@@ -64,7 +64,7 @@ class Plan {
 		//GET ALL PUBLIC
 		server.post('/bf/get/public/exercises', (req, res, next) => {
 			let body = req.body;
-			let cypher = "MATCH (n:EXERCISE) WHERE NOT exists(n.public) OR n.public = 'Public' OR (n)<-[:CREATED]-(trainer:TRAINER {uuid:$id}) RETURN n ";
+			let cypher = "MATCH (trainer:TRAINER {uuid: $id}) MATCH (n:EXERCISE) WHERE n.public = 'Public' OR (trainer)-[:CREATED]->(n) RETURN n ";
 			db.run(cypher,{
 				id:body.id
 			}).then((results) => {
