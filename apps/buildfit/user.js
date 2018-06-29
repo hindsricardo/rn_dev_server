@@ -351,7 +351,7 @@ class User {
     server.post('/bf/urfittrainer/get/trainer/messages', (req, res, next) => {
       let body = req.body;
 
-      db.run("MATCH (n:MESSAGE) WHERE (n)-[:SENT]->(trainer:TRAINER {uuid:$id}) OR (trainer:TRAINER {uuid:$id})-[:SENT]->(n)  RETURN n", {
+      db.run("MATCH (n:MESSAGE) WHERE (n)-[:RECEIVED]->(:TRAINER {uuid:$id}) OR (:TRAINER {uuid:$id})-[:SENT]->(n) RETURN n", {
         id: body.id,
       })
       .then((results)=> {
