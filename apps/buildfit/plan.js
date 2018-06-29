@@ -170,15 +170,19 @@ class Plan {
 		//GET ALL TRAINER SUBSCRIBERS
 		server.post('/bf/urfittrainer/get/trainer/subscribers', (req, res, next) => {
 			let body = req.body;
-			let cypher = "MATCH (trainer:TRAINER {uuid:$trainerID})-[:CREATED]->(methods:METHOD)"+
-									 "MATCH (users:USER)-[:SUBSCRIBED]->(methods) RETURN users ";
+			let date = new Date();
+			let now = date.getTime();
+			let cypher = "MATCH (user:USER)-[r:SUBSCRIBED]->(n:TRAINER {uuid: $id}) WHERE r.endDate > $now RETURN user";
+
 			db.run(cypher, {
-					trainerID:body.trainerID,
-				}).then((results) => {
-				db.close();
+				id: body.id,
+				now: now,
+			})
+			.then((results) => {
 				results = results.records.map((x) => {
 					return x = x._fields[0].properties;
 				});
+				db.close()
 				res.writeHead(200, header);
 				res.end(JSON.stringify({
 						results: results,
@@ -201,7 +205,9 @@ class Plan {
 					route: '/bf/urfittrainer/get/trainer/subscribers'
 				}));
 			})
-		})
+
+		}); //
+
 
 		//GET ALL TRAINER SUBSCRIBERS BY METHOD ID
 		server.post('/bf/urfittrainer/get/trainer/subscribers/to/method', (req, res, next) => {

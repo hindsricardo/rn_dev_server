@@ -253,28 +253,7 @@ class User {
 			});
 		})
 
-		// returns a list of subscribers to the trainer provided.
-		server.post('/bf/urfittrainer/get/trainer/subscribers', (req, res, next) => {
-			let body = req.body;
-			db.run("MATCH (user:USER) WHERE user.subscribed = $id RETURN user",{
-				id: body.id
-			})
-			.then((results) => {
-				results = results.records;
-				db.close()
-				res.writeHead(200, header);
-		        res.end(JSON.stringify({
-			        	results: results,
-								route: '/bf/urfittrainer/get/trainer/subscribers'
-		        	}));
-		        console.log(JSON.stringify({
-		        	results: results,
-							route: '/bf/urfittrainer/get/trainer/subscribers'
-		        }));
-		        return
-			})
 
-		})
 
 		//Register a new Trainer
 		server.post('/bf/urfittrainer/add/trainer', (req, res, next) => {
@@ -372,7 +351,7 @@ class User {
     server.post('/bf/urfittrainer/get/trainer/messages', (req, res, next) => {
       let body = req.body;
 
-      db.run("MATCH (trainer:TRAINER {uuid:$id}) MATCH (n:MESSAGE) WHERE (n)-[:SENT]->(trainer) OR (trainer)-[:SENT]->(n)  RETURN n", {
+      db.run("MATCH (trainer:TRAINER {uuid:$id}) MATCH (n:MESSAGE) WHERE (n)-[:SENT]->(trainer) OR (trainerget)-[:SENT]->(n)  RETURN n", {
         id: body.id,
       })
       .then((results)=> {
