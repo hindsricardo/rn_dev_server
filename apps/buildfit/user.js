@@ -166,26 +166,36 @@ class User {
 					return x = x._fields[0].properties;
 				});
 
-        let cypher2 = "MATCH (user:USER {uuid:$userID})-[:SUBSCRIBED]->(n:METHOD) RETURN n"; //get other methods attached currently attached to this user
+        let cypher2 = "MATCH (user:USER {uuid:$userID})-[:SUBSCRIBED]->(n:METHOD) RETURN n"; //get other methods attached currently attached to this //
         db.run(cypher2, {
           userID:body.userID,
         }).then((results2) => {
           db.close();
           results2 = results2.records.map((x) => {
   					return x = x._fields[0].properties;
-  				});
-
-          res.writeHead(200, header);
-  				res.end(JSON.stringify({
-  						workouts: results2,
+  			  });
+          let cypher3 = "MATCH (user:USER {uuid:$userID}) RETURN user";
+          db.run(cypher3, {
+            userID:body.userID;
+          }).then((results3) => {
+            db.close();
+            results3 = results3.records.map((x) => {
+    					return x = x._fields[0].properties;
+    			  });
+            res.writeHead(200, header);
+            res.end(JSON.stringify({
+                workouts: results2,
+                currentMethods: results,
+                user: results3
+                route: '/bf/urfittrainer/get/subscribed/user/details'
+              }));
+            console.log(JSON.stringify({
+              workouts: results2,
               currentMethods: results,
-  						route: '/bf/urfittrainer/get/subscribed/user/details'
-  					}));
-  				console.log(JSON.stringify({
-            workouts: results2,
-            currentMethods: results,
-  					route: '/bf/urfittrainer/get/subscribed/user/details'
-  				}));
+              user: results3
+              route: '/bf/urfittrainer/get/subscribed/user/details'
+            }));
+          })
         })
       })
 
