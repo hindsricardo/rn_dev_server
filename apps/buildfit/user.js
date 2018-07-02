@@ -186,13 +186,13 @@ class User {
             res.end(JSON.stringify({
                 workouts: results2,
                 currentMethods: results,
-                user: results3
+                user: results3,
                 route: '/bf/urfittrainer/get/subscribed/user/details'
               }));
             console.log(JSON.stringify({
               workouts: results2,
               currentMethods: results,
-              user: results3
+              user: results3,
               route: '/bf/urfittrainer/get/subscribed/user/details'
             }));
           })
