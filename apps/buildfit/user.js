@@ -176,7 +176,7 @@ class User {
   			  });
           let cypher3 = "MATCH (user:USER {uuid:$userID}) RETURN user";
           db.run(cypher3, {
-            userID:body.userID;
+            userID:body.userID
           }).then((results3) => {
             db.close();
             results3 = results3.records.map((x) => {
