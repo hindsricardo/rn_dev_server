@@ -212,7 +212,7 @@ class Plan {
 		//GET ALL TRAINER SUBSCRIBERS BY METHOD ID
 		server.post('/bf/urfittrainer/get/trainer/subscribers/to/method', (req, res, next) => {
 			let body = req.body;
-			let cypher = "MATCH (users:USER)-[:SUBSCRIBED]->(methods:METHOD {uuid:$methodID}) RETURN users ";
+			let cypher = "MATCH (users:USER)-[:SUBSCRIBED]->(:METHOD {uuid:$methodID}) RETURN users ";
 			db.run(cypher, {
 					methodID:body.methodID,
 				}).then((results) => {

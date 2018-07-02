@@ -156,7 +156,7 @@ class User {
 
     server.post('/bf/urfittrainer/get/subscribed/user/details', (req, res, next) => {
       let body = req.body;
-      let cypher = "MATCH (user:USER {uuid:$userID})-[:COMPLETED]->(n:SetFeedback {method:$methodID}) RETURN n";
+      let cypher = "MATCH (:USER {uuid:$userID})-[:COMPLETED]->(n:SetFeedback {method:$methodID}) RETURN n";
       db.run(cypher, {
 					userID:body.userID,
           methodID: body.methodID,
@@ -166,7 +166,7 @@ class User {
 					return x = x._fields[0].properties;
 				});
 
-        cypher2 = "MATCH (user:USER {uuid:$userID})-[:SUBSCRIBED]->(n:METHOD) RETURN n"; //get other methods attached currently attached to this user
+        let cypher2 = "MATCH (user:USER {uuid:$userID})-[:SUBSCRIBED]->(n:METHOD) RETURN n"; //get other methods attached currently attached to this user
         db.run(cypher2, {
           userID:body.userID,
         }).then((results2) => {
@@ -351,7 +351,7 @@ class User {
     server.post('/bf/urfittrainer/get/trainer/messages', (req, res, next) => {
       let body = req.body;
 
-      db.run("MATCH (n:MESSAGE) WHERE (n)-[:RECEIVED]->(:TRAINER {uuid:$id}) OR (:TRAINER {uuid:$id})-[:SENT]->(n) RETURN n", {
+      db.run("MATCH (n:MESSAGE) WHERE (n)-[:RECEIVED]->(:TRAINER {uuid:$id}) RETURN n", {
         id: body.id,
       })
       .then((results)=> {
@@ -381,6 +381,42 @@ class User {
         }));
       })
     })
+
+    //'/bf/urfittrainer/get/trainer/conversation/with/user'
+    server.post('/bf/urfittrainer/get/trainer/conversation/with/user', (req, res, next) => {
+      let body = req.body;
+
+      db.run( "MATCH (n:MESSAGE) WHERE (n)-[:RECEIVED]->(:TRAINER {uuid:$id}) AND (:USER {uuid:$clientID})-[:SENT]->(n) OR (:TRAINER {uuid:$id})-[:SENT]->(n) AND (n)-[:RECEIVED]->(:USER {uuid:$clientID})  RETURN n ", {
+        id: body.id,
+        clientID:body.clientID
+      })
+      .then((results)=> {
+        db.close();
+        results = results.records.map((x) => {
+					return x = x._fields[0].properties;
+				});
+        res.writeHead(200, header);
+        res.end(JSON.stringify({
+            results: results,
+          }));
+        console.log(JSON.stringify({
+          results: results,
+          route: '/bf/urfittrainer/get/trainer/conversation/with/user',
+        }));
+        return
+      })
+      .catch((err) => {
+        res.writeHead(500, header);
+        res.end(JSON.stringify({
+            results: err,
+            route: '/bf/urfittrainer/get/trainer/conversation/with/user',
+          }));
+        console.log(JSON.stringify({
+          results: err,
+          route: '/bf/urfittrainer/get/trainer/conversation/with/user',
+        }));
+      })
+    });
 
 
 		// LOGIN / USER CREATION URFIT
