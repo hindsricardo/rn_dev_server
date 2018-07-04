@@ -184,14 +184,14 @@ class User {
     			  });
             res.writeHead(200, header);
             res.end(JSON.stringify({
-                workouts: results2,
-                currentMethods: results,
+                workouts: results,
+                currentMethods: results2,
                 user: results3,
                 route: '/bf/urfittrainer/get/subscribed/user/details'
               }));
             console.log(JSON.stringify({
-              workouts: results2,
-              currentMethods: results,
+              workouts: results,
+              currentMethods: results2,
               user: results3,
               route: '/bf/urfittrainer/get/subscribed/user/details'
             }));
