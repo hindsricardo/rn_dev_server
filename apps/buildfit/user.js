@@ -156,7 +156,7 @@ class User {
 
     server.post('/bf/urfittrainer/get/subscribed/user/details', (req, res, next) => {
       let body = req.body;
-      let cypher = "MATCH (:USER {uuid:$userID})-[:COMPLETED]->(n:SetFeedback {method:$methodID}) RETURN n";
+      let cypher = "MATCH (:USER {uuid:$userID})-[:COMPLETED]->(n:SetFeedback {method:$methodID}) RETURN n ORDER BY n.stopTime DESC";
       db.run(cypher, {
 					userID:body.userID,
           methodID: body.methodID,
