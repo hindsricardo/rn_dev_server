@@ -231,8 +231,6 @@ class User {
                     let finalAvg = 0;
                   }
 
-
-                console.log(sum, avgScore, 'NUMBERS SCORE')
                 res.writeHead(200, header);
                 res.end(JSON.stringify({
                     workouts: results,
