@@ -203,7 +203,7 @@ class User {
                  avgScore = (sum/ results4Strip.length).toFixed(2);
               }
               else{
-                let results4Strip;
+                let results4Strip = [];
                 avgScore = 0
               }
 
@@ -238,8 +238,6 @@ class User {
                     workouts: results,
                     currentMethods: results2,
                     user: results3,
-                    scores: results4Strip,
-                    avgScore:avgScore,
                     finalAvg: finalAvg,
                     route: '/bf/urfittrainer/get/subscribed/user/details'
                   }));
@@ -247,8 +245,6 @@ class User {
                   workouts: results,
                   currentMethods: results2,
                   user: results3,
-                  scores: results4Strip,
-                  avgScore:avgScore,
                   finalAvg: finalAvg,
                   route: '/bf/urfittrainer/get/subscribed/user/details'
                 }));
