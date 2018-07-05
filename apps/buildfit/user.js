@@ -182,36 +182,77 @@ class User {
             results3 = results3.records.map((x) => {
     					return x = x._fields[0].properties;
     			  });
-            let cypher4 = "MATCH (n:SetFeedback {method:$methodID})-[:RECORDED]->(m:RESULT) RETURN m";
+            let month = 86400000 * 30;
+            let now = new Date().getTime();
+            let cypher4 = "MATCH (n:SetFeedback {method:$methodID})-[:RECORDED]->(m:RESULT) WHERE m.stopTime > $now - $month RETURN m";
             db.run(cypher4, {
               methodID: body.methodID,
+              month: month,
+              now: now,
             })
             .then((results4) => {
               db.close();
-              let results4Strip = results4.records.map((x) => {
-                x.score = parseInt(x.score);
-      					return x = x._fields[0].properties;
-      			  });
-              let sum = results4Strip.reduce((accumulator, currentValue) => accumulator + currentValue.score,0);
-              let avgScore = sum/ results4Strip.length;
-              console.log(sum, avgScore, 'NUMBERS SCORE')
-              res.writeHead(200, header);
-              res.end(JSON.stringify({
+              if(results4.records.length > 0){
+                let results4Strip = results4.records.map((x) => {
+                  x.score = parseInt(x.score);
+                  return x = x._fields[0].properties;
+                });
+                let sum = results4Strip.reduce((accumulator, currentValue) => accumulator + currentValue.score,0);
+                let avgScore = (sum/ results4Strip.length).toFixed(2);
+              }
+              else{
+                let results4Strip;
+                let avgScore = 0
+              }
+
+              let cypher5 = "MATCH (n:SetFeedback {method:$methodID})-[:RECORDED]->(m:RESULT) RETURN m";
+              db.run(cypher5, {
+                methodID: body.methodID,
+              })
+              .then((results5) => {
+                db.close();
+                  let results5Strip = results5.records.map((x) => {
+                    x.score = parseInt(x.score);
+                    return x = x._fields[0].properties;
+                  });
+                  let sum2 = results5Strip.reduce((accumulator, currentValue) => accumulator + currentValue.score,0);
+                  let avgScore2 = (sum/ results4Strip.length).toFixed(2);
+
+                  if(avgScore == 0 || avgScore == null && avgScore2 > 0 ){
+                    let finalAvg = avgScore2;
+                  }
+                  else if(avgScore > 0 && avgScore2 > 0 ){
+                    let finalAvg = (avgScore *.6) + (avgScore2 * .4);
+                  }
+                  else if(avgScore > 0 && avgScore2 == 0 || avgScore2 == null ){
+                    let finalAvg = avgScore;
+                  }
+                  else{
+                    let finalAvg = 0;
+                  }
+
+
+                console.log(sum, avgScore, 'NUMBERS SCORE')
+                res.writeHead(200, header);
+                res.end(JSON.stringify({
+                    workouts: results,
+                    currentMethods: results2,
+                    user: results3,
+                    scores: results4Strip,
+                    avgScore:avgScore,
+                    finalAvg: finalAvg,
+                    route: '/bf/urfittrainer/get/subscribed/user/details'
+                  }));
+                console.log(JSON.stringify({
                   workouts: results,
                   currentMethods: results2,
                   user: results3,
                   scores: results4Strip,
                   avgScore:avgScore,
+                  finalAvg: finalAvg,
                   route: '/bf/urfittrainer/get/subscribed/user/details'
                 }));
-              console.log(JSON.stringify({
-                workouts: results,
-                currentMethods: results2,
-                user: results3,
-                scores: results4Strip,
-                avgScore:avgScore,
-                route: '/bf/urfittrainer/get/subscribed/user/details'
-              }));
+              })
             })
 
           })
