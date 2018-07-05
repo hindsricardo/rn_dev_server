@@ -156,7 +156,7 @@ class User {
 
     server.post('/bf/urfittrainer/get/subscribed/user/details', (req, res, next) => {
       let body = req.body;
-      let cypher = "MATCH (:USER {uuid:$userID})-[:COMPLETED]->(n:SetFeedback {method:$methodID}), (n:SetFeedback {method:$methodID})-[:RECORDED]->(m:RESULT)  RETURN n,m ORDER BY n.stopTime DESC";
+      let cypher = "MATCH (:USER {uuid:$userID})-[:COMPLETED]->(n:SetFeedback {method:$methodID}) RETURN n,m ORDER BY n.stopTime DESC";
       db.run(cypher, {
 					userID:body.userID,
           methodID: body.methodID,
@@ -182,19 +182,33 @@ class User {
             results3 = results3.records.map((x) => {
     					return x = x._fields[0].properties;
     			  });
-            res.writeHead(200, header);
-            res.end(JSON.stringify({
+            let cypher4 = "MATCH (n:SetFeedback {method:$methodID})-[:RECORDED]->(m:RESULT) RETURN m";
+            db.run(cypher4, {
+              methodID: body.methodID,
+            })
+            .then((results4) => {
+              db.close();
+              results4 = results4.records.map((x) => {
+      					return x = x._fields[0].properties;
+      			  });
+              let avgScore = (results4.reduce((accumulator, currentValue) => accumulator + currentValue.score,0) / results4.length)*100
+              res.writeHead(200, header);
+              res.end(JSON.stringify({
+                  workouts: results,
+                  currentMethods: results2,
+                  user: results3,
+                  avgScore:avgScore,
+                  route: '/bf/urfittrainer/get/subscribed/user/details'
+                }));
+              console.log(JSON.stringify({
                 workouts: results,
                 currentMethods: results2,
                 user: results3,
+                avgScore:avgScore,
                 route: '/bf/urfittrainer/get/subscribed/user/details'
               }));
-            console.log(JSON.stringify({
-              workouts: results,
-              currentMethods: results2,
-              user: results3,
-              route: '/bf/urfittrainer/get/subscribed/user/details'
-            }));
+            })
+
           })
         })
       })
