@@ -193,6 +193,7 @@ class User {
             .then((results4) => {
               let avgScore = 0
               let avgScore2 = 0
+              let finalAvg = 0;
               db.close();
               if(results4.records.length > 0){
                 let results4Strip = results4.records.map((x) => {
@@ -217,37 +218,40 @@ class User {
                     x.score = parseInt(x.score);
                     return x = x._fields[0].properties;
                   });
-                  let sum2 = results5Strip.reduce((accumulator, currentValue) => accumulator + currentValue.score,0);
-                  avgScore2 = (sum2/ results5Strip.length).toFixed(2);
+                  Promise.resolve(true).then(() => {
+                    let sum2 = results5Strip.reduce((accumulator, currentValue) => accumulator + currentValue.score,0);
+                    avgScore2 = (sum2/ results5Strip.length).toFixed(2);
 
-                  if(avgScore == 0 || avgScore == null && avgScore2 > 0 ){
-                    let finalAvg = avgScore2;
-                  }
-                  else if(avgScore > 0 && avgScore2 > 0 ){
-                    let finalAvg = (avgScore *.6) + (avgScore2 * .4);
-                  }
-                  else if(avgScore > 0 && avgScore2 == 0 || avgScore2 == null ){
-                    let finalAvg = avgScore;
-                  }
-                  else{
-                    let finalAvg = 0;
-                  }
-
-                res.writeHead(200, header);
-                res.end(JSON.stringify({
-                    workouts: results,
-                    currentMethods: results2,
-                    user: results3,
-                    finalAvg: finalAvg,
-                    route: '/bf/urfittrainer/get/subscribed/user/details'
-                  }));
-                console.log(JSON.stringify({
-                  workouts: results,
-                  currentMethods: results2,
-                  user: results3,
-                  finalAvg: finalAvg,
-                  route: '/bf/urfittrainer/get/subscribed/user/details'
-                }));
+                    if(avgScore == 0 || avgScore == null && avgScore2 > 0 ){
+                      finalAvg = avgScore2;
+                    }
+                    else if(avgScore > 0 && avgScore2 > 0 ){
+                      finalAvg = (avgScore *.6) + (avgScore2 * .4);
+                    }
+                    else if(avgScore > 0 && avgScore2 == 0 || avgScore2 == null ){
+                      finalAvg = avgScore;
+                    }
+                    else{
+                      finalAvg = 0;
+                    }
+                  })
+                  .then(() => {
+                    res.writeHead(200, header);
+                    res.end(JSON.stringify({
+                        workouts: results,
+                        currentMethods: results2,
+                        user: results3,
+                        finalAvg: finalAvg,
+                        route: '/bf/urfittrainer/get/subscribed/user/details'
+                      }));
+                    console.log(JSON.stringify({
+                      workouts: results,
+                      currentMethods: results2,
+                      user: results3,
+                      finalAvg: finalAvg,
+                      route: '/bf/urfittrainer/get/subscribed/user/details'
+                    }));
+                  })
               })
             })
 
