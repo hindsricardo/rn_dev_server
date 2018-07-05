@@ -216,7 +216,7 @@ class User {
                     return x = x._fields[0].properties;
                   });
                   let sum2 = results5Strip.reduce((accumulator, currentValue) => accumulator + currentValue.score,0);
-                  let avgScore2 = (sum/ results4Strip.length).toFixed(2);
+                  let avgScore2 = (sum2/ results4Strip.length).toFixed(2);
 
                   if(avgScore == 0 || avgScore == null && avgScore2 > 0 ){
                     let finalAvg = avgScore2;
