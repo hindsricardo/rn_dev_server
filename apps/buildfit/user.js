@@ -188,7 +188,7 @@ class User {
             })
             .then((results4) => {
               db.close();
-              results4Strip = results4.records.map((x) => {
+              let results4Strip = results4.records.map((x) => {
                 x.score = parseInt(x.score);
       					return x = x._fields[0].properties;
       			  });
