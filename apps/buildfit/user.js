@@ -198,6 +198,7 @@ class User {
                   workouts: results,
                   currentMethods: results2,
                   user: results3,
+                  scores: results4Strip,
                   avgScore:avgScore,
                   route: '/bf/urfittrainer/get/subscribed/user/details'
                 }));
@@ -205,6 +206,7 @@ class User {
                 workouts: results,
                 currentMethods: results2,
                 user: results3,
+                scores: results4Strip,
                 avgScore:avgScore,
                 route: '/bf/urfittrainer/get/subscribed/user/details'
               }));
