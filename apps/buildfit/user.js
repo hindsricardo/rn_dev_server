@@ -192,7 +192,9 @@ class User {
                 x.score = parseInt(x.score);
       					return x = x._fields[0].properties;
       			  });
-              let avgScore = (results4Strip.reduce((accumulator, currentValue) => accumulator + currentValue.score,0) / results4.length)*100
+              let sum = results4Strip.reduce((accumulator, currentValue) => accumulator + currentValue.score,0);
+              let avgScore = sum/ results4Strip.length;
+              console.log(sum, avgScore, 'NUMBERS SCORE')
               res.writeHead(200, header);
               res.end(JSON.stringify({
                   workouts: results,
