@@ -188,10 +188,11 @@ class User {
             })
             .then((results4) => {
               db.close();
-              results4 = results4.records.map((x) => {
+              results4Strip = results4.records.map((x) => {
+                x.score = parseInt(x.score);
       					return x = x._fields[0].properties;
       			  });
-              let avgScore = (results4.reduce((accumulator, currentValue) => accumulator + currentValue.score,0) / results4.length)*100
+              let avgScore = (results4Strip.reduce((accumulator, currentValue) => accumulator + currentValue.score,0) / results4.length)*100
               res.writeHead(200, header);
               res.end(JSON.stringify({
                   workouts: results,
