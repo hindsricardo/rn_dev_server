@@ -191,6 +191,8 @@ class User {
               now: now,
             })
             .then((results4) => {
+              let avgScore = 0
+              let avgScore2 = 0
               db.close();
               if(results4.records.length > 0){
                 let results4Strip = results4.records.map((x) => {
@@ -198,11 +200,11 @@ class User {
                   return x = x._fields[0].properties;
                 });
                 let sum = results4Strip.reduce((accumulator, currentValue) => accumulator + currentValue.score,0);
-                let avgScore = (sum/ results4Strip.length).toFixed(2);
+                 avgScore = (sum/ results4Strip.length).toFixed(2);
               }
               else{
                 let results4Strip;
-                let avgScore = 0
+                avgScore = 0
               }
 
               let cypher5 = "MATCH (n:SetFeedback {method:$methodID})-[:RECORDED]->(m:RESULT) RETURN m";
@@ -216,7 +218,7 @@ class User {
                     return x = x._fields[0].properties;
                   });
                   let sum2 = results5Strip.reduce((accumulator, currentValue) => accumulator + currentValue.score,0);
-                  let avgScore2 = (sum2/ results5Strip.length).toFixed(2);
+                  avgScore2 = (sum2/ results5Strip.length).toFixed(2);
 
                   if(avgScore == 0 || avgScore == null && avgScore2 > 0 ){
                     let finalAvg = avgScore2;
