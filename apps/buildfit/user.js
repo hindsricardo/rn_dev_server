@@ -5,6 +5,8 @@ import _ from 'underscore';
 const nodemailer = require('nodemailer');
 const header = {'Content-Type':'application/json; charset=utf-8'};
 var lowerCase = require('lower-case');
+const uuidV4 = require('uuid');
+
 var stripe = require("stripe")(
   "sk_test_jjMsr7JRvBqis3InsnqaKJSx"
 	);
@@ -155,6 +157,7 @@ class User {
 		})
 
     server.post('/bf/urfittrainer/get/subscribed/user/details', (req, res, next) => {
+
       let body = req.body;
       let cypher = "MATCH (:USER {uuid:$userID})-[:COMPLETED]->(n:SetFeedback {method:$methodID}) RETURN n ORDER BY n.stopTime DESC";
       db.run(cypher, {
@@ -421,7 +424,7 @@ class User {
     server.post('/bf/urfittrainer/get/trainer/messages', (req, res, next) => {
       let body = req.body;
 
-      db.run("MATCH (n:MESSAGE) WHERE (n)-[:RECEIVED]->(:TRAINER {uuid:$id}) RETURN n", {
+      db.run("MATCH (n:MESSAGE) WHERE (n)-[:RECEIVED]->(:TRAINER {uuid:$id}) RETURN n LIMIT 250", {
         id: body.id,
       })
       .then((results)=> {
@@ -448,6 +451,85 @@ class User {
         console.log(JSON.stringify({
           results: err,
           route: '/bf/urfittrainer/get/trainer/messages',
+        }));
+      })
+    })
+
+    //'/bf/urfittrainer/get/trainer/conversation/with/user/mark/message/read'
+    server.post('/bf/urfittrainer/get/trainer/conversation/with/user/mark/message/read', (req, res, next) => {
+      let body = req.body;
+
+      db.run("MATCH (n:MESSAGE) WHERE (n)-[:RECEIVED]->(:TRAINER {uuid:$id}) WHERE n.read = false SET n.read = true RETURN n", {
+        id: body.id,
+      })
+      .then((results)=> {
+        db.close();
+        results = results.records.map((x) => {
+          return x = x._fields[0].properties;
+        });
+        res.writeHead(200, header);
+        res.end(JSON.stringify({
+            results: results,
+          }));
+        console.log(JSON.stringify({
+          results: results,
+          route: '/bf/urfittrainer/get/trainer/conversation/with/user/mark/message/read',
+        }));
+        return
+      })
+      .catch((err) => {
+        res.writeHead(500, header);
+        res.end(JSON.stringify({
+            results: err,
+            route: '/bf/urfittrainer/get/trainer/conversation/with/user/mark/message/read',
+          }));
+        console.log(JSON.stringify({
+          results: err,
+          route: '/bf/urfittrainer/get/trainer/conversation/with/user/mark/message/read',
+        }));
+      })
+    })
+
+
+    //CREATE MESSAGE FROM Trainer
+    //'/bf/urfittrainer/get/trainer/conversation/with/user/mark/message/read'
+    server.post('/bf/urfittrainer/get/trainer/conversation/create/trainer/message', (req, res, next) => {
+      let body = req.body;
+
+      db.run("MATCH (u:USER {uuid: $receiver }), (n:TRAINER {email:$senderEmail}) CREATE (n)-[:SENT]->(m:MESSAGE { message:$message ,sender:$id, receiver:$receiver ,date:$date, uuid:$uuid})-[:RECEIVED]->(u)", {
+        id: body.id,
+        message: body.message,
+        receiver: body.clientID,
+        date: new Date().getTime(),
+        senderEmail: body.senderEmail,
+        senderName: body.senderName,
+        uuid: uuidV4()
+
+      })
+      .then((results)=> {
+        db.close();
+        results = results.records.map((x) => {
+          return x = x._fields[0].properties;
+        });
+        res.writeHead(200, header);
+        res.end(JSON.stringify({
+            results: results,
+          }));
+        console.log(JSON.stringify({
+          results: results,
+          route: '/bf/urfittrainer/get/trainer/conversation/create/trainer/message',
+        }));
+        return
+      })
+      .catch((err) => {
+        res.writeHead(500, header);
+        res.end(JSON.stringify({
+            results: err,
+            route: '/bf/urfittrainer/get/trainer/conversation/create/trainer/message',
+          }));
+        console.log(JSON.stringify({
+          results: err,
+          route: '/bf/urfittrainer/get/trainer/conversation/create/trainer/message',
         }));
       })
     })
