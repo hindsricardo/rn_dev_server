@@ -394,8 +394,13 @@ class User {
     server.post('/bf/urfittrainer/save/trainer/profile', (req, res, next) => {
 			let body = req.body;
 
-			db.run("MATCH (user:TRAINER {uuid:$id}) SET user.aboutme = $aboutme, user.instagram = $instagram, user.youtubePromo = $youtubePromo, user.training_location = $training_location RETURN user", {
+			db.run("MATCH (user:TRAINER {uuid:$id}) SET user.aboutme = $aboutme, user.instagram = $instagram, user.youtubePromo = $youtubePromo, user.training_location = $training_location, user.certifications = $certifications RETURN user", {
 				id: body.id,
+        aboutme: body.aboutme,
+        instagram: body.instagram,
+        youtubePromo: body.youtubePromo,
+        training_location: body.training_location,
+        certifications: body.certifications
 			})
 			.then((trainer)=> {
 				trainer = trainer.records;
