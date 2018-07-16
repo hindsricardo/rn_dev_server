@@ -354,53 +354,130 @@ class User {
 					console.log(JSON.stringify({
 						results: err,
 					}));
-				}
 
-					db.run("CREATE (user:TRAINER {uuid:$id, fname: $fname, lname: $lname, email: $email, tos_acceptance: $tos_acceptance}) RETURN user", {
-						id: account.id,
-						fname: body.fname,
-						lname: body.lname,
-						email: body.email,
-						tos_acceptance: Math.floor(Date.now() / 1000)
-					})
-					.then((trainer)=> {
-						trainer = trainer.records;
-						db.close();
-						res.writeHead(200, header);
-		        res.end(JSON.stringify({
-			        	results: trainer[0]._fields[0].properties,
-								strip_info: account,
-		        	}));
-		        console.log(JSON.stringify({
-		        	results: trainer[0]._fields[0].properties,
-							strip_info: account,
-		        }));
-		        return
-					})
-					.catch((err) => {
-						res.writeHead(500, header);
-						res.end(JSON.stringify({
-								results: err,
-							}));
-						console.log(JSON.stringify({
-							results: err,
-						}));
-					})
+          stripe.products.create({
+            name: 'Monthly membership base',
+            type: 'service',
+          },{
+            stripe_account: account.id
+          }, (err, product) => {
+            // asynchronously called
+
+            stripe.plans.create({
+              amount: 1000,
+              interval: "month",
+              product: {
+                name: "Basic"
+              },
+              currency: "usd",
+            }, {
+              stripe_account: account.id
+            }, function(err, plan) {
+              // asynchronously called
+              db.run("CREATE (user:TRAINER {uuid:$id, fname: $fname, lname: $lname, email: $email, tos_acceptance: $tos_acceptance, aboutme:$aboutme, instagram: $instagram, youtubePromo:$youtubePromo, training_location: $training_location, certifications: $certifications, planID: $planID, productID: $productID }) RETURN user", {
+                id: account.id,
+                fname: body.fname,
+                lname: body.lname,
+                email: body.email,
+                tos_acceptance: Math.floor(Date.now() / 1000),
+                aboutme: '',
+                instagram: '',
+                youtubePromo: 'https://www.youtube.com/watch?v=vthMCtgVtFw',
+                training_location: '',
+                certifications: '',
+                planID: plan.id,
+                productID: product.id,
+                planCharge: plan.amount,
+              })
+              .then((trainer)=> {
+                trainer = trainer.records;
+                db.close();
+                res.writeHead(200, header);
+                res.end(JSON.stringify({
+                    results: trainer[0]._fields[0].properties,
+                    strip_info: account,
+                  }));
+                console.log(JSON.stringify({
+                  results: trainer[0]._fields[0].properties,
+                  strip_info: account,
+                }));
+                return
+              })
+              .catch((err) => {
+                res.writeHead(500, header);
+                res.end(JSON.stringify({
+                    results: err,
+                  }));
+                console.log(JSON.stringify({
+                  results: err,
+                }));
+              })
+            });
+          });
 			});
 		})
+
+
+    //set trainer fee
+    server.post('/bf/urfittrainer/set/trainer/fee', (req, res, next) => {
+      let body = req.body;
+
+      db.run("MATCH (user:TRAINER {uuid:$id}) RETURN user", {
+        id: body.id,
+      })
+      .then((trainer)=> {
+        trainer = trainer.records;
+        db.close();
+        stripe.plans.update({trainer[0]._fields[0].properties.planID}, {
+          amount: ((body.charge).toFixed() * 100)
+        }, (err, plan) => {
+
+          db.run("MATCH (user:TRAINER {uuid:$id}) SET user.planCharge = $charge  RETURN user", {
+            id: body.id,
+            charge: body.charge,
+          })
+          .then((trainer2) => {
+            db.close();
+            trainer2 = trainer2.records;
+            res.writeHead(200, header);
+            res.end(JSON.stringify({
+                results: trainer2[0]._fields[0].properties,
+              }));
+            console.log(JSON.stringify({
+              results: trainer2[0]._fields[0].properties,
+            }));
+            return
+          })
+          .catch((err) => {
+            res.writeHead(500, header);
+            res.end(JSON.stringify({
+                results: err,
+                route: '/bf/urfittrainer/set/trainer/fee'
+              }));
+            console.log(JSON.stringify({
+              results: err,
+              route: '/bf/urfittrainer/set/trainer/fee'
+            }));
+            return
+          })
+
+        }); //end of update plan
+      })
+    })
 
 
     //save trainer
     server.post('/bf/urfittrainer/save/trainer/profile', (req, res, next) => {
 			let body = req.body;
 
-			db.run("MATCH (user:TRAINER {uuid:$id}) SET user.aboutme = $aboutme, user.instagram = $instagram, user.youtubePromo = $youtubePromo, user.training_location = $training_location, user.certifications = $certifications RETURN user", {
+			db.run("MATCH (user:TRAINER {uuid:$id}) SET user.aboutme = $aboutme, user.instagram = $instagram, user.youtubePromo = $youtubePromo, user.training_location = $training_location, user.certifications = $certifications, user.email = $email RETURN user", {
 				id: body.id,
         aboutme: body.aboutme,
         instagram: body.instagram,
         youtubePromo: body.youtubePromo,
         training_location: body.training_location,
         certifications: body.certifications
+        email: body.profileEmail
 			})
 			.then((trainer)=> {
 				trainer = trainer.records;
