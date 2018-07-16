@@ -449,7 +449,7 @@ class User {
         trainer = trainer.records;
         db.close();
         stripe.plans.update(trainer[0]._fields[0].properties.planID, {
-          amount: ((body.charge).toFixed() * 100)
+          amount: (body.charge * 100)
         }, (err, plan) => {
 
           db.run("MATCH (user:TRAINER {uuid:$id}) SET user.planCharge = $charge  RETURN user", {
