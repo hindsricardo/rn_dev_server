@@ -354,6 +354,7 @@ class User {
 					console.log(JSON.stringify({
 						results: err,
 					}));
+        }
 
           stripe.products.create({
             name: 'Monthly membership base',
@@ -362,6 +363,15 @@ class User {
             stripe_account: account.id
           }, (err, product) => {
             // asynchronously called
+            if(err){
+    					res.writeHead(500, header);
+    					res.end(JSON.stringify({
+    							results: err,
+    						}));
+    					console.log(JSON.stringify({
+    						results: err,
+    					}));
+            }
 
             stripe.plans.create({
               amount: 1000,
@@ -374,6 +384,15 @@ class User {
               stripe_account: account.id
             }, function(err, plan) {
               // asynchronously called
+              if(err){
+      					res.writeHead(500, header);
+      					res.end(JSON.stringify({
+      							results: err,
+      						}));
+      					console.log(JSON.stringify({
+      						results: err,
+      					}));
+              }
               db.run("CREATE (user:TRAINER {uuid:$id, fname: $fname, lname: $lname, email: $email, tos_acceptance: $tos_acceptance, aboutme:$aboutme, instagram: $instagram, youtubePromo:$youtubePromo, training_location: $training_location, certifications: $certifications, planID: $planID, productID: $productID }) RETURN user", {
                 id: account.id,
                 fname: body.fname,
@@ -412,8 +431,9 @@ class User {
                   results: err,
                 }));
               })
+
             });
-          });
+         });
 			});
 		})
 
@@ -428,7 +448,7 @@ class User {
       .then((trainer)=> {
         trainer = trainer.records;
         db.close();
-        stripe.plans.update({trainer[0]._fields[0].properties.planID}, {
+        stripe.plans.update(trainer[0]._fields[0].properties.planID, {
           amount: ((body.charge).toFixed() * 100)
         }, (err, plan) => {
 
@@ -476,8 +496,8 @@ class User {
         instagram: body.instagram,
         youtubePromo: body.youtubePromo,
         training_location: body.training_location,
-        certifications: body.certifications
-        email: body.profileEmail
+        certifications: body.certifications,
+        email: body.profileEmail,
 			})
 			.then((trainer)=> {
 				trainer = trainer.records;
