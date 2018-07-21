@@ -280,7 +280,7 @@ class Plan {
 		//CREATE TRAINERS METHODS
 		server.post('/bf/urfittrainer/create/method', (req, res, next) => {
 			let body = req.body;
-			let cypher = "MATCH (trainer:TRAINER {uuid:$trainerID}) CREATE (trainer)-[:CREATED]->(n:METHOD {trainer:$trainerID, focus:$focus, gender: $gender, descipline:$descipline, location:$location, pattern: $pattern, daysAweek:$daysAweek, selectedExercise:$selectedExercise, soreness2:$soreness2, soreness3:$soreness3, methodDescription:$methodDescription, uuid:$uuid, duration:$duration}) RETURN n ";
+			let cypher = "MATCH (trainer:TRAINER {uuid:$trainerID}) CREATE (trainer)-[:CREATED]->(n:METHOD {trainer:$trainerID, focus:$focus, gender: $gender, descipline:$descipline, location:$location, pattern: $pattern, daysAweek:$daysAweek, selectedExercise:$selectedExercise, soreness2:$soreness2, soreness3:$soreness3, methodDescription:$methodDescription, uuid:$uuid, duration:$duration,routineType:$routineType}) RETURN n ";
 			db.run(cypher, {
 				trainerID:body.id,
 				focus: body.focus,
@@ -294,7 +294,8 @@ class Plan {
         soreness3: body.soreness3,
         methodDescription: body.methodDescription,
 				uuid: uuidV4(),
-				duration: body.duration
+				duration: body.duration,
+				routineType: body.routineType,
 			}).then((results) => {
 				db.close();
 				results = results.records.map((x) => {
