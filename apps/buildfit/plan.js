@@ -329,7 +329,7 @@ class Plan {
 		//EDIT TRAINERS METHODS
 		server.post('/bf/urfittrainer/edit/method', (req, res, next) => {
 			let body = req.body;
-			let cypher = "MATCH (n:METHOD {uuid:$uuid}) SET  n.focus = $focus, n.gender = $gender, n.descipline = $descipline, n.location = $location, n.pattern = $pattern, n.daysAweek = $daysAweek, n.selectedExercise = $selectedExercise, n.soreness2 = $soreness2, n.soreness3 = $soreness3, n.methodDescription = $methodDescription, n.duration = $duration RETURN n ";
+			let cypher = "MATCH (n:METHOD {uuid:$uuid}) SET  n.focus = $focus, n.gender = $gender, n.descipline = $descipline, n.location = $location, n.pattern = $pattern, n.daysAweek = $daysAweek, n.selectedExercise = $selectedExercise, n.soreness2 = $soreness2, n.soreness3 = $soreness3, n.methodDescription = $methodDescription, n.duration = $duration, n.routineType = $routineType RETURN n ";
 			db.run(cypher, {
 				focus: body.focus,
         gender: body.gender,
@@ -342,7 +342,8 @@ class Plan {
         soreness3: body.soreness3,
         methodDescription: body.methodDescription,
 				uuid: body.methodID,
-				duration: body.duration
+				duration: body.duration,
+				routineType: body.routineType,
 			}).then((results) => {
 				db.close();
 				results = results.records.map((x) => {
