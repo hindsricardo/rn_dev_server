@@ -343,7 +343,7 @@ class Plan {
         methodDescription: body.methodDescription,
 				uuid: body.methodID,
 				duration: body.duration,
-				routineType: body.routineType,
+				routineType: body.routineType
 			}).then((results) => {
 				db.close();
 				results = results.records.map((x) => {
