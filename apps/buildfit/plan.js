@@ -296,6 +296,7 @@ class Plan {
 				uuid: uuidV4(),
 				duration: body.duration,
 				routineType: body.routineType,
+				tags: body.tags,
 			}).then((results) => {
 				db.close();
 				results = results.records.map((x) => {
@@ -343,7 +344,8 @@ class Plan {
         methodDescription: body.methodDescription,
 				uuid: body.methodID,
 				duration: body.duration,
-				routineType: body.routineType
+				routineType: body.routineType,
+				tags: body.tags
 			}).then((results) => {
 				db.close();
 				results = results.records.map((x) => {
