@@ -155,7 +155,7 @@ class User {
 			  }
 			);
 		})
-
+    // return user details along with grade and score Weighted
     server.post('/bf/urfittrainer/get/subscribed/user/details', (req, res, next) => {
 
       let body = req.body;
@@ -187,11 +187,12 @@ class User {
     			  });
             let month = 86400000 * 30;
             let now = new Date().getTime();
-            let cypher4 = "MATCH (n:SetFeedback {method:$methodID})-[:RECORDED]->(m:RESULT) WHERE m.stopTime > $now - $month RETURN m";
+            let cypher4 = " MATCH (user:USER {uuid:$userID})-[:COMPLETED]->(n:SetFeedback {method:$methodID}) MATCH (n)-[:RECORDED]->(m:RESULT) WHERE m.stopTime > $now - $month RETURN m";
             db.run(cypher4, {
               methodID: body.methodID,
               month: month,
               now: now,
+              userID:body.userID
             })
             .then((results4) => {
               let avgScore = 0
@@ -211,9 +212,12 @@ class User {
                 avgScore = 0
               }
 
-              let cypher5 = "MATCH (n:SetFeedback {method:$methodID})-[:RECORDED]->(m:RESULT) RETURN m";
+              let cypher5 = "MATCH (user:USER {uuid:$userID})-[:COMPLETED]->(n:SetFeedback {method:$methodID}) MATCH (n)-[:RECORDED]->(m:RESULT) WHERE m.stopTime < $now - $month RETURN m";
               db.run(cypher5, {
                 methodID: body.methodID,
+                month: month,
+                now: now,
+                userID:body.userID
               })
               .then((results5) => {
                 db.close();

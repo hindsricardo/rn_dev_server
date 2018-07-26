@@ -135,6 +135,112 @@ class Plan {
 			})
 		})
 
+		//GET GRADE AND SCORE FOR methodDescription
+		server.post('/bf/urfittrainer/get/method/avg/grade/&/score', (req, res, next) => {
+
+      let body = req.body;
+
+            let month = 86400000 * 30;
+            let now = new Date().getTime();
+            let cypher4 = " MATCH (n:SetFeedback {method:$methodID})-[:RECORDED]->(m:RESULT) WHERE n.stopTime > $now - $month RETURN m";
+            db.run(cypher4, {
+              methodID: body.methodID,
+              month: month,
+              now: now,
+            })
+            .then((results4) => {
+              let avgScore = 0
+              let avgScore2 = 0
+              let finalAvg = 0;
+							let avgGrade = 0;
+							let avgGrade2 = 0;
+							let finalGrade = 0;
+              db.close();
+              if(results4.records.length > 0){
+                let results4Strip = results4.records.map((x) => {
+                  x.score = parseInt(x.score);
+									x.grade = parseInt(x.grade);
+                  return x = x._fields[0].properties;
+                });
+                let sum = results4Strip.reduce((accumulator, currentValue) => accumulator + currentValue.score,0);
+                avgScore = (sum/ results4Strip.length).toFixed(2);
+								let gradeSum = results4Strip.reduce((accumulator, currentValue) => accumulator + currentValue.grade,0);
+								avgGrade = (gradeSum/ results4Strip.length).toFixed(2);
+              }
+              else{
+                let results4Strip = [];
+                avgScore = 0
+								avgGrade = 0
+              }
+
+              let cypher5 = "MATCH (n:SetFeedback {method:$methodID})-[:RECORDED]->(m:RESULT) WHERE n.stopTime < $now - $month RETURN m";
+              db.run(cypher5, {
+                methodID: body.methodID,
+                month: month,
+                now: now,
+              })
+              .then((results5) => {
+                db.close();
+                  let results5Strip = results5.records.map((x) => {
+                    x.score = parseInt(x.score);
+										x.grade = parseInt(x.grade);
+                    return x = x._fields[0].properties;
+                  });
+                  Promise.resolve(true).then(() => {
+										if(results5.records.length > 0){
+	                    let sum2 = results5Strip.reduce((accumulator, currentValue) => accumulator + currentValue.score,0);
+											let gradeSum2 = results5Strip.reduce((accumulator, currentValue) => accumulator + currentValue.grade,0);
+	                    avgScore2 = (sum2/ results5Strip.length).toFixed(2);
+											avgGrade2 = (gradeSum2/ results5Strip.length).toFixed(2);
+										}
+
+                    if(avgScore == 0 || avgScore == null && avgScore2 > 0 ){
+                      finalAvg = avgScore2;
+                    }
+                    else if(avgScore > 0 && avgScore2 > 0 ){
+                      finalAvg = (avgScore *.6) + (avgScore2 * .4);
+                    }
+                    else if(avgScore > 0 && avgScore2 == 0 || avgScore2 == null ){
+                      finalAvg = avgScore;
+                    }
+                    else{
+                      finalAvg = 0;
+                    }
+
+										if(avgGrade == 0 || avgGrade == null && avgGrade2 > 0 ){
+                      finalGrade = avgGrade2;
+                    }
+                    else if(avgGrade > 0 && avgGrade2 > 0 ){
+                      finalGrade = (avgGrade *.6) + (avgGrade2 * .4);
+                    }
+                    else if(avgGrade > 0 && avgGrade2 == 0 || avgGrade2 == null ){
+                      finalGrade = avgGrade;
+                    }
+                    else{
+                      finalGrade = 0;
+                    }
+                  })
+                  .then(() => {
+                    res.writeHead(200, header);
+                    res.end(JSON.stringify({
+                        finalAvg: finalAvg,
+												finalGrade: finalGrade,
+												avgGrade: avgGrade,
+												avgGrade2:avgGrade2,
+												avgScore: avgScore,
+												avgScore2: avgScore2,
+                        route: '/bf/urfittrainer/get/method/avg/grade/&/score'
+                      }));
+                    console.log(JSON.stringify({
+											finalAvg: finalAvg,
+											finalGrade: finalGrade,
+											route: '/bf/urfittrainer/get/method/avg/grade/&/score'
+                    }));
+                  })
+              })
+            })
+    })
+
 		server.post('/bf/urfittrainer/delete/method', (req, res, next) => {
 			let body = req.body;
 			let cypher = "MATCH (n:METHOD {uuid:$uuid}) DETACH DELETE n RETURN n"
