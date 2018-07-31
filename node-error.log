@@ -1,3 +1,215 @@
 14:34:25.319 ERROR  /sendpassword/user/v1  
 14:36:21.081 ERROR  /sendpassword/user/v1  
 14:36:57.057 ERROR  /sendpassword/user/v1  
+07:32:10.660 ERROR Variable `user` not defined (line 1, column 69 (offset: 68))
+"MATCH (n:TRAINER {email:$email }) SET n.password = $password RETURN user"
+                                                                     ^
+Neo4jError: Variable `user` not defined (line 1, column 69 (offset: 68))
+"MATCH (n:TRAINER {email:$email }) SET n.password = $password RETURN user"
+                                                                     ^
+
+    at captureStacktrace (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:200:15)
+    at new Result (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:73:19)
+    at Session._run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:122:14)
+    at Session.run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:101:19)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/user.js:972:16
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) /sendpassword/user/v1  
+07:32:53.186 ERROR Variable `user` not defined (line 1, column 69 (offset: 68))
+"MATCH (n:TRAINER {email:$email }) SET n.password = $password RETURN user"
+                                                                     ^
+Neo4jError: Variable `user` not defined (line 1, column 69 (offset: 68))
+"MATCH (n:TRAINER {email:$email }) SET n.password = $password RETURN user"
+                                                                     ^
+
+    at captureStacktrace (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:200:15)
+    at new Result (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:73:19)
+    at Session._run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:122:14)
+    at Session.run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:101:19)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/user.js:972:16
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) /sendpassword/user/v1  
+07:34:58.289 ERROR Variable `user` not defined (line 1, column 69 (offset: 68))
+"MATCH (n:TRAINER {email:$email }) SET n.password = $password RETURN user"
+                                                                     ^
+Neo4jError: Variable `user` not defined (line 1, column 69 (offset: 68))
+"MATCH (n:TRAINER {email:$email }) SET n.password = $password RETURN user"
+                                                                     ^
+
+    at captureStacktrace (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:200:15)
+    at new Result (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:73:19)
+    at Session._run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:122:14)
+    at Session.run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:101:19)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/user.js:972:16
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) /sendpassword/user/v1  
+07:35:15.588 ERROR Variable `user` not defined (line 1, column 69 (offset: 68))
+"MATCH (n:TRAINER {email:$email }) SET n.password = $password RETURN user"
+                                                                     ^
+Neo4jError: Variable `user` not defined (line 1, column 69 (offset: 68))
+"MATCH (n:TRAINER {email:$email }) SET n.password = $password RETURN user"
+                                                                     ^
+
+    at captureStacktrace (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:200:15)
+    at new Result (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:73:19)
+    at Session._run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:122:14)
+    at Session.run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:101:19)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/user.js:972:16
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) /sendpassword/user/v1  
+07:37:24.411 ERROR Variable `user` not defined (line 1, column 69 (offset: 68))
+"MATCH (n:TRAINER {email:$email }) SET n.password = $password RETURN user"
+                                                                     ^
+Neo4jError: Variable `user` not defined (line 1, column 69 (offset: 68))
+"MATCH (n:TRAINER {email:$email }) SET n.password = $password RETURN user"
+                                                                     ^
+
+    at captureStacktrace (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:200:15)
+    at new Result (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:73:19)
+    at Session._run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:122:14)
+    at Session.run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:101:19)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/user.js:972:16
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) /sendpassword/user/v1  
+07:38:43.477 ERROR Variable `user` not defined (line 1, column 69 (offset: 68))
+"MATCH (n:TRAINER {email:$email }) SET n.password = $password RETURN user"
+                                                                     ^
+Neo4jError: Variable `user` not defined (line 1, column 69 (offset: 68))
+"MATCH (n:TRAINER {email:$email }) SET n.password = $password RETURN user"
+                                                                     ^
+
+    at captureStacktrace (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:200:15)
+    at new Result (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:73:19)
+    at Session._run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:122:14)
+    at Session.run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:101:19)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/user.js:972:16
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) bf/urfittrainer/set/then/sendpassword/user/login/v1 
+10:41:04.037 ERROR Variable `user` not defined (line 1, column 69 (offset: 68))
+"MATCH (n:TRAINER {email:$email }) SET n.password = $password RETURN user"
+                                                                     ^
+Neo4jError: Variable `user` not defined (line 1, column 69 (offset: 68))
+"MATCH (n:TRAINER {email:$email }) SET n.password = $password RETURN user"
+                                                                     ^
+
+    at captureStacktrace (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:200:15)
+    at new Result (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:73:19)
+    at Session._run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:122:14)
+    at Session.run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:101:19)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/user.js:972:16
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) bf/urfittrainer/set/then/sendpassword/user/login/v1 
+10:41:23.699 ERROR Variable `user` not defined (line 1, column 69 (offset: 68))
+"MATCH (n:TRAINER {email:$email }) SET n.password = $password RETURN user"
+                                                                     ^
+Neo4jError: Variable `user` not defined (line 1, column 69 (offset: 68))
+"MATCH (n:TRAINER {email:$email }) SET n.password = $password RETURN user"
+                                                                     ^
+
+    at captureStacktrace (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:200:15)
+    at new Result (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:73:19)
+    at Session._run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:122:14)
+    at Session.run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:101:19)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/user.js:972:16
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) bf/urfittrainer/set/then/sendpassword/user/login/v1 
+13:34:17.013 ERROR Variable `user` not defined (line 1, column 69 (offset: 68))
+"MATCH (n:TRAINER {email:$email }) SET n.password = $password RETURN user"
+                                                                     ^
+Neo4jError: Variable `user` not defined (line 1, column 69 (offset: 68))
+"MATCH (n:TRAINER {email:$email }) SET n.password = $password RETURN user"
+                                                                     ^
+
+    at captureStacktrace (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:200:15)
+    at new Result (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:73:19)
+    at Session._run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:122:14)
+    at Session.run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:101:19)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/user.js:972:16
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) bf/urfittrainer/set/then/sendpassword/user/login/v1 
+13:35:50.261 ERROR Expected a parameter named password
+Neo4jError: Expected a parameter named password
+
+    at captureStacktrace (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:200:15)
+    at new Result (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:73:19)
+    at Session._run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:122:14)
+    at Session.run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:101:19)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/user.js:972:16
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) bf/urfittrainer/set/then/sendpassword/user/login/v1 
+13:36:38.982 ERROR Expected a parameter named password
+Neo4jError: Expected a parameter named password
+
+    at captureStacktrace (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:200:15)
+    at new Result (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:73:19)
+    at Session._run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:122:14)
+    at Session.run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:101:19)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/user.js:972:16
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) bf/urfittrainer/set/then/sendpassword/user/login/v1 
+13:38:08.619 ERROR Expected a parameter named password
+Neo4jError: Expected a parameter named password
+
+    at captureStacktrace (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:200:15)
+    at new Result (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:73:19)
+    at Session._run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:122:14)
+    at Session.run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:101:19)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/user.js:972:16
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) bf/urfittrainer/set/then/sendpassword/user/login/v1 
+13:38:16.738 ERROR Expected a parameter named password
+Neo4jError: Expected a parameter named password
+
+    at captureStacktrace (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:200:15)
+    at new Result (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:73:19)
+    at Session._run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:122:14)
+    at Session.run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:101:19)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/user.js:972:16
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) bf/urfittrainer/set/then/sendpassword/user/login/v1 
+13:38:34.047 ERROR Expected a parameter named password
+Neo4jError: Expected a parameter named password
+
+    at captureStacktrace (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:200:15)
+    at new Result (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:73:19)
+    at Session._run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:122:14)
+    at Session.run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:101:19)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/user.js:972:16
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) bf/urfittrainer/set/then/sendpassword/user/login/v1 
+13:42:50.755 ERROR status is not defined
+ReferenceError: status is not defined
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/user.js:1005:28
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) bf/urfittrainer/set/then/sendpassword/user/login/v1 
+13:42:51.493 ERROR bf/urfittrainer/set/then/sendpassword/user/login/v1 
+14:17:05.596 ERROR status is not defined
+ReferenceError: status is not defined
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/user.js:1005:28
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) bf/urfittrainer/set/then/sendpassword/user/login/v1 
+14:17:05.971 ERROR bf/urfittrainer/set/then/sendpassword/user/login/v1 
+14:18:37.969 ERROR bf/urfittrainer/set/then/sendpassword/user/login/v1 
+14:19:04.649 ERROR bf/urfittrainer/set/then/sendpassword/user/login/v1 
+14:19:07.077 ERROR bf/urfittrainer/set/then/sendpassword/user/login/v1 
+14:19:23.829 ERROR bf/urfittrainer/set/then/sendpassword/user/login/v1 
+14:26:14.645 ERROR Cannot read property 'map' of undefined
+TypeError: Cannot read property 'map' of undefined
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/user.js:980:45
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) bf/urfittrainer/set/then/sendpassword/user/login/v1 
+14:27:36.167 ERROR Cannot read property 'map' of undefined
+TypeError: Cannot read property 'map' of undefined
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/user.js:977:51
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) bf/urfittrainer/set/then/sendpassword/user/login/v1 
+14:29:49.603 ERROR Cannot read property '0' of undefined
+TypeError: Cannot read property '0' of undefined
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/user.js:986:50
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) bf/urfittrainer/set/then/sendpassword/user/login/v1 
+16:21:24.917 ERROR resultsProps is not defined
+ReferenceError: resultsProps is not defined
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/user.js:1003:36
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) bf/urfittrainer/set/then/sendpassword/user/login/v1 

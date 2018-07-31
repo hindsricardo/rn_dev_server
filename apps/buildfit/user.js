@@ -865,7 +865,7 @@ class User {
 
 			})
 
-				// SEND PASSWORD
+				// SEND PASSWORD BM
 		server.post('/sendpassword/user/v1', (req, res, next) => {
 			let body = req.body;
 			db.run("MATCH (n:SENDGRIDPK) RETURN n",{})
@@ -936,6 +936,177 @@ class User {
 
 
 			})
+
+
+      // SET AND SEND PASSWORD URFIT TRAINER
+  server.post('bf/urfittrainer/set/then/sendpassword/user/login/v1', (req, res, next) => {
+    let body = req.body;
+    function makeid() {
+      var text = "";
+      var possible = "0123456789";
+
+      for (var i = 0; i < 7; i++)
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+      return text;
+    }
+
+    let password = makeid();
+    db.run("MATCH (n:SENDGRIDPK) RETURN n",{})
+    .then((results) =>{
+      db.close();
+
+    let smtpConfig = {
+        host: 'smtp.sendgrid.net',
+          port: 587,
+          secure: false, // upgrade later with STARTTLS
+          auth: {
+              user: 'apikey',
+              pass: results.records[0]._fields[0].properties.key
+          }
+    };
+    let transporter = nodemailer.createTransport(smtpConfig);
+
+
+          let cypher2 = "MATCH (n:TRAINER {email:$email }) SET n.password = $password RETURN n";
+            db.run(cypher2, {
+              email: lowerCase(body.email),
+              password: password,
+            }).then((results2) => {
+              results2 = results2.records.map((x) => {
+      					return x = x._fields[0].properties;
+      				});
+              db.close();
+              //var encryptedString = body.password;
+              if(results2.length > 0){
+                let mailOptions = {
+                      from: '" UrFit Trainer " <password@urfit.fit>', // sender address
+                      to: body.email, // list of receivers
+                      subject: 'Password Code ✔', // Subject line
+                      text: 'Your passcode is: '+results2[0].password+ ' ', // plain text body
+                      html: '<p style="font-size:28px; text-align: center; color:#35365D">Your Passcode Is</p><div style="padding:10px;background-color:#78C5A6;border-radius:25px; margin-left:100px; margin-right:100px;"><p style="color:white;font-size:40px; text-align:center; ">'+results2[0].password+'</p></div><p style="font-size:16px; text-align:center;">This message will self distruct in 5..4..3.. just joking, but this passcode is temporary.</p>' // html body
+                  };
+
+                  transporter.sendMail(mailOptions, (error, info) => {
+                      if (error) {
+                        log.error(error, 'bf/urfittrainer/set/then/sendpassword/user/login/v1');// log to error file
+                          return console.log(error);
+                      }
+                      console.log('Message sent: %s', info.messageId);
+                  });
+
+
+                  res.writeHead(200, header);
+                      res.end(JSON.stringify({
+                          found: status,
+                          results: results2[0]
+                          //token: token
+                        }));
+                      console.log('bf/urfittrainer/set/then/sendpassword/user/login/v1', JSON.stringify({
+                        found: true,
+                        results: results2[0]
+                        //token: token
+                      }));
+                      return
+
+              }
+              else{
+
+                res.writeHead(200, header);
+                    res.end(JSON.stringify({
+                        found: false,
+                        results: results2
+                        //token: token
+                      }));
+                    console.log('bf/urfittrainer/set/then/sendpassword/user/login/v1', JSON.stringify({
+                      found: status,
+                      results: results2,
+                      //token: token
+                    }));
+                    return
+              }
+
+
+
+            })
+            .catch((err)=>{
+              log.error(err, ' bf/urfittrainer/set/then/sendpassword/user/login/v1' );// log to error file
+              console.log(err);
+              res.writeHead(500, header)
+                  res.end(JSON.stringify({
+                    found: false,
+                    err: err,
+                    message:'Something went wrong logging in. Check error message to see what happened.'
+                    }))
+            });
+
+      })
+
+
+    })
+
+
+    // TRAINER LOGIN
+server.post('bf/urfittrainer/trainer/login/v1', (req, res, next) => {
+        let body = req.body;
+        let cypher = "MATCH (n:TRAINER {uuid:$uuid, password: $password }) RETURN n";
+          db.run(cypher, {
+            uuid: body.id,
+            password: body.password,
+          }).then((results2) => {
+            results2 = results2.records.map((x) => {
+              return x = x._fields[0].properties;
+            });
+            db.close();
+            //var encryptedString = body.password;
+            if(results2.length > 0){
+                res.writeHead(200, header);
+                    res.end(JSON.stringify({
+                        found: true,
+                        results: results2
+                        //token: token
+                      }));
+                    console.log('bf/urfittrainer/trainer/login/v1', JSON.stringify({
+                      found: false,
+                      results: results2
+                      //token: token
+                    }));
+                    return
+
+            }
+            else{
+
+              res.writeHead(200, header);
+                  res.end(JSON.stringify({
+                      found: false,
+                      results: results2
+                      //token: token
+                    }));
+                  console.log('bf/urfittrainer/trainer/login/v1', JSON.stringify({
+                    found: false,
+                    results: results2,
+                    //token: token
+                  }));
+                  return
+            }
+
+
+
+          })
+          .catch((err)=>{
+            log.error(err, 'bf/urfittrainer/trainer/login/v1' );// log to error file
+            console.log(err, 'bf/urfittrainer/trainer/login/v1');
+            res.writeHead(500, header)
+                res.end(JSON.stringify({
+                  err: err,
+                  message:'Something went wrong logging in. Check error message to see what happened.'
+                  }))
+          });
+
+
+
+  })
+
 
 
 
