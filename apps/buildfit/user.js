@@ -998,7 +998,7 @@ class User {
 
                   res.writeHead(200, header);
                       res.end(JSON.stringify({
-                          found: status,
+                          found: true,
                           results: results2[0]
                           //token: token
                         }));
@@ -1019,7 +1019,7 @@ class User {
                         //token: token
                       }));
                     console.log('bf/urfittrainer/set/then/sendpassword/user/login/v1', JSON.stringify({
-                      found: status,
+                      found: false,
                       results: results2,
                       //token: token
                     }));
