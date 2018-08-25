@@ -397,7 +397,7 @@ class User {
       						results: err,
       					}));
               }
-              db.run("CREATE (user:TRAINER {uuid:$id, fname: $fname, lname: $lname, email: $email, tos_acceptance: $tos_acceptance, aboutme:$aboutme, instagram: $instagram, youtubePromo:$youtubePromo, training_location: $training_location, certifications: $certifications, planID: $planID, productID: $productID }) RETURN user", {
+              db.run("CREATE (user:TRAINER {uuid:$id, fname: $fname, lname: $lname, email: $email, tos_acceptance: $tos_acceptance, aboutme:$aboutme, instagram: $instagram, youtubePromo:$youtubePromo, training_location: $training_location, certifications: $certifications, planID: $planID, productID: $productID, original_email:$original_email }) RETURN user", {
                 id: account.id,
                 fname: body.fname,
                 lname: body.lname,
@@ -411,6 +411,7 @@ class User {
                 planID: plan.id,
                 productID: product.id,
                 planCharge: plan.amount,
+                original_email: body.email,
               })
               .then((trainer)=> {
                 trainer = trainer.records;
@@ -542,7 +543,7 @@ class User {
 				res.end(JSON.stringify({
 						results: trainer[0]._fields[0].properties,
 					}));
-				console.log(JSON.stringify({
+				console.log(JSON.stringify('/bf/urfittrainer/get/trainer',{
 					results: trainer[0]._fields[0].properties,
 				}));
 				return
@@ -552,9 +553,7 @@ class User {
 				res.end(JSON.stringify({
 						results: err,
 					}));
-				console.log(JSON.stringify({
-					results: err,
-				}));
+				console.log('/bf/urfittrainer/get/trainer',err);
 			})
 		})
 
@@ -1106,6 +1105,42 @@ server.post('bf/urfittrainer/trainer/login/v1', (req, res, next) => {
 
 
 
+  })
+
+  //SET FCMTOKEN
+  server.post('bf/urfittrainer/trainer/set/fcmtoken/v1', (req, res, next) => {
+    let body = req.body;
+    let cypher = "MATCH (n:TRAINER {uuid:$uuid}) SET n.fcmtoken = $fcmtoken RETURN n";
+      db.run(cypher, {
+        uuid: body.id,
+        fcmtoken: body.fcmtoken,
+      })
+      .then((results) => {
+        results = results.records.map((x) => {
+          return x = x._fields[0].properties;
+        });
+        db.close();
+        res.writeHead(200, header);
+            res.end(JSON.stringify({
+                found: false,
+                results: results
+              }));
+            console.log('bf/urfittrainer/trainer/set/fcmtoken/v1', JSON.stringify({
+              found: false,
+              results: results,
+              //token: token
+            }));
+            return
+      })
+      .catch((err)=>{
+        log.error(err, 'bf/urfittrainer/trainer/set/fcmtoken/v1' );// log to error file
+        console.log(err, 'bf/urfittrainer/trainer/set/fcmtoken/v1');
+        res.writeHead(500, header)
+            res.end(JSON.stringify({
+              err: err,
+              message:'Something went wrong logging in. Check error message to see what happened.'
+            }))
+      });
   })
 
 
