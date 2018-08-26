@@ -947,7 +947,7 @@ class User {
       for (var i = 0; i < 7; i++)
         text += possible.charAt(Math.floor(Math.random() * possible.length));
 
-      return text;
+      return text.toString();
     }
 
     let password = makeid();
