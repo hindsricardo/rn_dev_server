@@ -1063,12 +1063,12 @@ server.post('bf/urfittrainer/trainer/login/v1', (req, res, next) => {
                 res.writeHead(200, header);
                     res.end(JSON.stringify({
                         found: true,
-                        results: results2
+                        results: results2[0]
                         //token: token
                       }));
                     console.log('bf/urfittrainer/trainer/login/v1', JSON.stringify({
                       found: false,
-                      results: results2
+                      results: results2[0]
                       //token: token
                     }));
                     return
