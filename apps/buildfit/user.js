@@ -1049,6 +1049,7 @@ class User {
     // TRAINER LOGIN
 server.post('bf/urfittrainer/trainer/login/v1', (req, res, next) => {
         let body = req.body;
+        console.log('password',body.password)
         let cypher = "MATCH (n:TRAINER {uuid:$uuid, password: $password }) RETURN n";
           db.run(cypher, {
             uuid: body.id,
