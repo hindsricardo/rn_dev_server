@@ -361,7 +361,7 @@ class User {
         }
 
           stripe.products.create({
-            name: 'Monthly membership base',
+            name: 'UrFit: Subscription to Trainer - '+body.fname+' '+body.lname,
             type: 'service',
           },{
             stripe_account: account.id
@@ -378,11 +378,10 @@ class User {
             }
 
             stripe.plans.create({
-              amount: 1000,
+              amount: 5000,
               interval: "month",
-              product: {
-                name: "Basic"
-              },
+              nickname: "UrFit: subscription to "+" "+body.fname+" "+body.lname+" $"+50,
+              product: product.id,
               currency: "usd",
             }, {
               stripe_account: account.id
@@ -453,13 +452,30 @@ class User {
       .then((trainer)=> {
         trainer = trainer.records;
         db.close();
-        stripe.plans.update(trainer[0]._fields[0].properties.planID, {
-          amount: (body.charge * 100)
-        }, (err, plan) => {
+        stripe.plans.create({
+          amount: (body.charge * 100),
+          interval: "month",
+          product:trainer[0]._fields[0].properties.productID,
+          nickname: "UrFit: subscription to "+" "+trainer[0]._fields[0].properties.name+" $"+body.charge,
+          currency: "usd",
+        }, {
+          stripe_account: body.id
+        }, function(err, plan) {
+          // asynchronously called
+          if(err){
+            res.writeHead(500, header);
+            res.end(JSON.stringify({
+                results: err,
+              }));
+            console.log(JSON.stringify({
+              results: err,
+            }));
+          }
 
-          db.run("MATCH (user:TRAINER {uuid:$id}) SET user.planCharge = $charge  RETURN user", {
+          db.run("MATCH (user:TRAINER {uuid:$id}) SET user.planCharge = $charge user.planID = $planID RETURN user", {
             id: body.id,
             charge: body.charge,
+            planID: plan.id
           })
           .then((trainer2) => {
             db.close();
@@ -1049,7 +1065,7 @@ class User {
     // TRAINER LOGIN
 server.post('bf/urfittrainer/trainer/login/v1', (req, res, next) => {
         let body = req.body;
-        //console.log('password',body.password, body.id ) 
+        //console.log('password',body.password, body.id )
         let cypher = "MATCH (n:TRAINER { uuid:$uuid, password:$password }) RETURN n";
           db.run(cypher, {
             uuid: body.id,
