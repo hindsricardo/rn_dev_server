@@ -456,7 +456,7 @@ class User {
           amount: (body.charge * 100),
           interval: "month",
           product:trainer[0]._fields[0].properties.productID,
-          nickname: "UrFit: subscription to "+" "+trainer[0]._fields[0].properties.name+" $"+body.charge,
+          nickname: "UrFit: subscription to "+" "+ trainer[0]._fields[0].properties.name +" $"+body.charge,
           currency: "usd",
         }, {
           stripe_account: body.id
@@ -472,7 +472,7 @@ class User {
             }));
           }
 
-          db.run("MATCH (user:TRAINER {uuid:$id}) SET user.planCharge = $charge user.planID = $planID RETURN user", {
+          db.run("MATCH (user:TRAINER {uuid:$id}) SET user.planCharge = $charge, user.planID = $planID RETURN user", {
             id: body.id,
             charge: body.charge,
             planID: plan.id

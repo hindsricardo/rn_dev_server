@@ -11,6 +11,9 @@ import jwt from 'jsonwebtoken';
 import uuid from 'node-uuid';
 import _ from 'underscore';
 import moment from 'moment';
+var stripe = require("stripe")(
+  "sk_test_jjMsr7JRvBqis3InsnqaKJSx"
+	);
 const uuidV4 = require('uuid');
 const header = {'Content-Type':'application/json; charset=utf-8'};
 
@@ -278,39 +281,49 @@ class Plan {
 			let body = req.body;
 			let date = new Date();
 			let now = date.getTime();
-			let cypher = "MATCH (user:USER)-[r:SUBSCRIBED]->(n:TRAINER {uuid: $id}) WHERE r.endDate > $now RETURN user";
 
-			db.run(cypher, {
-				id: body.id,
-				now: now,
+			let cypher = "UNWIND $subscribers AS x MATCH (user:USER) WHERE x.customer = user.uuid SET user.cost = x.items.data[0].plan.amount RETURN user";
+
+			stripe.subscriptions.list({},{
+				stripe_account: body.id
+			}, (err, subscriptions) => {
+				console.log("subscriptions", subscriptions.data)
+
+
+							db.run(cypher, {
+								id: body.id,
+								subscribers: subscriptions.data,
+								now: now,
+							})
+							.then((results) => {
+								results = results.records.map((x) => {
+									return x = x._fields[0].properties;
+								});
+								db.close()
+								res.writeHead(200, header);
+								res.end(JSON.stringify({
+										results: results,
+										route: '/bf/urfittrainer/get/trainer/subscribers'
+									}));
+								console.log(JSON.stringify({
+									results: results,
+									route: '/bf/urfittrainer/get/trainer/subscribers'
+								}));
+								return
+							})
+							.catch((err) => {
+								res.writeHead(500, header);
+								res.end(JSON.stringify({
+										results: err,
+										route: '/bf/urfittrainer/get/trainer/subscribers'
+									}));
+								console.log(JSON.stringify({
+									results: err,
+									route: '/bf/urfittrainer/get/trainer/subscribers'
+								}));
+							})
 			})
-			.then((results) => {
-				results = results.records.map((x) => {
-					return x = x._fields[0].properties;
-				});
-				db.close()
-				res.writeHead(200, header);
-				res.end(JSON.stringify({
-						results: results,
-						route: '/bf/urfittrainer/get/trainer/subscribers'
-					}));
-				console.log(JSON.stringify({
-					results: results,
-					route: '/bf/urfittrainer/get/trainer/subscribers'
-				}));
-				return
-			})
-			.catch((err) => {
-				res.writeHead(500, header);
-				res.end(JSON.stringify({
-						results: err,
-						route: '/bf/urfittrainer/get/trainer/subscribers'
-					}));
-				console.log(JSON.stringify({
-					results: err,
-					route: '/bf/urfittrainer/get/trainer/subscribers'
-				}));
-			})
+
 
 		}); //
 
@@ -318,36 +331,45 @@ class Plan {
 		//GET ALL TRAINER SUBSCRIBERS BY METHOD ID
 		server.post('/bf/urfittrainer/get/trainer/subscribers/to/method', (req, res, next) => {
 			let body = req.body;
-			let cypher = "MATCH (users:USER)-[:SUBSCRIBED]->(:METHOD {uuid:$methodID}) RETURN users ";
-			db.run(cypher, {
-					methodID:body.methodID,
-				}).then((results) => {
-				db.close();
-				results = results.records.map((x) => {
-					return x = x._fields[0].properties;
-				});
-				res.writeHead(200, header);
-				res.end(JSON.stringify({
+			let cypher = "UNWIND $subscribers AS x MATCH (user:USER) WHERE user.uuid = x.customer MATCH (user)-[:SUBSCRIBED]->(:METHOD {uuid:$methodID}) RETURN user ";
+
+			stripe.subscriptions.list({},{
+				stripe_account: body.id
+			}, (err, subscriptions) => {
+				console.log("subscriptions", subscriptions.data)
+
+				db.run(cypher, {
+						methodID:body.methodID,
+						subscribers: subscriptions.data
+					}).then((results) => {
+					db.close();
+					results = results.records.map((x) => {
+						return x = x._fields[0].properties;
+					});
+					res.writeHead(200, header);
+					res.end(JSON.stringify({
+							results: results,
+							route: '/bf/urfittrainer/get/trainer/subscribers/to/method'
+						}));
+					console.log(JSON.stringify({
 						results: results,
 						route: '/bf/urfittrainer/get/trainer/subscribers/to/method'
 					}));
-				console.log(JSON.stringify({
-					results: results,
-					route: '/bf/urfittrainer/get/trainer/subscribers/to/method'
-				}));
-				return
-			})
-			.catch((err) => {
-				res.writeHead(500, header);
-				res.end(JSON.stringify({
+					return
+				})
+				.catch((err) => {
+					res.writeHead(500, header);
+					res.end(JSON.stringify({
+							results: err,
+							route: '/bf/urfittrainer/get/trainer/subscribers/to/method'
+						}));
+					console.log(JSON.stringify({
 						results: err,
 						route: '/bf/urfittrainer/get/trainer/subscribers/to/method'
 					}));
-				console.log(JSON.stringify({
-					results: err,
-					route: '/bf/urfittrainer/get/trainer/subscribers/to/method'
-				}));
+				})
 			})
+
 		})
 
 		//GET TRAINERS METHODS
