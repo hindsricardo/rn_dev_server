@@ -109,7 +109,7 @@ class Plan {
 					return x = x._fields[0].properties;
 				});
 				let results2 = results.map((x) => {
-					return x.pattern = JSON.parse(x.pattern), x.selectedExercise = JSON.parse(x.selectedExercise);
+					return x.pattern = JSON.parse(x.pattern), x.selectedExercise = JSON.parse(x.selectedExercise), x.diet = JSON.parse(x.diet);
 				})
 			/*	results = results.map((x) => {
 					return x.pattern = JSON.parse(x.pattern), x.selectedExercise = JSON.parse(x.selectedExercise);
@@ -408,7 +408,7 @@ class Plan {
 		//CREATE TRAINERS METHODS
 		server.post('/bf/urfittrainer/create/method', (req, res, next) => {
 			let body = req.body;
-			let cypher = "MATCH (trainer:TRAINER {uuid:$trainerID}) CREATE (trainer)-[:CREATED]->(n:METHOD {trainer:$trainerID, focus:$focus, gender: $gender, descipline:$descipline, location:$location, pattern: $pattern, daysAweek:$daysAweek, selectedExercise:$selectedExercise, soreness2:$soreness2, soreness3:$soreness3, methodDescription:$methodDescription, uuid:$uuid, duration:$duration,routineType:$routineType, tags:$tags}) RETURN n ";
+			let cypher = "MATCH (trainer:TRAINER {uuid:$trainerID}) CREATE (trainer)-[:CREATED]->(n:METHOD {trainer:$trainerID, focus:$focus, gender: $gender, descipline:$descipline, location:$location, pattern: $pattern, daysAweek:$daysAweek, selectedExercise:$selectedExercise, soreness2:$soreness2, soreness3:$soreness3, methodDescription:$methodDescription, uuid:$uuid, duration:$duration,routineType:$routineType, tags:$tags, diet:$diet}) RETURN n ";
 			db.run(cypher, {
 				trainerID:body.id,
 				focus: body.focus,
@@ -425,6 +425,7 @@ class Plan {
 				duration: body.duration,
 				routineType: body.routineType,
 				tags: body.tags,
+				diet: JSON.stringify(body.diet)
 			}).then((results) => {
 				db.close();
 				results = results.records.map((x) => {
@@ -458,7 +459,7 @@ class Plan {
 		//EDIT TRAINERS METHODS
 		server.post('/bf/urfittrainer/edit/method', (req, res, next) => {
 			let body = req.body;
-			let cypher = "MATCH (n:METHOD {uuid:$uuid}) SET n +=  {focus: $focus, gender: $gender, descipline: $descipline, location: $location, pattern :$pattern, daysAweek: $daysAweek, selectedExercise: $selectedExercise, soreness2: $soreness2, soreness3: $soreness3, methodDescription: $methodDescription, duration: $duration, routineType: $routineType, tags:$tags} RETURN n ";
+			let cypher = "MATCH (n:METHOD {uuid:$uuid}) SET n +=  {focus: $focus, gender: $gender, descipline: $descipline, location: $location, pattern :$pattern, daysAweek: $daysAweek, selectedExercise: $selectedExercise, soreness2: $soreness2, soreness3: $soreness3, methodDescription: $methodDescription, duration: $duration, routineType: $routineType, tags:$tags, diet:$diet} RETURN n ";
 			db.run(cypher, {
 				focus: body.focus,
         gender: body.gender,
@@ -473,7 +474,9 @@ class Plan {
 				uuid: body.methodID,
 				duration: body.duration,
 				routineType: body.routineType,
-				tags: body.tags
+				tags: body.tags,
+				diet: JSON.stringify(body.diet)
+
 			}).then((results) => {
 				db.close();
 				results = results.records.map((x) => {
