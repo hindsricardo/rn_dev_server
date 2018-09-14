@@ -703,7 +703,7 @@ class User {
         original_email: body.email
       })
       .then((client) => {
-        client = trainer.records;
+        client = client.records;
         db.close();
         res.writeHead(200, header);
         res.end(JSON.stringify({
