@@ -687,198 +687,46 @@ class User {
       })
     })
 
-    //'/bf/urfittrainer/get/trainer/conversation/with/user'
-    server.post('/bf/urfittrainer/get/trainer/conversation/with/user', (req, res, next) => {
-      let body = req.body;
-
-      db.run( "MATCH (n:MESSAGE) WHERE (n)-[:RECEIVED]->(:TRAINER {uuid:$id}) AND (:USER {uuid:$clientID})-[:SENT]->(n) OR (:TRAINER {uuid:$id})-[:SENT]->(n) AND (n)-[:RECEIVED]->(:USER {uuid:$clientID})  RETURN n ", {
-        id: body.id,
-        clientID:body.clientID
-      })
-      .then((results)=> {
-        db.close();
-        results = results.records.map((x) => {
-					return x = x._fields[0].properties;
-				});
-        res.writeHead(200, header);
-        res.end(JSON.stringify({
-            results: results,
-          }));
-        console.log(JSON.stringify({
-          results: results,
-          route: '/bf/urfittrainer/get/trainer/conversation/with/user',
-        }));
-        return
-      })
-      .catch((err) => {
-        res.writeHead(500, header);
-        res.end(JSON.stringify({
-            results: err,
-            route: '/bf/urfittrainer/get/trainer/conversation/with/user',
-          }));
-        console.log(JSON.stringify({
-          results: err,
-          route: '/bf/urfittrainer/get/trainer/conversation/with/user',
-        }));
-      })
-    });
 
 
 		// LOGIN / USER CREATION URFIT
-		server.post('/create/user/v1', (req, res, next) => {
+		server.post('/bf/create/user/v1', (req, res, next) => {
 			let body = req.body;
-			db.run("MATCH (n:SENDGRIDPK) RETURN n",{})
-			.then((results) =>{
-					db.close();
+      let cypher = "CREATE (u:USER {name:$name, sex:$sex, avatar:$avatar, messages:$messages, fcmtoken:$fcmtoken, uuid:$uuid, email:$email, original_email:$original_email RETURN u})"
+      db.run(cypher,{
+        name: body.name,
+        sex: body.sex,
+        avatar: body.avatar,
+        messages: [],
+        fcmtoken: body.fcmtoken,
+        uuid: uuidV4(),
+        email: body.email,
+        original_email: body.email
+      })
+      .then((client) => {
+        client = trainer.records;
+        db.close();
+        res.writeHead(200, header);
+        res.end(JSON.stringify({
+            results: client[0]._fields[0].properties,
+          }));
+        console.log('/bf/create/user/v1',JSON.stringify({
+          results: client[0]._fields[0].properties,
+        }));
+        return
+      })
+      .catch((err)=>{
+        log.error(err);// log to error file
+        console.log('/bf/create/user/v1',err);
+        res.writeHead(500, header)
+            res.end(JSON.stringify({
+              success:'no',
+              err: err,
+              message:'Something went wrong logging in. Check error message to see what happened.'
+              }))
+      });
 
-				let smtpConfig = {
-				    host: 'smtp.sendgrid.net',
-					    port: 587,
-					    secure: false, // upgrade later with STARTTLS
-					    auth: {
-					        user: 'apikey',
-					        pass: results.records[0]._fields[0].properties.key
-					    }
-				};
-				let transporter = nodemailer.createTransport(smtpConfig);
-				let cypher = "MATCH (user:USER {uuid: $id }) RETURN user";
-
-
-						let cypher2 = "MATCH (user:USER {email:$email }) RETURN user";
-							db.run(cypher2, {
-								email: lowerCase(body.email)
-							}).then((results2) => {
-								results2 = results2.records;
-								db.close();
-								var encryptedString = body.password;
-								if(results2.length == 0){
-									let cypher3 = "CREATE (user:USER {uuid:$id, email:$email, password: $password }) RETURN user";
-									db.run(cypher3, {
-										id: body.id,
-										email: lowerCase(body.email),
-										password: encryptedString
-									})
-									.then((results3) => {
-										db.close();
-										console.log('CREATED USER')
-										results3 = results3.records;
-											res.writeHead(200, header);
-									        res.end(JSON.stringify({
-										        	loggedin:'yes',
-										        	results: results3,
-										        	message: 'ACCOUNT CREATED'
-										        	//token: token
-									        	}));
-									        console.log(JSON.stringify({
-									        	loggedin:'yes',
-									        	results: results3,
-									        	message: 'ACCOUNT CREATED'
-									        	//token: token
-									        }));
-									        return
-									})
-									.catch((err)=>{
-										log.error(err, ' /create/user/v1');// log to error file
-										console.log(err);
-										res.writeHead(500, header)
-								        res.end(JSON.stringify({
-								         loggedin:'no',
-								          success:'no',
-								          err: err,
-								          message:'Something went wrong logging in. Check error message to see what happened.'
-								          }))
-									});
-								}
-								else{
-									var decryptedString = results2[0]._fields[0].properties.password;
-									if(decryptedString == body.password){
-										console.log('FOUND USER')
-										res.writeHead(200, header);
-								        res.end(JSON.stringify({
-									        	loggedin:'yes',
-									        	results: results2,
-									        	message: 'FOUND YOU!'
-									        	//token: token
-								        	}));
-								        console.log(JSON.stringify({
-								        	loggedin:'yes',
-								        	results: results2,
-								        	message: 'FOUND YOU!'
-								        	//token: token
-								        }));
-				        				return
-									}
-									else{
-										let mailOptions = {
-									        from: '" Build Method Fitness " <help@buildmethodfitness.com>', // sender address
-									        to: body.email, // list of receivers
-									        subject: 'Password Recovery ✔', // Subject line
-									        text: 'Your Build Method Fitness password is: '+results2[0]._fields[0].properties.password, // plain text body
-									        html: '<b>our Build Method Fitness password is:' +results2[0]._fields[0].properties.password + '</b>' // html body
-									    };
-
-								    transporter.sendMail(mailOptions, (error, info) => {
-								    	log.error(error, ' /sendpassword/user/v1 ');// log to error file
-								        if (error) {
-								            return console.log(error);
-								            console.log('INCORRECT PASSWORD')
-											res.writeHead(200, header);
-									        res.end(JSON.stringify({
-										        	loggedin:'no',
-										        	results: results2,
-										        	message: 'INCORRECT PASSWORD. PLEASE TRY AGAIN'
-										        	//token: token
-									        	}));
-									        console.log(JSON.stringify({
-									        	loggedin:'no',
-									        	results: results2,
-									        	message: 'INCORRECT PASSWORD. PLEASE TRY AGAIN'
-									        	//token: token
-									        }));
-									        return
-								        }
-								        else{
-									        console.log('INCORRECT PASSWORD')
-											res.writeHead(200, header);
-									        res.end(JSON.stringify({
-										        	loggedin:'no',
-										        	results: results2,
-										        	message: 'INCORRECT PASSWORD. PASSWORD HAS BEEN SET TO '+body.email
-										        	//token: token
-									        	}));
-									        console.log(JSON.stringify({
-									        	loggedin:'no',
-									        	results: results2,
-									        	message: 'INCORRECT PASSWORD. PASSWORD HAS BEEN SET TO '+body.email
-									        	//token: token
-									        }));
-									        return
-								        }
-								        console.log('Message sent: %s', info.messageId);
-
-
-								    });
-
-									}
-								}
-
-
-							})
-							.catch((err)=>{
-								log.error(err);// log to error file
-								console.log(err);
-								res.writeHead(500, header)
-						        res.end(JSON.stringify({
-						          success:'no',
-						          err: err,
-						          message:'Something went wrong logging in. Check error message to see what happened.'
-						          }))
-							});
-
-						})
-
-
-			})
+		})
 
 				// SEND PASSWORD BM
 		server.post('/sendpassword/user/v1', (req, res, next) => {
