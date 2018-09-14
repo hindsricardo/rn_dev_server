@@ -692,7 +692,7 @@ class User {
 		// LOGIN / USER CREATION URFIT
 		server.post('/bf/create/user/v1', (req, res, next) => {
 			let body = req.body;
-      let cypher = "CREATE (u:USER {name:$name, sex:$sex, avatar:$avatar, messages:$messages, fcmtoken:$fcmtoken, uuid:$uuid, email:$email, original_email:$original_email}) RETURN u})"
+      let cypher = "CREATE (u:USER {name:$name, sex:$sex, avatar:$avatar, messages:$messages, fcmtoken:$fcmtoken, uuid:$uuid, email:$email, original_email:$original_email}) RETURN u"
       db.run(cypher,{
         name: body.name,
         sex: body.sex,
