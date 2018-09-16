@@ -334,111 +334,141 @@ class User {
 
 		//Register a new Trainer
 		server.post('/bf/urfittrainer/add/trainer', (req, res, next) => {
+      let cypherCheckExistingUser = "MATCH (u:TRAINER) WHERE u.email = $email OR u.original_email = $email RETURN u";
 			let body = req.body;
-			stripe.accounts.create({
-			  type: 'custom',
-			  country: body.country,
-			  email: body.email,
-				legal_entity: {
-					first_name: body.fname,
-					last_name: body.lname,
-					type:'individual'
-				},
-				tos_acceptance: {
-					date: Math.floor(Date.now() / 1000),
-					ip: req.connection.remoteAddress
-				}
-			}, (err, account) => {
-			  // asynchronously called
-				if(err){
-					res.writeHead(500, header);
-					res.end(JSON.stringify({
-							results: err,
-						}));
-					console.log(JSON.stringify({
-						results: err,
-					}));
+      db.run(cypherCheckExistingUser, {email:body.email})
+      .then((results) => {
+        db.close()
+        results = results.records;
+        if(results.length > 0){
+          res.writeHead(200, header);
+          res.end(JSON.stringify({
+              status:"taken",
+              results: results[0]._fields[0].properties,
+            }));
+          console.log('/bf/create/user/v1',JSON.stringify({
+            status: "taken",
+            results: results[0]._fields[0].properties,
+          }));
+          return
         }
-
-          stripe.products.create({
-            name: 'UrFit: Subscription to Trainer - '+body.fname+' '+body.lname,
-            type: 'service',
-          },{
-            stripe_account: account.id
-          }, (err, product) => {
+        else{
+          stripe.accounts.create({
+            type: 'custom',
+            country: body.country,
+            email: body.email,
+            legal_entity: {
+              first_name: body.fname,
+              last_name: body.lname,
+              type:'individual'
+            },
+            tos_acceptance: {
+              date: Math.floor(Date.now() / 1000),
+              ip: req.connection.remoteAddress
+            }
+          }, (err, account) => {
             // asynchronously called
             if(err){
-    					res.writeHead(500, header);
-    					res.end(JSON.stringify({
-    							results: err,
-    						}));
-    					console.log(JSON.stringify({
-    						results: err,
-    					}));
+              res.writeHead(500, header);
+              res.end(JSON.stringify({
+                  results: err,
+                  status:"error"
+                }));
+              console.log(JSON.stringify({
+                results: err,
+                status:"error"
+              }));
             }
 
-            stripe.plans.create({
-              amount: 5000,
-              interval: "month",
-              nickname: "UrFit: subscription to "+" "+body.fname+" "+body.lname+" $"+50,
-              product: product.id,
-              currency: "usd",
-            }, {
-              stripe_account: account.id
-            }, function(err, plan) {
-              // asynchronously called
-              if(err){
-      					res.writeHead(500, header);
-      					res.end(JSON.stringify({
-      							results: err,
-      						}));
-      					console.log(JSON.stringify({
-      						results: err,
-      					}));
-              }
-              db.run("CREATE (user:TRAINER {uuid:$id, fname: $fname, lname: $lname, email: $email, tos_acceptance: $tos_acceptance, aboutme:$aboutme, instagram: $instagram, youtubePromo:$youtubePromo, training_location: $training_location, certifications: $certifications, planID: $planID, productID: $productID, original_email:$original_email }) RETURN user", {
-                id: account.id,
-                fname: body.fname,
-                lname: body.lname,
-                email: body.email,
-                tos_acceptance: Math.floor(Date.now() / 1000),
-                aboutme: '',
-                instagram: '',
-                youtubePromo: 'https://www.youtube.com/watch?v=vthMCtgVtFw',
-                training_location: '',
-                certifications: '',
-                planID: plan.id,
-                productID: product.id,
-                planCharge: plan.amount,
-                original_email: body.email,
-              })
-              .then((trainer)=> {
-                trainer = trainer.records;
-                db.close();
-                res.writeHead(200, header);
-                res.end(JSON.stringify({
-                    results: trainer[0]._fields[0].properties,
-                    strip_info: account,
-                  }));
-                console.log(JSON.stringify({
-                  results: trainer[0]._fields[0].properties,
-                  strip_info: account,
-                }));
-                return
-              })
-              .catch((err) => {
-                res.writeHead(500, header);
-                res.end(JSON.stringify({
+              stripe.products.create({
+                name: 'UrFit: Subscription to Trainer - '+body.fname+' '+body.lname,
+                type: 'service',
+              },{
+                stripe_account: account.id
+              }, (err, product) => {
+                // asynchronously called
+                if(err){
+                  res.writeHead(500, header);
+                  res.end(JSON.stringify({
+                      results: err,
+                      status:"error"
+                    }));
+                  console.log(JSON.stringify({
                     results: err,
+                    status:"error"
                   }));
-                console.log(JSON.stringify({
-                  results: err,
-                }));
-              })
+                }
 
-            });
-         });
-			});
+                stripe.plans.create({
+                  amount: 5000,
+                  interval: "month",
+                  nickname: "UrFit: subscription to "+" "+body.fname+" "+body.lname+" $"+50,
+                  product: product.id,
+                  currency: "usd",
+                }, {
+                  stripe_account: account.id
+                }, function(err, plan) {
+                  // asynchronously called
+                  if(err){
+                    res.writeHead(500, header);
+                    res.end(JSON.stringify({
+                        results: err,
+                        status:"error"
+                      }));
+                    console.log(JSON.stringify({
+                      results: err,
+                      status:"error"
+                    }));
+                  }
+                  db.run("CREATE (user:TRAINER {uuid:$id, fname: $fname, lname: $lname, email: $email, tos_acceptance: $tos_acceptance, aboutme:$aboutme, instagram: $instagram, youtubePromo:$youtubePromo, training_location: $training_location, certifications: $certifications, planID: $planID, productID: $productID, original_email:$original_email }) RETURN user", {
+                    id: account.id,
+                    fname: body.fname,
+                    lname: body.lname,
+                    email: body.email,
+                    tos_acceptance: Math.floor(Date.now() / 1000),
+                    aboutme: '',
+                    instagram: '',
+                    youtubePromo: 'https://www.youtube.com/watch?v=vthMCtgVtFw',
+                    training_location: '',
+                    certifications: '',
+                    planID: plan.id,
+                    productID: product.id,
+                    planCharge: plan.amount,
+                    original_email: body.email,
+                  })
+                  .then((trainer)=> {
+                    trainer = trainer.records;
+                    db.close();
+                    res.writeHead(200, header);
+                    res.end(JSON.stringify({
+                        status:"created",
+                        results: trainer[0]._fields[0].properties,
+                        strip_info: account,
+                      }));
+                    console.log(JSON.stringify({
+                      results: trainer[0]._fields[0].properties,
+                      strip_info: account,
+                      status:"error"
+                    }));
+                    return
+                  })
+                  .catch((err) => {
+                    res.writeHead(500, header);
+                    res.end(JSON.stringify({
+                        results: err,
+                        status:"error"
+                      }));
+                    console.log(JSON.stringify({
+                      results: err,
+                      status:"error"
+                    }));
+                  })
+
+                });
+             });
+          }); //end of create stripe account
+        }
+      });
 		})
 
 
@@ -573,6 +603,34 @@ class User {
 			})
 		})
 
+    //Get CLIENT USER
+		server.post('/bf/urfitclient/get/user', (req, res, next) => {
+			let body = req.body;
+
+			db.run("MATCH (n:USER {uuid:$id}) RETURN n", {
+				id: body.id,
+			})
+			.then((user)=> {
+				user = user.records;
+				db.close();
+				res.writeHead(200, header);
+				res.end(JSON.stringify({
+						results: user[0]._fields[0].properties,
+					}));
+				console.log(JSON.stringify('/bf/urfitclient/get/user',{
+					results: user[0]._fields[0].properties,
+				}));
+				return
+			})
+			.catch((err) => {
+				res.writeHead(500, header);
+				res.end(JSON.stringify({
+						results: err,
+					}));
+				console.log('/bf/urfitclient/get/user',err);
+			})
+		})
+
     //'/bf/urfittrainer/get/trainer/messages'
     server.post('/bf/urfittrainer/get/trainer/messages', (req, res, next) => {
       let body = req.body;
@@ -692,27 +750,63 @@ class User {
 		// LOGIN / USER CREATION URFIT
 		server.post('/bf/create/user/v1', (req, res, next) => {
 			let body = req.body;
+      let cypherCheckExistingUser = "MATCH (u:USER) WHERE u.email = $email OR u.original_email = $email RETURN u";
       let cypher = "CREATE (u:USER {name:$name, sex:$sex, avatar:$avatar, messages:$messages, uuid:$uuid, email:$email, original_email:$original_email}) RETURN u"
-      db.run(cypher,{
-        name: body.name,
-        sex: body.sex,
-        avatar: body.avatar,
-        messages: [],
-        uuid: uuidV4(),
-        email: body.email,
-        original_email: body.email
-      })
-      .then((client) => {
-        client = client.records;
-        db.close();
-        res.writeHead(200, header);
-        res.end(JSON.stringify({
-            results: client[0]._fields[0].properties,
+
+      db.run(cypherCheckExistingUser, {email:body.email})
+      .then((results) => {
+        db.close()
+        results = results.records;
+        if(results.length > 0){
+          res.writeHead(200, header);
+          res.end(JSON.stringify({
+              status:"taken",
+              results: results[0]._fields[0].properties,
+            }));
+          console.log('/bf/create/user/v1',JSON.stringify({
+            status: "taken",
+            results: results[0]._fields[0].properties,
           }));
-        console.log('/bf/create/user/v1',JSON.stringify({
-          results: client[0]._fields[0].properties,
-        }));
-        return
+          return
+        }
+        else{
+          db.run(cypher,{
+            name: body.name,
+            sex: body.sex,
+            avatar: body.avatar,
+            messages: [],
+            uuid: uuidV4(),
+            email: body.email,
+            original_email: body.email,
+            stripeCustomerId:'',
+            subscription:''
+          })
+          .then((client) => {
+            client = client.records;
+            db.close();
+            res.writeHead(200, header);
+            res.end(JSON.stringify({
+                status:"found",
+                results: client[0]._fields[0].properties,
+              }));
+            console.log('/bf/create/user/v1',JSON.stringify({
+              status:"found",
+              results: client[0]._fields[0].properties,
+            }));
+            return
+          })
+          .catch((err)=>{
+            log.error(err);// log to error file
+            console.log('/bf/create/user/v1',err);
+            res.writeHead(500, header)
+                res.end(JSON.stringify({
+                  success:'no',
+                  status:"error",
+                  err: err,
+                  message:'Something went wrong logging in. Check error message to see what happened.'
+                  }))
+          });
+        }
       })
       .catch((err)=>{
         log.error(err);// log to error file
@@ -720,11 +814,11 @@ class User {
         res.writeHead(500, header)
             res.end(JSON.stringify({
               success:'no',
+              status:"error",
               err: err,
               message:'Something went wrong logging in. Check error message to see what happened.'
               }))
       });
-
 		})
 
 				// SEND PASSWORD BM
@@ -801,7 +895,7 @@ class User {
 
 
       // SET AND SEND PASSWORD URFIT TRAINER
-  server.post('bf/urfittrainer/set/then/sendpassword/user/login/v1', (req, res, next) => {
+  server.post('/bf/urfittrainer/set/then/sendpassword/user/login/v1', (req, res, next) => {
     let body = req.body;
     function makeid() {
       var text = "";
@@ -830,7 +924,7 @@ class User {
     let transporter = nodemailer.createTransport(smtpConfig);
 
 
-          let cypher2 = "MATCH (n:TRAINER {email:$email }) SET n.password = $password RETURN n";
+          let cypher2 = "MATCH (n:TRAINER) WHERE n.email = $email OR n.original_email = $email SET n.password = $password RETURN n";
             db.run(cypher2, {
               email: lowerCase(body.email),
               password: password,
@@ -851,7 +945,7 @@ class User {
 
                   transporter.sendMail(mailOptions, (error, info) => {
                       if (error) {
-                        log.error(error, 'bf/urfittrainer/set/then/sendpassword/user/login/v1');// log to error file
+                        log.error(error, '/bf/urfittrainer/set/then/sendpassword/user/login/v1');// log to error file
                           return console.log(error);
                       }
                       console.log('Message sent: %s', info.messageId);
@@ -864,7 +958,7 @@ class User {
                           results: results2[0]
                           //token: token
                         }));
-                      console.log('bf/urfittrainer/set/then/sendpassword/user/login/v1', JSON.stringify({
+                      console.log('/bf/urfittrainer/set/then/sendpassword/user/login/v1', JSON.stringify({
                         found: true,
                         results: results2[0]
                         //token: token
@@ -880,7 +974,7 @@ class User {
                         results: results2
                         //token: token
                       }));
-                    console.log('bf/urfittrainer/set/then/sendpassword/user/login/v1', JSON.stringify({
+                    console.log('/bf/urfittrainer/set/then/sendpassword/user/login/v1', JSON.stringify({
                       found: false,
                       results: results2,
                       //token: token
@@ -909,8 +1003,119 @@ class User {
     })
 
 
+
+    // SET AND SEND PASSWORD URFIT CLIENT
+server.post('/bf/urfitclient/set/then/sendpassword/user/login/v1', (req, res, next) => {
+  let body = req.body;
+  function makeid() {
+    var text = "";
+    var possible = "0123456789";
+
+    for (var i = 0; i < 7; i++)
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text.toString();
+  }
+
+  let password = makeid();
+  db.run("MATCH (n:SENDGRIDPK) RETURN n",{})
+  .then((results) =>{
+    db.close();
+
+  let smtpConfig = {
+      host: 'smtp.sendgrid.net',
+        port: 587,
+        secure: false, // upgrade later with STARTTLS
+        auth: {
+            user: 'apikey',
+            pass: results.records[0]._fields[0].properties.key
+        }
+  };
+  let transporter = nodemailer.createTransport(smtpConfig);
+
+
+        let cypher2 = "MATCH (n:USER) WHERE n.email = $email OR n.original_email = $email SET n.password = $password RETURN n";
+          db.run(cypher2, {
+            email: lowerCase(body.email),
+            password: password,
+          }).then((results2) => {
+            results2 = results2.records.map((x) => {
+              return x = x._fields[0].properties;
+            });
+            db.close();
+            //var encryptedString = body.password;
+            if(results2.length > 0){
+              let mailOptions = {
+                    from: '" UrFit " <password@urfit.fit>', // sender address
+                    to: body.email, // list of receivers
+                    subject: 'Password Code ✔', // Subject line
+                    text: 'Your passcode is: '+results2[0].password+ ' ', // plain text body
+                    html: '<p style="font-size:28px; text-align: center; color:#35365D">Your Passcode Is</p><div style="padding:10px;background-color:#78C5A6;border-radius:25px; margin-left:100px; margin-right:100px;"><p style="color:white;font-size:40px; text-align:center; ">'+results2[0].password+'</p></div><p style="font-size:16px; text-align:center;">This message will self distruct in 5..4..3.. just joking, but this passcode is temporary.</p>' // html body
+                };
+
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                      log.error(error, '/bf/urfitclient/set/then/sendpassword/user/login/v1');// log to error file
+                        return console.log(error);
+                    }
+                    console.log('Message sent: %s', info.messageId);
+                });
+
+
+                res.writeHead(200, header);
+                    res.end(JSON.stringify({
+                        found: true,
+                        results: results2[0]
+                        //token: token
+                      }));
+                    console.log('/bf/urfitclient/set/then/sendpassword/user/login/v1', JSON.stringify({
+                      found: true,
+                      results: results2[0]
+                      //token: token
+                    }));
+                    return
+
+            }
+            else{
+
+              res.writeHead(200, header);
+                  res.end(JSON.stringify({
+                      found: false,
+                      results: results2
+                      //token: token
+                    }));
+                  console.log('bf/urfitclient/set/then/sendpassword/user/login/v1', JSON.stringify({
+                    found: false,
+                    results: results2,
+                    //token: token
+                  }));
+                  return
+                  //
+            }
+
+
+
+          })
+          .catch((err)=>{
+            log.error(err, ' bf/urfitclient/set/then/sendpassword/user/login/v1' );// log to error file
+            console.log(err);
+            res.writeHead(500, header)
+                res.end(JSON.stringify({
+                  found: false,
+                  err: err,
+                  message:'Something went wrong logging in. Check error message to see what happened.'
+                  }))
+          });
+
+    })
+
+
+  })
+
+
+
     // TRAINER LOGIN
-server.post('bf/urfittrainer/trainer/login/v1', (req, res, next) => {
+server.post('/bf/urfittrainer/trainer/login/v1', (req, res, next) => {
         let body = req.body;
         //console.log('password',body.password, body.id )
         let cypher = "MATCH (n:TRAINER { uuid:$uuid, password:$password }) RETURN n";
@@ -971,8 +1176,108 @@ server.post('bf/urfittrainer/trainer/login/v1', (req, res, next) => {
 
   })
 
-  //SET FCMTOKEN
-  server.post('bf/urfittrainer/trainer/set/fcmtoken/v1', (req, res, next) => {
+
+  // CLIENT LOGIN
+server.post('/bf/urfitclient/user/login/v1', (req, res, next) => {
+      let body = req.body;
+      //console.log('password',body.password, body.id )
+      let cypher = "MATCH (n:USER { uuid:$uuid, password:$password }) RETURN n";
+        db.run(cypher, {
+          uuid: body.id,
+          password: body.password,
+        }).then((results2) => {
+          results2 = results2.records.map((x) => {
+            return x = x._fields[0].properties;
+          });
+          db.close();
+          //var encryptedString = body.password;
+          if(results2.length > 0){
+              res.writeHead(200, header);
+                  res.end(JSON.stringify({
+                      found: true,
+                      results: results2[0]
+                      //token: token
+                    }));
+                  console.log('/bf/urfitclient/user/login/v1', JSON.stringify({
+                    found: false,
+                    results: results2[0]
+                    //token: token
+                  }));
+                  return
+
+          }
+          else{
+
+            res.writeHead(200, header);
+                res.end(JSON.stringify({
+                    found: false,
+                    results: results2
+                    //token: token
+                  }));
+                console.log('/bf/urfitclient/user/login/v1', JSON.stringify({
+                  found: false,
+                  results: results2,
+                  //token: token
+                }));
+                return
+          }
+
+
+
+        })
+        .catch((err)=>{
+          log.error(err, '/bf/urfitclient/user/login/v1' );// log to error file
+          console.log(err, '/bf/urfitclient/user/login/v1');
+          res.writeHead(500, header)
+              res.end(JSON.stringify({
+                err: err,
+                message:'Something went wrong logging in. Check error message to see what happened.'
+                }))
+        });
+
+
+
+})
+
+
+  //SET FCMTOKEN CLIENT
+  server.post('/bf/urfit/client/set/fcmtoken/v1', (req, res, next) => {
+    let body = req.body;
+    let cypher = "MATCH (n:USER {uuid:$uuid}) SET n.fcmtoken = $fcmtoken RETURN n";
+      db.run(cypher, {
+        uuid: body.id,
+        fcmtoken: body.fcmtoken,
+      })
+      .then((results) => {
+        results = results.records.map((x) => {
+          return x = x._fields[0].properties;
+        });
+        db.close();
+        res.writeHead(200, header);
+            res.end(JSON.stringify({
+                found: false,
+                results: results
+              }));
+            console.log('/bf/urfit/client/set/fcmtoken/v1', JSON.stringify({
+              found: false,
+              results: results,
+              //token: token
+            }));
+            return
+      })
+      .catch((err)=>{
+        log.error(err, '/bf/urfit/client/set/fcmtoken/v1' );// log to error file
+        console.log(err, '/bf/urfit/client/set/fcmtoken/v1');
+        res.writeHead(500, header)
+            res.end(JSON.stringify({
+              err: err,
+              message:'Something went wrong logging in. Check error message to see what happened.'
+            }))
+      });
+  })
+
+  //SET FCMTOKEN TRAINER
+  server.post('/bf/urfittrainer/trainer/set/fcmtoken/v1', (req, res, next) => {
     let body = req.body;
     let cypher = "MATCH (n:TRAINER {uuid:$uuid}) SET n.fcmtoken = $fcmtoken RETURN n";
       db.run(cypher, {
@@ -989,7 +1294,7 @@ server.post('bf/urfittrainer/trainer/login/v1', (req, res, next) => {
                 found: false,
                 results: results
               }));
-            console.log('bf/urfittrainer/trainer/set/fcmtoken/v1', JSON.stringify({
+            console.log('/bf/urfittrainer/trainer/set/fcmtoken/v1', JSON.stringify({
               found: false,
               results: results,
               //token: token
@@ -997,8 +1302,8 @@ server.post('bf/urfittrainer/trainer/login/v1', (req, res, next) => {
             return
       })
       .catch((err)=>{
-        log.error(err, 'bf/urfittrainer/trainer/set/fcmtoken/v1' );// log to error file
-        console.log(err, 'bf/urfittrainer/trainer/set/fcmtoken/v1');
+        log.error(err, '/bf/urfittrainer/trainer/set/fcmtoken/v1' );// log to error file
+        console.log(err, '/bf/urfittrainer/trainer/set/fcmtoken/v1');
         res.writeHead(500, header)
             res.end(JSON.stringify({
               err: err,

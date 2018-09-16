@@ -213,3 +213,35 @@ ReferenceError: resultsProps is not defined
     at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/user.js:1003:36
     at <anonymous>
     at process._tickDomainCallback (internal/process/next_tick.js:228:7) bf/urfittrainer/set/then/sendpassword/user/login/v1 
+09:54:16.834 ERROR Variable `n` not defined (line 1, column 22 (offset: 21))
+"MATCH (u:USER) WHERE n.email = $email OR n.original_email = $email RETURN n"
+                      ^
+Neo4jError: Variable `n` not defined (line 1, column 22 (offset: 21))
+"MATCH (u:USER) WHERE n.email = $email OR n.original_email = $email RETURN n"
+                      ^
+
+    at captureStacktrace (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:200:15)
+    at new Result (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:73:19)
+    at Session._run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:122:14)
+    at Session.run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:101:19)
+    at Server.<anonymous> (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/user.js:726:10)
+    at next (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/restify/lib/server.js:1126:29)
+    at f (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/once/once.js:36:25)
+    at Server.<anonymous> (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/src/index.js:41:7)
+    at next (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/restify/lib/server.js:1126:29)
+    at f (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/once/once.js:36:25) 
+09:55:25.776 ERROR Expected a parameter named name
+Neo4jError: Expected a parameter named name
+
+    at captureStacktrace (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:200:15)
+    at new Result (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:73:19)
+    at Session._run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:122:14)
+    at Session.run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:101:19)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/user.js:743:14
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) 
+09:58:22.859 ERROR client is not defined
+ReferenceError: client is not defined
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/user.js:734:24
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) 
