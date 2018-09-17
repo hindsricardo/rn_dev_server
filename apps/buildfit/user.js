@@ -613,14 +613,49 @@ class User {
 			.then((user)=> {
 				user = user.records;
 				db.close();
-				res.writeHead(200, header);
-				res.end(JSON.stringify({
-						results: user[0]._fields[0].properties,
-					}));
-				console.log(JSON.stringify('/bf/urfitclient/get/user',{
-					results: user[0]._fields[0].properties,
-				}));
-				return
+        stripe.subscriptions.retrieve(
+          user[0]._fields[0].properties.subscription,
+          function(err, subscription) {
+            // asynchronously called
+            if(err){
+              res.writeHead(200, header);
+      				res.end(JSON.stringify({
+      						results: user[0]._fields[0].properties,
+      					}));
+      				console.log(JSON.stringify('/bf/urfitclient/get/user',{
+      					results: user[0]._fields[0].properties,
+      				}));
+      				return
+            }
+            else{
+              if(subscription.status == 'canceled'){
+                user[0]._fields[0].properties.subscribed = false;
+                user[0]._fields[0].properties.status = subscription.status;
+                res.writeHead(200, header);
+        				res.end(JSON.stringify({
+        						results: user[0]._fields[0].properties,
+        					}));
+        				console.log(JSON.stringify('/bf/urfitclient/get/user',{
+        					results: user[0]._fields[0].properties,
+        				}));
+        				return
+              }
+              else{
+                user[0]._fields[0].properties.subscribed = true;
+                user[0]._fields[0].properties.status = subscription.status;
+                res.writeHead(200, header);
+        				res.end(JSON.stringify({
+        						results: user[0]._fields[0].properties,
+        					}));
+        				console.log(JSON.stringify('/bf/urfitclient/get/user',{
+        					results: user[0]._fields[0].properties,
+        				}));
+        				return
+              }
+            }
+          }
+        );
+
 			})
 			.catch((err) => {
 				res.writeHead(500, header);
@@ -751,7 +786,7 @@ class User {
 		server.post('/bf/create/user/v1', (req, res, next) => {
 			let body = req.body;
       let cypherCheckExistingUser = "MATCH (u:USER) WHERE u.email = $email OR u.original_email = $email RETURN u";
-      let cypher = "CREATE (u:USER {name:$name, sex:$sex, avatar:$avatar, messages:$messages, uuid:$uuid, email:$email, original_email:$original_email}) RETURN u"
+      let cypher = "CREATE (u:USER {name:$name, sex:$sex, avatar:$avatar, messages:$messages, uuid:$uuid, email:$email, original_email:$original_email, subscribed:$subscribed}) RETURN u"
 
       db.run(cypherCheckExistingUser, {email:body.email})
       .then((results) => {
@@ -779,7 +814,8 @@ class User {
             email: body.email,
             original_email: body.email,
             stripeCustomerId:'',
-            subscription:''
+            subscription:'',
+            subscribed: false,
           })
           .then((client) => {
             client = client.records;
@@ -1132,12 +1168,12 @@ server.post('/bf/urfittrainer/trainer/login/v1', (req, res, next) => {
                 res.writeHead(200, header);
                     res.end(JSON.stringify({
                         found: true,
-                        results: results2[0]
+                        results: results2
                         //token: token
                       }));
                     console.log('bf/urfittrainer/trainer/login/v1', JSON.stringify({
                       found: false,
-                      results: results2[0]
+                      results: results2
                       //token: token
                     }));
                     return
@@ -1192,19 +1228,60 @@ server.post('/bf/urfitclient/user/login/v1', (req, res, next) => {
           db.close();
           //var encryptedString = body.password;
           if(results2.length > 0){
-              res.writeHead(200, header);
+            stripe.subscriptions.retrieve(
+              results.subscription,
+              function(err, subscription) {
+                // asynchronously called
+                if(err){
+                  res.writeHead(200, header);
                   res.end(JSON.stringify({
                       found: true,
-                      results: results2[0]
+                      results: results2
                       //token: token
                     }));
                   console.log('/bf/urfitclient/user/login/v1', JSON.stringify({
                     found: false,
-                    results: results2[0]
+                    results: results2
                     //token: token
                   }));
                   return
-
+                }
+                else{
+                  if(subscription.status == 'canceled'){
+                    results2.subscribed = false;
+                    results2.status = subscription.status;
+                    res.writeHead(200, header);
+                    res.end(JSON.stringify({
+                        found: true,
+                        results: results2[0]
+                        //token: token
+                      }));
+                    console.log('/bf/urfitclient/user/login/v1', JSON.stringify({
+                      found: false,
+                      results: results2[0]
+                      //token: token
+                    }));
+                    return
+                  }
+                  else{
+                    results2.subscribed = true;
+                    results2.status = subscription.status;
+                    res.writeHead(200, header);
+                    res.end(JSON.stringify({
+                        found: true,
+                        results: results2[0]
+                        //token: token
+                      }));
+                    console.log('/bf/urfitclient/user/login/v1', JSON.stringify({
+                      found: false,
+                      results: results2[0]
+                      //token: token
+                    }));
+                    return
+                  }
+                }
+              }
+            );
           }
           else{
 

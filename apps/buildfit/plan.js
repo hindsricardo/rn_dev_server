@@ -24,7 +24,7 @@ class Plan {
 
 
 		//CREATE EXERCISES
-		server.post('bf/urfittrainer/create/new/exercise', (req, res, next) => {
+		server.post('/bf/urfittrainer/create/new/exercise', (req, res, next) => {
 			let body = req.body;
 			let cypher = "MATCH (trainer:TRAINER {uuid:$id}) CREATE (n:EXERCISE {name:$name, description:$description, public:$public, VideoURL:$VideoURL, part: $part})<-[:CREATED]-(trainer) RETURN n ";
 			db.run(cypher,{
@@ -550,7 +550,7 @@ class Plan {
 				});
 			})
 
-		server.post('bf/pick/exercises/v1', (req, res, next) => {
+		server.post('/bf/pick/exercises/v1', (req, res, next) => {
 			let oneday = 86400000;
 			var times = {
 				back: {Smaller:2, Tone:2, Bigger: 3},
