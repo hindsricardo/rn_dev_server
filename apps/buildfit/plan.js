@@ -11,6 +11,7 @@ import jwt from 'jsonwebtoken';
 import uuid from 'node-uuid';
 import _ from 'underscore';
 import moment from 'moment';
+import youtubeSearch from 'youtube-search';
 var stripe = require("stripe")(
   "sk_test_jjMsr7JRvBqis3InsnqaKJSx"
 	);
@@ -23,6 +24,44 @@ class Plan {
 		this.name = 'Plan'
 
 
+    //SEARCH YOUTUBE VIDEOS
+    server.post('/bf/urfittrainer/search/youtube', (req,res,next) => {
+      let body = req.body;
+      var opts = {
+        maxResults: 25,
+        key: 'AIzaSyBhV_DknbhPjxr5XD5f3fz55AYcOMPT6oM'
+      };
+
+      youtubeSearch(body.searchTerm, opts, function(err, results) {
+        if(err) {
+          res.writeHead(500, header);
+          res.end(JSON.stringify({
+  	        	results: err,
+              status:"error",
+  						route: '/bf/urfittrainer/search/youtube'
+          	}));
+          console.log(JSON.stringify({
+          	results: err,
+            status:'error',
+  					route: '/bf/urfittrainer/search/youtube'
+          }));
+          return
+        }else{
+          res.writeHead(200, header);
+          res.end(JSON.stringify({
+  	        	results: results,
+              status:'success',
+  						route: '/bf/urfittrainer/search/youtube'
+          	}));
+          console.log(JSON.stringify({
+          	results: results,
+            status:'success',
+  					route: '/bf/urfittrainer/search/youtube'
+          }));
+          return
+        }
+      });
+    })
 		//CREATE EXERCISES
 		server.post('/bf/urfittrainer/create/new/exercise', (req, res, next) => {
 			let body = req.body;
@@ -1841,304 +1880,9 @@ class Plan {
 					          }))
 					});
 
-		})
-
-			// GENERATE A PLAN FROM A TRAINER //TODO DELETE ROUTE. THIS ROUTE IS NOT IN USE ************************************
-			/*server.post('/client/generate/plan', (req, res, next) => {
-				let body = { client:"user1", sex:"M", goals:[{part:"back", goal:"B"}], trainerid: "hindsricardo@gmail.com"} //fake goal input from user
-				let cypher = ["UNWIND {goals} AS x",
-							  "MATCH (trainer:TRAINER {username: {trainer_username}})",
-							  "MATCH (trainer)-[:CREATED]->(framework:FRAMEWORK)",
-							  "WHERE framework.part = x.part AND framework.goal = x.goal",
-							  "MATCH (trainer)-[:CREATED]->(exercise:EXERCISE)",
-							  "WHERE exercise.part = x.part",
-							  "RETURN DISTINCT framework, exercise"].join('\n');
-				db.query(cypher, {
-				goals: body.goals,	//set goals variable in cypher to body.goals
-				trainer_username: body.trainerid
-				},	(err, results) => {
-
-					let days = {day1:[],
-								day2:[],
-								day3:[],
-								day4:[],
-								day5:[],
-								day6:[],
-								day7:[]
-							};
-
-					/*for(var i =0; i < results.length; i++){
-						let framework = results[i].framework;
-						for(n = 0; n < framework.schedule_settings.length; n++){
-							let movements = framework.schedule_settings[n].movements;
-							if(movements.length > 0) {
-								for(z = 0; z < movements.length;z++){
-									let level = movements[z];
-									//for(d = 0; d < results.length; d++){
-
-									//}
-
-								}
-							}
-						}
-					}*/
-
-
-				/*	if(err) {
-						console.log(err);
-						res.writeHead(500, header)
-				        res.end(JSON.stringify({
-				          success:'no',
-				          err: err,
-				          message:'Something went wrong logging in. Check error message to see what happened.'
-				          }))
-					}
-					else{
-
-
-						res.writeHead(200, header);
-				        res.end(JSON.stringify({
-					        	success:'yes',
-					        	schedule: results[0].framework.schedule_settings,
-					        	results: results,
-					        	//token: token
-				        	}));
-				        console.log(JSON.stringify({
-				        	success:'yes',
-				        	results: results,
-				        	//token: token
-				        }));
-				        return
-						}
-					})
-
-			}) // GENERATE A PLAN FROM A TRAINER
-			/************************************************************************/
-
-		// add USER CREATED EXERCISE
-		server.post('/client/create/exercise', (req, res, next) => {
-			let body = req.body
-			let cypher = "MATCH (u:USER {uuid:$id}) "+
-						  "CREATE (exercise:EXERCISE {uuid:$uuid, VideoURL:'null', location: $location, description: $description, sets: $sets, part: $part, name: $name, gender: $gender, goal: $goal, levels: $levels }) "+
-						  "CREATE (u)-[:CREATED]->(exercise) "+
-						  "RETURN exercise";	// return the list of trainers as an array
-				db.run(cypher, {
-					goal: body.goal,
-					id:body.userid,
-					description:body.description,
-					name: body.name,
-					location: ['gym','home'],
-					gender: ['male', 'female'],
-					part: body.part,
-					sets: '{ "superset": [ { "id": 1, "reps": "15", "rest" : "0", "description": "do as many as you can with perfect form" } ], "low": [ { "id": 1, "reps": "15", "rest" : "45", "description": "" }, { "id": 2, "reps": "20", "rest" : "45", "description": "" }, { "id": 3, "reps": "25", "rest" : "45", "description": "" } ], "high": [ { "id": 1, "reps": 12, "rest": 45, "description": "use a weight that is challenging enough where the last 4 to 3 reps burn your glutes. Also, if you are able to do more reps then continue until your glute muscles can not do more. Doing more than the given number of sets means you need to increase the weight more on the next set to get closer to the target reps. Now crush this set!" }, { "id": 2, "reps": 10, "rest": 45, "description": "Adjust the weight so that you are only able to do the given number of reps. Again if you can do more than ten reps, do not stop there and continue until your glutes cannot take anymore." }, { "id": 3, "reps": 8, "rest": 45, "description": "Increase the weight from the previous set if you were able to do the target number of reps or more. On this set do not do more than the target number of reps." }, { "id": 4, "reps": 8, "rest": 45, "description": "Do not do more than eight reps." }, { "id": 5, "reps": 15, "rest": 0, "description": "Do not decrease the weight from the previous set. Trust your body to make it through to this increased number of reps." } ], "medium": [ { "id": 1, "reps": 15, "rest": 45, "description": "the last three or four reps should be hard." }, { "id": 2, "reps": 15, "rest": 45, "description": "" }, { "id": 3, "reps": 15, "rest": 45, "description": "" }]}',
-					uuid: uuidV4(),
-					levels: ['superset', 'high', 'medium', 'low']
-				})
-				.then((results) => {
-					db.close();
-					results = results.records;
-					res.writeHead(200, header);
-			        res.end(JSON.stringify({
-				        	success:'yes',
-				        	results: results
-				        	//token: token
-			        	}));
-			        console.log('/client/create/exercise', JSON.stringify({
-			        	success:'yes',
-			        	results: results,
-			        	//token: token
-			        }));
-			        return
-				})
-				.catch((err)=>{
-						console.log('/client/create/exercise', err);
-						res.writeHead(500, header)
-				        res.end(JSON.stringify({
-				          success:'no',
-				          err: err,
-				          message:'Something went wrong logging in. Check error message to see what happened.'
-				          }))
-				});
-			})
-
-		/************************************************************* THE FOLLOWING ROUTES IS TO SEED THE DATABASE WITH EXERCISES & PATTERNS AND SHOULD BE CALLED WHENEVER A NEW EXERCISE OR PATTERN IS ADDED RESPECTIVELY*****************************************************************/
-
-		// SEED EXERCISES
-		server.post('/admin/seed/exercises', (req, res, next)=>{
-			//if(req.header['token'] == secret){
-				//console.log('/admin/seed/exercises', exercises_core_pack)
-				//let array = [exercises_core_pack, exercises_core_pack];// add exercise packs here.
-						let cypher = 	'MATCH (trainer:TRAINER {username: $username}) '+
-										'WITH '+exercises_core_pack + ' AS core,'+exercises_core_pack2+' AS core2 '+
-										'UNWIND (core + core2) AS move '+
-										'MERGE (exercise:EXERCISE {name: move.name} ) '+
-										'MERGE (trainer)-[:CREATED]->(exercise) '+
-										'SET exercise += move '+
-										'RETURN exercise';
-
-						db.run(cypher, {
-							username: 'hindsricardo@gmail.com',
-						})
-						.then((results)=>{
-							db.close()
-							results = results.records;
-
-							res.writeHead(200, header);
-					        res.end(JSON.stringify({
-						        	success:'yes',
-						        	results: results
-						        	//token: token
-					        	}));
-					        console.log('/admin/seed/exercises', JSON.stringify({
-					        	success:'yes',
-					        	results: results,
-					        	//token: token
-					        }));
-					        return
-
-						})
-						.catch((err)=>{
-								console.log('/admin/seed/exercises', err);
-								res.writeHead(500, header)
-						        res.end(JSON.stringify({
-						          success:'no',
-						          err: err,
-						          message:'Something went wrong logging in. Check error message to see what happened.'
-						          }))
-						});
-			/*}
-			else{
-				console.log('/admin/seed/exercises', 'NOT AUTHORIZED TO ACCESS ROUTE');
-				res.writeHead(401, header)
-		        res.end(JSON.stringify({
-		          success:'no',
-		          err: err,
-		          message:'You are not authorized to access this route'
-		          }))
-		     	return
-			}*/
-		}) // end of /admin/seed/exercises
-
-
-		// SEED FRAMEWORKS
-		server.post('/admin/seed/frameworks', (req, res, next)=>{
-			//if(req.header['token'] == secret){
-				//console.log('/admin/seed/exercises', exercises_core_pack)
-				let array = [frameworks ];// add exercise packs here.
-					array.forEach((framework)=>{
-						let cypher = 	"MATCH (trainer:TRAINER {username: $username}) "+
-										"UNWIND "+framework + " AS x "+
-										"MERGE (framework:FRAMEWORKS {gender: x.gender, part: x.part, goal: x.goal} ) "+
-										"MERGE (trainer)-[:HAS]->(framework) "+
-										"SET framework += x "+
-										"RETURN framework";
-
-						db.run(cypher, {
-							username: 'hindsricardo@gmail.com',
-						})
-						.then((results)=>{
-							db.close()
-							results = results.records;
-
-							res.writeHead(200, header);
-					        res.end(JSON.stringify({
-						        	success:'yes',
-						        	results: results
-						        	//token: token
-					        	}));
-					        console.log('/admin/seed/frameworks', JSON.stringify({
-					        	success:'yes',
-					        	results: results,
-					        	//token: token
-					        }));
-					        return
-
-						})
-						.catch((err)=>{
-								console.log('/admin/seed/framworks', err);
-								res.writeHead(500, header)
-						        res.end(JSON.stringify({
-						          success:'no',
-						          err: err,
-						          message:'Something went wrong logging in. Check error message to see what happened.'
-						          }))
-						});
-					})
-			/*}
-			else{
-				console.log('/admin/seed/framworks', 'NOT AUTHORIZED TO ACCESS ROUTE');
-				res.writeHead(401, header)
-		        res.end(JSON.stringify({
-		          success:'no',
-		          err: err,
-		          message:'You are not authorized to access this route'
-		          }))
-		     	return
-			} */
-		}) // end of /admin/seed/exercises
-
-
-				// SEED PATTERNS
-		server.post('/admin/seed/patterns', (req, res, next)=>{
-			//if(req.header['token'] == secret){
-				//console.log('/admin/seed/exercises', exercises_core_pack)
-				let array = [patterns ];// add exercise packs here.
-					array.forEach((pattern)=>{
-						let cypher = 	"UNWIND "+pattern + " AS x "+
-										"MATCH (framework:FRAMEWORKS {gender: x.gender, part: x.part, goal: x.goal}) "+
-										"MERGE (pattern:PATTERN {soreness: x.soreness, gender: x.gender, part: x.part, goal: x.goal, priority: x.priority} ) "+
-										"MERGE (framework)-[:HAS]->(pattern) "+
-										"SET pattern += x "+
-										"RETURN pattern";
-
-						db.run(cypher, {
-							username: 'hindsricardo@gmail.com',
-						})
-						.then((results)=>{
-							db.close()
-							results = results.records;
-
-							res.writeHead(200, header);
-					        res.end(JSON.stringify({
-						        	success:'yes',
-						        	results: results
-						        	//token: token
-					        	}));
-					        console.log('/admin/seed/patterns', JSON.stringify({
-					        	success:'yes',
-					        	results: results,
-					        	//token: token
-					        }));
-					        return
-
-						})
-						.catch((err)=>{
-								console.log('/admin/seed/patterns', err);
-								res.writeHead(500, header)
-						        res.end(JSON.stringify({
-						          success:'no',
-						          err: err,
-						          message:'Something went wrong logging in. Check error message to see what happened.'
-						          }))
-						});
-					})
-			/*}
-			else{
-				console.log('/admin/seed/framworks', 'NOT AUTHORIZED TO ACCESS ROUTE');
-				res.writeHead(401, header)
-		        res.end(JSON.stringify({
-		          success:'no',
-		          err: err,
-		          message:'You are not authorized to access this route'
-		          }))
-		     	return
-			} */
-		}) // end of /admin/seed/exercises
-
-
-		}
-
+		   })
 	}
+}
 
 
 export default Plan
