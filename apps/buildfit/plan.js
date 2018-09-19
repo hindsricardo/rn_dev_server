@@ -6,6 +6,7 @@ import {exercises_core_pack2} from './config2';
 import {frameworks} from './frameworks';
 import {patterns} from './patterns';
 
+var lowerCase = require('lower-case');
 
 import jwt from 'jsonwebtoken';
 import uuid from 'node-uuid';
@@ -65,41 +66,92 @@ class Plan {
 		//CREATE EXERCISES
 		server.post('/bf/urfittrainer/create/new/exercise', (req, res, next) => {
 			let body = req.body;
-			let cypher = "MATCH (trainer:TRAINER {uuid:$id}) CREATE (n:EXERCISE {name:$name, description:$description, public:$public, VideoURL:$VideoURL, part: $part})<-[:CREATED]-(trainer) RETURN n ";
-			db.run(cypher,{
-				id:body.id,
-				description:body.description,
-				VideoURL: body.VideoURL,
+      let now = new Date().getTime();
+      let checkVideoIdANDtitle = "MATCH (n:EXERCISE {public:$public}) WHERE n.name = $name OR n.VideoURL = $VideoURL RETURN n";
+			let cypher = "MATCH (trainer:TRAINER {uuid:$id}) CREATE (n:EXERCISE {name:$name, uuid:$uuid, description:$description, public:$public, VideoURL:$VideoURL, part: $part, creator: $creator, created:$created})<-[:CREATED]-(trainer) RETURN n ";
+      db.run(checkVideoIdANDtitle, {
+        VideoURL: body.VideoURL,
 				name: body.name,
-				public: body.public,
-				part:body.part,
-			}).then((results) => {
-				db.close();
-				results = results.records.map((x) => {
+        public: 'Public',
+      })
+      .then((finds) => {
+        db.close();
+				finds = finds.records.map((x) => {
 					return x = x._fields[0].properties;
 				});
-				res.writeHead(200, header);
-        res.end(JSON.stringify({
-	        	results: results,
-						route: 'bf/urfittrainer/create/new/exercise'
-        	}));
-        console.log(JSON.stringify({
-        	results: results,
-					route: 'bf/urfittrainer/create/new/exercise'
-        }));
-        return
-			})
-			.catch((err) => {
+        if(finds.length > 0 && body.public == "Public"){
+          res.writeHead(200, header);
+          res.end(JSON.stringify({
+              results: finds,
+              status:"duplicate",
+              route: 'bf/urfittrainer/create/new/exercise'
+            }));
+          console.log(JSON.stringify({
+            results: finds,
+            status:"duplicate",
+            route: 'bf/urfittrainer/create/new/exercise'
+          }));
+          return
+        }
+        else{
+            //CREATE NEW LISTING
+            db.run(cypher,{
+              id:body.id,
+              creator:body.id,
+              uuid: uuidV4(),
+              description:body.description,
+              VideoURL: body.VideoURL,
+              name: body.name,
+              public: body.public,
+              part:body.part,
+              created: now,
+            }).then((results) => {
+              db.close();
+              results = results.records.map((x) => {
+                return x = x._fields[0].properties;
+              });
+              res.writeHead(200, header);
+              res.end(JSON.stringify({
+                  results: results,
+                  status:"created",
+                  route: 'bf/urfittrainer/create/new/exercise'
+                }));
+              console.log(JSON.stringify({
+                results: results,
+                status:"created",
+                route: 'bf/urfittrainer/create/new/exercise'
+              }));
+              return
+            })
+            .catch((err) => {
+              res.writeHead(500, header);
+              res.end(JSON.stringify({
+                  results: err,
+                  status:"error",
+                  route: 'bf/urfittrainer/create/new/exercise'
+                }));
+              console.log(JSON.stringify({
+                results: err,
+                status:"error",
+                route: 'bf/urfittrainer/create/new/exercise'
+              }));
+            })
+        }
+      })
+      .catch((err) => {
 				res.writeHead(500, header);
         res.end(JSON.stringify({
 	        	results: err,
+            status:"error",
 						route: 'bf/urfittrainer/create/new/exercise'
         	}));
         console.log(JSON.stringify({
         	results: err,
+          status:"error",
 					route: 'bf/urfittrainer/create/new/exercise'
         }));
 			})
+
 		})
 
 
