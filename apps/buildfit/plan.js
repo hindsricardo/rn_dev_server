@@ -601,14 +601,16 @@ class Plan {
     //URFIT CLIENT INITIAL SEARCH
     server.post('/bf/urfitclient/search/from/questions', (req, res, next) => {
       let body = req.body;
+      let month = 86400000 * 30;
+      let now = new Date().getTime();
       let cypher = ""
       console.log(body.diet.length, body.parts)
       Promise.resolve(true).then(() => {
         if(body.diet.length < 1){
-          cypher = "UNWIND $parts AS part MATCH (m:METHOD) WHERE m.descipline = $focus AND part IN m.parts MATCH (t:TRAINER {uuid:m.trainer}) MATCH (methods:METHOD {trainer: t.uuid}) RETURN t {.*, methods: collect(DISTINCT methods {.duration, .location, .daysAweek, .focus, .methodDescription, .gender, .parts, .descipline}) } LIMIT 2000 " ;
+          cypher = "UNWIND $parts AS part MATCH (m:METHOD) WHERE m.descipline = $focus AND part IN m.parts MATCH (t:TRAINER {uuid:m.trainer}) MATCH (methods:METHOD {trainer: t.uuid}) MATCH (set:SetFeedback)-[:RECORDED]->(result:RESULT {trainer:t.uuid}) RETURN t {.*, methods: collect(DISTINCT methods {.duration, .location, .daysAweek, .focus, .methodDescription, .gender, .parts, .descipline}), rating: avg(result.score) } LIMIT 2000 " ;
         }
         else{
-          cypher = "UNWIND $parts AS part UNWIND $diet AS diet MATCH (m:METHOD) WHERE m.descipline = $focus AND part IN m.parts AND diet IN m.diet MATCH (t:TRAINER {uuid:m.trainer}) MATCH (methods:METHOD {trainer: t.uuid}) RETURN t {.*, methods: collect(DISTINCT methods {.duration, .location, .daysAweek, .focus, .methodDescription, .gender, .parts, .descipline})  } LIMIT 2000" ;
+          cypher = "UNWIND $parts AS part UNWIND $diet AS diet MATCH (m:METHOD) WHERE m.descipline = $focus AND part IN m.parts AND diet IN m.diet MATCH (t:TRAINER {uuid:m.trainer}) MATCH (methods:METHOD {trainer: t.uuid}) MATCH (set:SetFeedback)-[:RECORDED]->(result:RESULT {trainer:t.uuid}) RETURN t {.*, methods: collect(DISTINCT methods {.duration, .location, .daysAweek, .focus, .methodDescription, .gender, .parts, .descipline}), rating: avg(result.score)  } LIMIT 2000" ;
         }
       })
       .then(() => {
@@ -616,6 +618,8 @@ class Plan {
           focus: body.focus,
           diet: body.diet,
           parts: body.parts,
+          now: now,
+          month: month
         }).then((results) => {
           db.close();
           results = results.records;
