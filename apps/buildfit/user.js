@@ -1276,7 +1276,7 @@ server.post('/bf/urfitclient/user/login/v1', (req, res, next) => {
                       //token: token
                     }));
                   console.log('/bf/urfitclient/user/login/v1', JSON.stringify({
-                    found: false,
+                    found: true,
                     results: results2
                     //token: token
                   }));
@@ -1293,7 +1293,7 @@ server.post('/bf/urfitclient/user/login/v1', (req, res, next) => {
                         //token: token
                       }));
                     console.log('/bf/urfitclient/user/login/v1', JSON.stringify({
-                      found: false,
+                      found: true,
                       results: results2[0]
                       //token: token
                     }));
@@ -1309,7 +1309,7 @@ server.post('/bf/urfitclient/user/login/v1', (req, res, next) => {
                         //token: token
                       }));
                     console.log('/bf/urfitclient/user/login/v1', JSON.stringify({
-                      found: false,
+                      found: true,
                       results: results2[0]
                       //token: token
                     }));
