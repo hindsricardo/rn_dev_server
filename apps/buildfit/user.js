@@ -539,38 +539,121 @@ class User {
     //save trainer
     server.post('/bf/urfitclient/update/user/profile', (req, res, next) => {
 			let body = req.body;
+      let checkEmailTaken = "MATCH (user:USER) WHERE user.email = $email OR user.original_email = $email RETURN user";
+      let checkEmailisCurrentUser = "MATCH (user:USER {uuid: $id}) WHERE user.email = $email OR user.original_email = $email RETURN user";
 
-			db.run("MATCH (user:USER {uuid:$id}) SET user += {avatar:$avatar, name: $name, sex: $sex, email: $email} RETURN user", {
-				id: body.id,
-        avatar: body.avatar,
-        fname: body.fname,
-        lname: body.lname,
-        sex: body.sex,
+      db.run(checkEmailisCurrentUser,{
         email: body.email,
-			})
-			.then((user)=> {
-				user = user.records;
-				db.close();
-				res.writeHead(200, header);
-				res.end(JSON.stringify({
-						results: user[0]._fields[0].properties,
-					}));
-				console.log(JSON.stringify({
-					results: user[0]._fields[0].properties,
-				}));
-				return
-			})
-			.catch((err) => {
-				res.writeHead(500, header);
-				res.end(JSON.stringify({
-						results: err,
-            route: '/bf/urfitclient/update/user/profile'
-					}));
-				console.log(JSON.stringify({
-					results: err,
-          route: '/bf/urfitclient/update/user/profile'
-				}));
-			})
+        id: body.id
+      })
+      .then((result) => {
+        db.close();
+        if(result.records.length > 0){ //email is the same as before
+          db.run("MATCH (user:USER {uuid:$id}) SET user += {avatar:$avatar, name: $name, sex: $sex, email: $email} RETURN user", {
+            id: body.id,
+            avatar: body.avatar,
+            name: body.name,
+            sex: body.sex,
+            email: body.email,
+          })
+          .then((user)=> {
+            user = user.records;
+            db.close();
+            res.writeHead(200, header);
+            res.end(JSON.stringify({
+                status:'updated',
+                results: user[0]._fields[0].properties,
+              }));
+            console.log(JSON.stringify({
+              status:'updated',
+              results: user[0]._fields[0].properties,
+            }));
+            return
+          })
+          .catch((err) => {
+            res.writeHead(500, header);
+            res.end(JSON.stringify({
+                status:'error',
+                results: err,
+                route: '/bf/urfitclient/update/user/profile'
+              }));
+            console.log(JSON.stringify({
+              status:'error',
+              results: err,
+              route: '/bf/urfitclient/update/user/profile'
+            }));
+          }) // END
+        }
+        else{
+          db.run(checkEmailTaken,{
+            email:body.email
+          })
+          then((check) => {
+            db.close();
+            if(check.records.length > 0) { //if someone is already using this email
+              res.writeHead(200, header);
+              res.end(JSON.stringify({
+                  status:'taken',
+                  results: check[0]._fields[0].properties,
+                }));
+              console.log(JSON.stringify({
+                status:'taken',
+                results: check[0]._fields[0].properties,
+              }));
+            }
+            else{ // if not taken update with this email address
+              db.run("MATCH (user:USER {uuid:$id}) SET user += {avatar:$avatar, name: $name, sex: $sex, email: $email} RETURN user", {
+                id: body.id,
+                avatar: body.avatar,
+                name: body.name,
+                sex: body.sex,
+                email: body.email,
+              })
+              .then((user)=> {
+                user = user.records;
+                db.close();
+                res.writeHead(200, header);
+                res.end(JSON.stringify({
+                    status:'updated',
+                    results: user[0]._fields[0].properties,
+                  }));
+                console.log(JSON.stringify({
+                  status:'updated',
+                  results: user[0]._fields[0].properties,
+                }));
+                return
+              })
+              .catch((err) => {
+                res.writeHead(500, header);
+                res.end(JSON.stringify({
+                    status:'error',
+                    results: err,
+                    route: '/bf/urfitclient/update/user/profile'
+                  }));
+                console.log(JSON.stringify({
+                  status:'error',
+                  results: err,
+                  route: '/bf/urfitclient/update/user/profile'
+                }));
+              }) // END
+            }
+          })
+          .catch((err) => {
+            res.writeHead(500, header);
+            res.end(JSON.stringify({
+                status:'error',
+                results: err,
+                route: '/bf/urfitclient/update/user/profile'
+              }));
+            console.log(JSON.stringify({
+              status:'error',
+              results: err,
+              route: '/bf/urfitclient/update/user/profile'
+            }));
+          }) // END
+        }
+      })
+
 		})
 
     //save trainer
