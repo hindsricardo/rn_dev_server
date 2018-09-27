@@ -536,6 +536,42 @@ class User {
       })
     })
 
+    //save trainer
+    server.post('/bf/urfitclient/update/user/profile', (req, res, next) => {
+			let body = req.body;
+
+			db.run("MATCH (user:USER {uuid:$id}) SET user += {avatar:$avatar, name: $name, sex: $sex, email: $email} RETURN user", {
+				id: body.id,
+        avatar: body.avatar,
+        fname: body.fname,
+        lname: body.lname,
+        sex: body.sex,
+        email: body.email,
+			})
+			.then((user)=> {
+				user = user.records;
+				db.close();
+				res.writeHead(200, header);
+				res.end(JSON.stringify({
+						results: user[0]._fields[0].properties,
+					}));
+				console.log(JSON.stringify({
+					results: user[0]._fields[0].properties,
+				}));
+				return
+			})
+			.catch((err) => {
+				res.writeHead(500, header);
+				res.end(JSON.stringify({
+						results: err,
+            route: '/bf/urfitclient/update/user/profile'
+					}));
+				console.log(JSON.stringify({
+					results: err,
+          route: '/bf/urfitclient/update/user/profile'
+				}));
+			})
+		})
 
     //save trainer
     server.post('/bf/urfittrainer/save/trainer/profile', (req, res, next) => {
@@ -1229,7 +1265,7 @@ server.post('/bf/urfitclient/user/login/v1', (req, res, next) => {
           //var encryptedString = body.password;
           if(results2.length > 0){
             stripe.subscriptions.retrieve(
-              results.subscription,
+              results2.subscription,
               function(err, subscription) {
                 // asynchronously called
                 if(err){
