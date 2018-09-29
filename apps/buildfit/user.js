@@ -346,7 +346,7 @@ class User {
               status:"taken",
               results: results[0]._fields[0].properties,
             }));
-          console.log('/bf/create/user/v1',JSON.stringify({
+          console.log('/bf/urfittrainer/add/trainer',JSON.stringify({
             status: "taken",
             results: results[0]._fields[0].properties,
           }));
@@ -935,6 +935,7 @@ class User {
             stripeCustomerId:'',
             subscription:'',
             subscribed: false,
+
           })
           .then((client) => {
             client = client.records;

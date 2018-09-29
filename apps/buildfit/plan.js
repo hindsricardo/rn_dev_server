@@ -696,6 +696,99 @@ class Plan {
 
     })
 
+    //URFITCLIENT CREATE token
+    server.post('/bf/urfitclient/create/payment/token', (req, res, next) => {
+        let body = req.body;
+        let dates = body.cardexpiry.split('/');
+        stripe.tokens.create({
+          card: {
+            "number": body.cardnumber,
+            "exp_month": dates[0],
+            "exp_year": '20'+dates[1],
+            "cvc": body.cardcvc
+          }
+        }, function(err, token) {
+          // asynchronously called
+          if(err){
+            if(err.type == "card_error"){
+              log.error(err);// log to error file
+              console.log('/bf/urfitclient/create/payment/token',err);
+              res.writeHead(500, header)
+              res.end(JSON.stringify({
+                success:'no',
+                status:"card_error",
+                results: err,
+              }))
+            }
+            else{
+              log.error(err);// log to error file
+              console.log('/bf/urfitclient/create/payment/token',err);
+              res.writeHead(500, header)
+              res.end(JSON.stringify({
+                success:'no',
+                status:"error",
+                results: err,
+              }))
+            }
+          }
+          else{
+            stripe.customers.create({
+              email: body.email,
+              source: token
+            }, function(err, customer) {
+              // asynchronously called
+              if(err){
+                log.error(err);// log to error file
+                console.log('/bf/urfitclient/create/payment/token',err);
+                res.writeHead(500, header)
+                res.end(JSON.stringify({
+                  success:'no',
+                  status:"error",
+                  results: err,
+                }))
+              }
+              else{
+                db.run("MATCH (user:USER {uuid:$id}) SET user.stripeCustomerId = $customerId RETURN user", {
+                  customerId: customer.id,
+                  id:body.id
+                })
+                .then((results) => {
+                  db.close();
+                  results = results.records;
+                  res.writeHead(200, header);
+                  res.end(JSON.stringify({
+                      status:"taken",
+                      results: results[0]._fields[0].properties,
+                    }));
+                  console.log('/bf/urfitclient/create/payment/token',JSON.stringify({
+                    success:"yes",
+                    status: "created",
+                    results: results[0]._fields[0].properties,
+                  }));
+                  return
+                })
+                .catch((err) => {
+                  log.error(err);// log to error file
+                  console.log('/bf/urfitclient/create/payment/token',err);
+                  res.writeHead(500, header)
+                  res.end(JSON.stringify({
+                    success:'no',
+                    status:"error",
+                    results: err,
+                  }))
+                })
+              }
+            });
+          }
+        });
+    })
+
+    //URFITCLIENT UPDATE CARD
+    server.post('/bf/urfitclient/search/by/trainer/email', (req, res, next) => {
+
+    })
+
+
 	}
 }
 
