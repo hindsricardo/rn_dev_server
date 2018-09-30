@@ -736,7 +736,7 @@ class Plan {
           else{
             stripe.customers.create({
               email: body.email,
-              source: token
+              source: token.id
             }, function(err, customer) {
               // asynchronously called
               if(err){
