@@ -750,9 +750,10 @@ class Plan {
                 }))
               }
               else{
-                db.run("MATCH (user:USER {uuid:$id}) SET user.stripeCustomerId = $customerId RETURN user", {
+                db.run("MATCH (user:USER {uuid:$id}) SET user.stripeCustomerId = $customerId, user.cardlast4 = $last4 RETURN user", {
                   customerId: customer.id,
-                  id:body.id
+                  id:body.id,
+                  last4: token.card.last4
                 })
                 .then((results) => {
                   db.close();
@@ -786,8 +787,108 @@ class Plan {
     })
 
     //URFITCLIENT UPDATE CARD
-    server.post('/bf/urfitclient/search/by/trainer/email', (req, res, next) => {
+    server.post('/bf/urfitclient/update/payment/method', (req, res, next) => {
+      let body = req.body;
+      let dates = body.cardexpiry.split('/');
+      stripe.tokens.create({
+        card: {
+          "number": body.cardnumber,
+          "exp_month": dates[0],
+          "exp_year": '20'+dates[1],
+          "cvc": body.cardcvc
+        }
+      }, function(err, token) {
+        // asynchronously called
+        if(err){
+          if(err.type == "card_error"){
+            log.error(err);// log to error file
+            console.log('/bf/urfitclient/update/payment/method',err);
+            res.writeHead(500, header)
+            res.end(JSON.stringify({
+              success:'no',
+              status:"card_error",
+              results: err,
+            }))
+          }
+          else{
+            log.error(err);// log to error file
+            console.log('/bf/urfitclient/update/payment/method',err);
+            res.writeHead(500, header)
+            res.end(JSON.stringify({
+              success:'no',
+              status:"error",
+              results: err,
+            }))
+          }
+        }
+        else{
+          stripe.customers.createSource(
+            body.stripeCustomerId,
+            { source: token.id },
+            function(err, card) {
+            // asynchronously called
+            if(err){
+              log.error(err);// log to error file
+              console.log('/bf/urfitclient/update/payment/method',err);
+              res.writeHead(500, header)
+              res.end(JSON.stringify({
+                success:'no',
+                status:"error",
+                results: err,
+              }))
+            }
+            else{
+              stripe.customers.update(body.stripeCustomerId, {
+                default_source: token.id
+              }, function(err, customer) {
+                if(err){
+                  log.error(err);// log to error file
+                  console.log('/bf/urfitclient/update/payment/method',err);
+                  res.writeHead(500, header)
+                  res.end(JSON.stringify({
+                    success:'no',
+                    status:"error",
+                    results: err,
+                  }))
+                }
+                else{
+                  db.run("MATCH (user:USER {uuid:$id}) SET user.cardlast4 = $last4 RETURN user", {
+                    id:body.id,
+                    last4: card.last4
+                  })
+                  .then((results) => {
+                    db.close();
+                    results = results.records;
+                    res.writeHead(200, header);
+                    res.end(JSON.stringify({
+                        status:"taken",
+                        results: results[0]._fields[0].properties,
+                      }));
+                    console.log('/bf/urfitclient/update/payment/method',JSON.stringify({
+                      success:"yes",
+                      status: "created",
+                      results: results[0]._fields[0].properties,
+                    }));
+                    return
+                  })
+                  .catch((err) => {
+                    log.error(err);// log to error file
+                    console.log('/bf/urfitclient/update/payment/method',err);
+                    res.writeHead(500, header)
+                    res.end(JSON.stringify({
+                      success:'no',
+                      status:"error",
+                      results: err,
+                    }))
+                  })
+                }
 
+                // asynchronously called
+              });
+            }
+          });
+        }
+      });
     })
 
 
