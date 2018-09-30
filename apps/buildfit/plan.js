@@ -18,6 +18,8 @@ var stripe = require("stripe")(
 	);
 const uuidV4 = require('uuid');
 const header = {'Content-Type':'application/json; charset=utf-8'};
+const log = require('simple-node-logger').createSimpleLogger('node-error.log');
+
 
 class Plan {
 
