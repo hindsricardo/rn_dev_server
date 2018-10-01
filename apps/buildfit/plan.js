@@ -822,7 +822,7 @@ class Plan {
           }
         }
         else{
-          stripe.customers.createSource(
+          /*stripe.customers.createSource(
             body.stripeCustomerId,
             { source: token.id },
             function(err, card) {
@@ -837,7 +837,7 @@ class Plan {
                 results: err,
               }))
             }
-            else{
+            else{*/
               stripe.customers.update(body.stripeCustomerId, {
                 default_source: token.id
               }, function(err, customer) {
@@ -885,8 +885,8 @@ class Plan {
 
                 // asynchronously called
               });
-            }
-          });
+            /*}
+          });*/
         }
       });
     })
