@@ -839,7 +839,7 @@ class Plan {
             }
             else{*/
               stripe.customers.update(body.stripeCustomerId, {
-                default_source: token.id
+                source: token.id
               }, function(err, customer) {
                 if(err){
                   log.error(err);// log to error file
