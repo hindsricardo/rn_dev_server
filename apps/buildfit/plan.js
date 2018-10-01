@@ -790,6 +790,7 @@ class Plan {
     server.post('/bf/urfitclient/update/payment/method', (req, res, next) => {
       let body = req.body;
       let dates = body.cardexpiry.split('/');
+      let last4 = body.cardnumber.substr(body.cardnumber.length - 4);
       stripe.tokens.create({
         card: {
           "number": body.cardnumber,
@@ -854,7 +855,7 @@ class Plan {
                 else{
                   db.run("MATCH (user:USER {uuid:$id}) SET user.cardlast4 = $last4 RETURN user", {
                     id:body.id,
-                    last4: card.last4
+                    last4: last4
                   })
                   .then((results) => {
                     db.close();
