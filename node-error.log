@@ -245,3 +245,56 @@ ReferenceError: client is not defined
     at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/user.js:734:24
     at <anonymous>
     at process._tickDomainCallback (internal/process/next_tick.js:228:7) 
+15:42:06.674 ERROR {"id":"tok_1DGtkwGampq78roMjB1shS0p","object":"token","card":{"id":"card_1DGtkwGampq78roMjZbGsu7z","object":"card","address_city":null,"address_country":null,"address_line1":null,"address_line1_check":null,"address_line2":null,"address_state":null,"address_zip":null,"address_zip_check":null,"brand":"Visa","country":"US","cvc_check":"pass","dynamic_last4":null,"exp_month":4,"exp_year":2030,"fingerprint":"0Npj1ireP8pWG6FB","funding":"credit","last4":"4242","metadata":{},"name":null,"tokenization_method":null},"client_ip":"136.59.254.247","created":1538509326,"livemode":false,"type":"card","used":false} 
+16:02:09.708 ERROR {"id":"cus_DiKjLF4tidHp1b","object":"customer","account_balance":0,"created":1538510529,"currency":null,"default_source":"card_1DGu4KGampq78roMExjtMvAC","delinquent":false,"description":"cus_DhY8Ukx0z7GJWQ","discount":null,"email":null,"invoice_prefix":"8833699","livemode":false,"metadata":{},"shipping":null,"sources":{"object":"list","data":[{"id":"card_1DGu4KGampq78roMExjtMvAC","object":"card","address_city":null,"address_country":null,"address_line1":null,"address_line1_check":null,"address_line2":null,"address_state":null,"address_zip":null,"address_zip_check":null,"brand":"Visa","country":"US","customer":"cus_DiKjLF4tidHp1b","cvc_check":"pass","dynamic_last4":null,"exp_month":4,"exp_year":2030,"fingerprint":"0Npj1ireP8pWG6FB","funding":"credit","last4":"4242","metadata":{},"name":null,"tokenization_method":null}],"has_more":false,"total_count":1,"url":"/v1/customers/cus_DiKjLF4tidHp1b/sources"},"subscriptions":{"object":"list","data":[],"has_more":false,"total_count":0,"url":"/v1/customers/cus_DiKjLF4tidHp1b/subscriptions"},"tax_info":null,"tax_info_verification":null} 
+16:15:48.529 ERROR Invalid timestamp: can be no more than five years in the future
+Error: Invalid timestamp: can be no more than five years in the future
+    at Constructor._Error (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/stripe/lib/Error.js:12:17)
+    at Constructor (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/stripe/lib/utils.js:124:13)
+    at new Constructor (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/stripe/lib/utils.js:124:13)
+    at Function.StripeError.generate (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/stripe/lib/Error.js:57:12)
+    at IncomingMessage.<anonymous> (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/stripe/lib/StripeResource.js:170:39)
+    at emitNone (events.js:111:20)
+    at IncomingMessage.emit (events.js:208:7)
+    at endReadableNT (_stream_readable.js:1064:12)
+    at _combinedTickCallback (internal/process/next_tick.js:138:11)
+    at process._tickDomainCallback (internal/process/next_tick.js:218:9) 
+16:18:48.351 ERROR Invalid timestamp: can be no more than five years in the future
+Error: Invalid timestamp: can be no more than five years in the future
+    at Constructor._Error (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/stripe/lib/Error.js:12:17)
+    at Constructor (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/stripe/lib/utils.js:124:13)
+    at new Constructor (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/stripe/lib/utils.js:124:13)
+    at Function.StripeError.generate (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/stripe/lib/Error.js:57:12)
+    at IncomingMessage.<anonymous> (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/stripe/lib/StripeResource.js:170:39)
+    at emitNone (events.js:111:20)
+    at IncomingMessage.emit (events.js:208:7)
+    at endReadableNT (_stream_readable.js:1064:12)
+    at _combinedTickCallback (internal/process/next_tick.js:138:11)
+    at process._tickDomainCallback (internal/process/next_tick.js:218:9) 
+16:19:30.758 ERROR Invalid timestamp: must be an integer Unix timestamp in the future.
+Error: Invalid timestamp: must be an integer Unix timestamp in the future.
+    at Constructor._Error (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/stripe/lib/Error.js:12:17)
+    at Constructor (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/stripe/lib/utils.js:124:13)
+    at new Constructor (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/stripe/lib/utils.js:124:13)
+    at Function.StripeError.generate (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/stripe/lib/Error.js:57:12)
+    at IncomingMessage.<anonymous> (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/stripe/lib/StripeResource.js:170:39)
+    at emitNone (events.js:111:20)
+    at IncomingMessage.emit (events.js:208:7)
+    at endReadableNT (_stream_readable.js:1064:12)
+    at _combinedTickCallback (internal/process/next_tick.js:138:11)
+    at process._tickDomainCallback (internal/process/next_tick.js:218:9) 
+17:18:32.664 ERROR Cannot read property '_fields' of undefined
+TypeError: Cannot read property '_fields' of undefined
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:952:51
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) 
+17:29:46.129 ERROR Cannot read property '_fields' of undefined
+TypeError: Cannot read property '_fields' of undefined
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:953:51
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) 
+17:39:52.498 ERROR Cannot read property '_fields' of undefined
+TypeError: Cannot read property '_fields' of undefined
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:953:51
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) 

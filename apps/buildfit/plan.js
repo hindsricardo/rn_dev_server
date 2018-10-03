@@ -68,7 +68,7 @@ class Plan {
 		//CREATE EXERCISES
 		server.post('/bf/urfittrainer/create/new/exercise', (req, res, next) => {
 			let body = req.body;
-      let now = new Date().getTime();
+      let now = Date.now();
       let checkVideoIdANDtitle = "MATCH (n:EXERCISE {public:$public}) WHERE n.name = $name OR n.VideoURL = $VideoURL RETURN n";
 			let cypher = "MATCH (trainer:TRAINER {uuid:$id}) CREATE (n:EXERCISE {name:$name, uuid:$uuid, description:$description, public:$public, VideoURL:$VideoURL, part: $part, creator: $creator, created:$created})<-[:CREATED]-(trainer) RETURN n ";
       db.run(checkVideoIdANDtitle, {
@@ -892,6 +892,106 @@ class Plan {
       });
     })
 
+
+
+    //EDIT TRAINERS METHODS
+    server.post('/bf/urfitclient/subscribe/to/trainer', (req, res, next) => {
+      let body = req.body;
+      stripe.subscriptions.del(
+        body.subscription,
+        function(err, confirmation) {
+          // asynchronously called
+          if(err || confirmation.canceled){
+            stripe.tokens.create({
+              customer: body.stripeCustomerId,
+            }, {
+              stripe_account: body.trainerID,
+            }).then(function(token) {
+                stripe.customers.create({
+                  description: body.stripeCustomerId,
+                  source: token.id
+                }, {
+                  stripe_account: body.trainerID,
+                }).then(function(customer) {
+                    stripe.subscriptions.create({
+                      customer: customer.id,
+                      items: [
+                        {
+                          plan: body.trainerPlanId,
+                        },
+                      ],
+                      application_fee_percent: 20,
+                      trial_period_days: 3
+                    }, {
+                      stripe_account: body.trainerID,
+                    }, function(err, subscription) {
+                      if(err){
+                          log.error(err);// log to error file
+                          console.log('/bf/urfitclient/subscribe/to/trainer',err, 'failure during stripe create subscription');
+                          res.writeHead(500, header)
+                          res.end(JSON.stringify({
+                            success:'no',
+                            status:"error",
+                            results: err,
+                          }))
+                      }
+                      else{
+                        //store subscription id and set subscribed to true in DB
+                        db.run("MATCH (user:USER {uuid:$id}) SET user.subscription = $subscriptionId, user.subscribed = $boolean RETURN user", {
+                          id:body.id,
+                          subscriptionId: subscription.id,
+                          boolean: true,
+                        })
+                        .then((results) => {
+                          db.close();
+                          results = results.records;
+                          console.log(results)
+                          res.writeHead(200, header);
+                          res.end(JSON.stringify({
+                              success:"yes",
+                              status:"subscribed",
+                              results: results[0]._fields[0].properties,
+                            }));
+                          console.log('/bf/urfitclient/subscribe/to/trainer',JSON.stringify({
+                            success:"yes",
+                            status: "subscribed",
+                            results: results[0]._fields[0].properties,
+                          }));
+                          return
+
+                        })
+                        .catch((err) => {
+                          log.error(err);// log to error file
+                          console.log('/bf/urfitclient/subscribe/to/trainer',err, 'failure during db storage');
+                          res.writeHead(500, header)
+                          res.end(JSON.stringify({
+                            success:'no',
+                            status:"error",
+                            results: err,
+                          }))
+                        })
+                      }
+                      // asynchronously called
+                    });
+                  // asynchronously called
+                });
+              // asynchronously called
+            });
+          }
+          else {
+            log.error(err);// log to error file
+            console.log('/bf/urfitclient/subscribe/to/trainer',err, 'failure during deleting subscriptions');
+            res.writeHead(500, header)
+            res.end(JSON.stringify({
+              success:'no',
+              status:"error",
+              results: err,
+            }))
+          }
+        }
+      );
+
+    })
 
 	}
 }
