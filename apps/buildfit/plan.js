@@ -192,7 +192,7 @@ class Plan {
 			})
 		})
 
-		//GET METHODS
+		//GET METHODS - also used in urfit client
 		server.post('/bf/urfittrainer/get/methods', (req, res, next) => {
 			let body = req.body;
 			let cypher = "MATCH (n:METHOD {trainer:$trainerID}) RETURN n ";
@@ -937,10 +937,11 @@ class Plan {
                       }
                       else{
                         //store subscription id and set subscribed to true in DB
-                        db.run("MATCH (user:USER {uuid:$id}) SET user.subscription = $subscriptionId, user.subscribed = $boolean RETURN user", {
+                        db.run("MATCH (user:USER {uuid:$id}) SET user.subscription = $subscriptionId, user.subscribed = $boolean, currentTrainer:$trainerID RETURN user", {
                           id:body.id,
                           subscriptionId: subscription.id,
                           boolean: true,
+                          trainerID:body.trainerID
                         })
                         .then((results) => {
                           db.close();
