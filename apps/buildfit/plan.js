@@ -937,7 +937,7 @@ class Plan {
                       }
                       else{
                         //store subscription id and set subscribed to true in DB
-                        db.run("MATCH (user:USER {uuid:$id}) SET user.subscription = $subscriptionId, user.subscribed = $boolean, currentTrainer:$trainerID RETURN user", {
+                        db.run("MATCH (user:USER {uuid:$id}) SET user.subscription = $subscriptionId, user.subscribed = $boolean, user.currentTrainer = $trainerID RETURN user", {
                           id:body.id,
                           subscriptionId: subscription.id,
                           boolean: true,
