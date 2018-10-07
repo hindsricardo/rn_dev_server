@@ -892,6 +892,39 @@ class Plan {
       });
     })
 
+    //GET USERS TRAINER DETAILS
+    server.post('/bf/urfitclient/get/users/trainer/details', (req, res, next) => {
+      let body = req.body;
+      db.run("MATCH (n:TRAINER {uuid:$trainerID}) RETURN n", {
+        trainerID: body.trainerID,
+      })
+      .then((results) => {
+        db.close();
+        results = results.records.map((x) => {
+          return x = x._fields[0].properties;
+        });
+        res.writeHead(200, header);
+        res.end(JSON.stringify({
+            status:"found",
+            results: results,
+          }));
+        console.log('/bf/urfitclient/get/users/trainer/details',JSON.stringify({
+          status: "found",
+          results: results,
+        }));
+        return
+      })
+      .catch((err) => {
+        log.error(err);// log to error file
+        console.log('/bf/urfitclient/get/users/trainer/details',err);
+        res.writeHead(500, header)
+        res.end(JSON.stringify({
+          status:"error",
+          results: err,
+        }))
+      })
+    })
+
 
 
     //EDIT TRAINERS METHODS
@@ -937,11 +970,13 @@ class Plan {
                       }
                       else{
                         //store subscription id and set subscribed to true in DB
-                        db.run("MATCH (user:USER {uuid:$id}) SET user.subscription = $subscriptionId, user.subscribed = $boolean, user.currentTrainer = $trainerID RETURN user", {
+                        db.run("MATCH (user:USER {uuid:$id}) SET user.subscription = $subscriptionId, user.subscribed = $boolean, user.currentTrainer = $trainerID, user.currentMethod = $currentMethod RETURN user", {
                           id:body.id,
                           subscriptionId: subscription.id,
                           boolean: true,
-                          trainerID:body.trainerID
+                          trainerID:body.trainerID,
+                          currentMethod:""
+
                         })
                         .then((results) => {
                           db.close();
