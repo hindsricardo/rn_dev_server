@@ -1035,7 +1035,7 @@ class Plan {
     server.post('/bf/urfitclient/subscribe/to/method', (req, res, next) => {
       let body = req.body;
       let now = Date.now()
-      let cypher = "MATCH (user:USER {uuid:$id}) SET user.currentMethod = $methodID  MATCH (m:METHOD {uuid:$methodID}) CREATE (user)-[:SUBSCRIBED {date:$now}]->(m) RETURN user"
+      let cypher = "MATCH (user:USER {uuid:$id}) SET user.currentMethod = $methodID WITH user  MATCH (m:METHOD {uuid:$methodID}) CREATE (user)-[:SUBSCRIBED {date:$now}]->(m) RETURN user"
       db.run(cypher, {
         id:body.id,
         methodID:body.methodID,
