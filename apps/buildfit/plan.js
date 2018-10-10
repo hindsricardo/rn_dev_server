@@ -1029,6 +1029,46 @@ class Plan {
 
     })
 
+
+
+    //SUBSCRIBE TO METHOD
+    server.post('/bf/urfitclient/subscribe/to/method', (req, res, next) => {
+      let body = req.body;
+      let now = Date.now()
+      let cypher = "MATCH (user:USER {uuid:$id}) SET user.currentMethod = $$methodID MATCH (m:METHOD {uuid:$methodID}) CREATE (user)-[:SUBSCRIBED {date:$now}]->(m) RETURN user"
+      db.run(cypher, {
+        id:body.id,
+        methodID:body.methodID,
+        now:now,
+      })
+      .then((results) => {
+        db.close();
+        results = results.records;
+        res.writeHead(200, header);
+        res.end(JSON.stringify({
+            success:"yes",
+            status:"subscribed",
+            results: results[0]._fields[0].properties,
+          }));
+        console.log('/bf/urfitclient/subscribe/to/method',JSON.stringify({
+          success:"yes",
+          status: "subscribed",
+          results: results[0]._fields[0].properties,
+        }));
+        return
+
+      })
+      .catch((err) => {
+        log.error(err);// log to error file
+        console.log('/bf/urfitclient/subscribe/to/method',err);
+        res.writeHead(500, header)
+        res.end(JSON.stringify({
+          status:"error",
+          results: err,
+        }))
+      })
+    })
+
 	}
 }
 
