@@ -1084,7 +1084,11 @@ class Plan {
       })
       .then((results) => {
         db.close();
-        results = results.records;
+        results = results.records.map((x) => {
+          x = x._fields[0].properties;
+          x.routine = JSON.parse(x.routine);
+          return x;
+        });
       if(results.length > 0){ //if there is a previous workout
           if(moment(results[0]._fields[0].properties.created).format("LL") == today ||  results[0]._fields[0].properties.status == "not started" ||results[0]._fields[0].properties.status == "inprogress"){ // if the previous workout is the same day
             res.writeHead(200, header);
@@ -1155,7 +1159,7 @@ class Plan {
                     .then((workout) => {
                       db.close()
                       workout = workout.records.map((x) => {
-                        x = x._fields[0];
+                        x = x._fields[0].properties;
                         x.routine = JSON.parse(x.routine);
                         return x;
                       });
@@ -1206,7 +1210,7 @@ class Plan {
                   .then((workout) => {
                     db.close()
                     workout = workout.records.map((x) => {
-                      x = x._fields[0];
+                      x = x._fields[0].properties;
                       x.routine = JSON.parse(x.routine);
                       return x;
                     });
@@ -1285,7 +1289,7 @@ class Plan {
                     .then((workout) => {
                       db.close()
                       workout = workout.records.map((x) => {
-                        x = x._fields[0];
+                        x = x._fields[0].properties;
                         x.routine = JSON.parse(x.routine);
                         return x;
                       });
@@ -1339,7 +1343,7 @@ class Plan {
                   .then((workout) => {
                     db.close()
                     workout = workout.records.map((x) => {
-                      x = x._fields[0];
+                      x = x._fields[0].properties;
                       x.routine = JSON.parse(x.routine);
                       return x;
                     });
@@ -1441,7 +1445,7 @@ class Plan {
                 .then((workout) => {
                   db.close()
                   workout = workout.records.map((x) => {
-                    x = x._fields[0];
+                    x = x._fields[0].properties;
                     x.routine = JSON.parse(x.routine);
                     return x;
                   });
@@ -1493,7 +1497,7 @@ class Plan {
               .then((workout) => {
                 db.close()
                 workout = workout.records.map((x) => {
-                  x = x._fields[0];
+                  x = x._fields[0].properties;
                   x.routine = JSON.parse(x.routine);
                   return x;
                 });
