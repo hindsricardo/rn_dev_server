@@ -1090,15 +1090,15 @@ class Plan {
           return x;
         });
       if(results.length > 0){ //if there is a previous workout
-          if(moment(results.created).format("LL") == today ||  results.status == "not started" ||results.status == "inprogress"){ // if the previous workout is the same day
+          if(moment(results[0].created).format("LL") == today ||  results[0].status == "not started" ||results[0].status == "inprogress"){ // if the previous workout is the same day
             res.writeHead(200, header);
             res.end(JSON.stringify({
                 success:"yes",
-                results: results
+                results: results[0]
               }));
             console.log('/bf/urfitclient/get/daily/advice',JSON.stringify({
               success:"yes",
-              results: results
+              results: results[0]
             }));
             return
           }
@@ -1111,7 +1111,7 @@ class Plan {
             .then((methods) => {
               db.close()
               methods = methods.records;
-              let day = results[0]._fields[0].properties.day + 1;
+              let day = results[0].day + 1;
               let selectedExercise = JSON.parse(methods[0]._fields[0].properties.selectedExercise)
               let diet = JSON.parse(methods[0]._fields[0].properties.diet);
               let pattern = JSON.parse(methods[0]._fields[0].properties.pattern);
@@ -1166,11 +1166,11 @@ class Plan {
                       res.writeHead(200, header);
                       res.end(JSON.stringify({
                           success:"yes",
-                          results: workout,
+                          results: workout[0],
                         }));
                       console.log('/bf/urfitclient/get/daily/advice',JSON.stringify({
                         success:"yes",
-                        results: workout,
+                        results: workout[0],
                       }));
                       return
                     })
@@ -1217,11 +1217,11 @@ class Plan {
                     res.writeHead(200, header);
                     res.end(JSON.stringify({
                         success:"yes",
-                        results: workout,
+                        results: workout[0],
                       }));
                     console.log('/bf/urfitclient/get/daily/advice',JSON.stringify({
                       success:"yes",
-                      results: workout,
+                      results: workout[0],
                     }));
                     return
                   })
@@ -1296,11 +1296,11 @@ class Plan {
                       res.writeHead(200, header);
                       res.end(JSON.stringify({
                           success:"yes",
-                          results: workout,
+                          results: workout[0],
                         }));
                       console.log('/bf/urfitclient/get/daily/advice',JSON.stringify({
                         success:"yes",
-                        results: workout,
+                        results: workout[0],
                       }));
                       return
                     })
@@ -1350,11 +1350,11 @@ class Plan {
                     res.writeHead(200, header);
                     res.end(JSON.stringify({
                         success:"yes",
-                        results: workout,
+                        results: workout[0],
                       }));
                     console.log('/bf/urfitclient/get/daily/advice',JSON.stringify({
                       success:"yes",
-                      results: workout,
+                      results: workout[0],
                     }));
                     return
                   })
@@ -1452,11 +1452,11 @@ class Plan {
                   res.writeHead(200, header);
                   res.end(JSON.stringify({
                       success:"yes",
-                      results: workout,
+                      results: workout[0],
                     }));
                   console.log('/bf/urfitclient/get/daily/advice',JSON.stringify({
                     success:"yes",
-                    results: workout,
+                    results: workout[0],
                   }));
                   return
                 })
@@ -1504,11 +1504,11 @@ class Plan {
                 res.writeHead(200, header);
                 res.end(JSON.stringify({
                     success:"yes",
-                    results: workout,
+                    results: workout[0],
                   }));
                 console.log('/bf/urfitclient/get/daily/advice',JSON.stringify({
                   success:"yes",
-                  results: workout,
+                  results: workout[0],
                 }));
                 return
               })
