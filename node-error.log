@@ -298,3 +298,58 @@ TypeError: Cannot read property '_fields' of undefined
     at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:953:51
     at <anonymous>
     at process._tickDomainCallback (internal/process/next_tick.js:228:7) 
+02:47:16.669 ERROR Type mismatch: expected a map but was c9249934-ed97-4889-bba1-cebabc01ae0c
+Neo4jError: Type mismatch: expected a map but was c9249934-ed97-4889-bba1-cebabc01ae0c
+
+    at captureStacktrace (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:200:15)
+    at new Result (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:73:19)
+    at Session._run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:122:14)
+    at Session.run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:101:19)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:1126:18
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) 
+13:52:39.815 ERROR Type mismatch: expected a map but was c5fca990-e974-4633-8e04-033a3b139405
+Neo4jError: Type mismatch: expected a map but was c5fca990-e974-4633-8e04-033a3b139405
+
+    at captureStacktrace (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:200:15)
+    at new Result (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:73:19)
+    at Session._run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:122:14)
+    at Session.run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:101:19)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:1127:18
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) 
+13:54:18.456 ERROR Type mismatch: expected a map but was c5fca990-e974-4633-8e04-033a3b139405
+Neo4jError: Type mismatch: expected a map but was c5fca990-e974-4633-8e04-033a3b139405
+
+    at captureStacktrace (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:200:15)
+    at new Result (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:73:19)
+    at Session._run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:122:14)
+    at Session.run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:101:19)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:1127:18
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) 
+13:56:33.868 ERROR Cannot read property '_fields' of undefined
+TypeError: Cannot read property '_fields' of undefined
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:1136:41
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) 
+13:57:26.562 ERROR Type mismatch: expected a map but was c5fca990-e974-4633-8e04-033a3b139405
+Neo4jError: Type mismatch: expected a map but was c5fca990-e974-4633-8e04-033a3b139405
+
+    at captureStacktrace (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:200:15)
+    at new Result (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:73:19)
+    at Session._run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:122:14)
+    at Session.run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:101:19)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:1127:18
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) 
+13:58:26.554 ERROR Type mismatch: expected a map but was c9249934-ed97-4889-bba1-cebabc01ae0c
+Neo4jError: Type mismatch: expected a map but was c9249934-ed97-4889-bba1-cebabc01ae0c
+
+    at captureStacktrace (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:200:15)
+    at new Result (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/result.js:73:19)
+    at Session._run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:122:14)
+    at Session.run (/Users/ricardohinds/Documents/ReactNativeProjects/devAPI/node_modules/neo4j-driver/lib/v1/session.js:101:19)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:1127:18
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) 
