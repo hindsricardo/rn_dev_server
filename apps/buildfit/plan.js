@@ -1071,7 +1071,7 @@ class Plan {
 
 
     //GET DAILY ROUTINE & ADVICE
-    server.post('/bf/urfitclient/get/daily/advice', (req, res, next) => {
+  server.post('/bf/urfitclient/get/daily/advice', (req, res, next) => {
       let body = req.body;
       //let time = body.time;
       let today = moment().format('LL');
@@ -1090,15 +1090,15 @@ class Plan {
           return x;
         });
       if(results.length > 0){ //if there is a previous workout
-          if(moment(results[0]._fields[0].properties.created).format("LL") == today ||  results[0]._fields[0].properties.status == "not started" ||results[0]._fields[0].properties.status == "inprogress"){ // if the previous workout is the same day
+          if(moment(results.created).format("LL") == today ||  results.status == "not started" ||results.status == "inprogress"){ // if the previous workout is the same day
             res.writeHead(200, header);
             res.end(JSON.stringify({
                 success:"yes",
-                results: results[0]._fields[0].properties,
+                results: results
               }));
             console.log('/bf/urfitclient/get/daily/advice',JSON.stringify({
               success:"yes",
-              results: results[0]._fields[0].properties,
+              results: results
             }));
             return
           }
