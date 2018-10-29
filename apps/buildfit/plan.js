@@ -1557,7 +1557,6 @@ class Plan {
       })
       .then((results) => {
         db.close();
-        results = results.records;
         results = results.records.map((x) => {
           return x = x._fields[0].properties;
         });
