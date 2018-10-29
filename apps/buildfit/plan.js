@@ -1572,7 +1572,7 @@ class Plan {
           }));
           return
       })
-      .catch((error) => {
+      .catch((err) => {
         log.error(err);
         console.log('/bf/urfitclient/get/exercise/set/history',err);
         res.writeHead(500, header)
