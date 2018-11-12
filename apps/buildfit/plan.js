@@ -1143,7 +1143,7 @@ class Plan {
                       return x;
 
                     });
-                    db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status, routine:$routine})<-[:ASSIGNED]-(user)", {
+                    db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status, routine:$routine})<-[:ASSIGNED]-(user)", {
                       routine: JSON.stringify(pattern),
                       id:body.id,
                       day: day,
@@ -1154,7 +1154,8 @@ class Plan {
                       soreness3: methods[0]._fields[0].properties.soreness3,
                       methodName: methods[0]._fields[0].properties.focus,
                       created: now,
-                      status:"not started"
+                      status:"not started",
+                      uuid:uuidV4()
                     })
                     .then((workout) => {
                       db.close()
@@ -1195,7 +1196,7 @@ class Plan {
                   })
                 }
                 else{ // if not workout on this day create a workout object in DATABASE that tells the user not to workout but provides meal advice
-                  db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status, routine:$routine})<-[:ASSIGNED]-(user)", {
+                  db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status, routine:$routine})<-[:ASSIGNED]-(user)", {
                     routine: JSON.stringify([]),
                     id:body.id,
                     day: day,
@@ -1205,7 +1206,8 @@ class Plan {
                     soreness3: methods[0]._fields[0].properties.soreness3,
                     methodName: methods[0]._fields[0].properties.focus,
                     created: now,
-                    status:"completed"
+                    status:"completed",
+                    uuid:uuidV4()
                   })
                   .then((workout) => {
                     db.close()
@@ -1274,7 +1276,7 @@ class Plan {
                       return x;
 
                     });
-                    db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status, routine:$routine})<-[:ASSIGNED]-(user)", {
+                    db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status, routine:$routine})<-[:ASSIGNED]-(user)", {
                       routine: JSON.stringify(pattern),
                       id:body.id,
                       day: 0,
@@ -1284,7 +1286,8 @@ class Plan {
                       soreness3: methods[0]._fields[0].properties.soreness3,
                       methodName: methods[0]._fields[0].properties.focus,
                       created: now,
-                      status:"not started"
+                      status:"not started",
+                      uuid:uuidV4()
                     })
                     .then((workout) => {
                       db.close()
@@ -1328,7 +1331,7 @@ class Plan {
               // start from zero aka day 1 but there is no workout on day 1
                 console.log("start from zero aka day 1 but there is no workout on day 1");
 
-                  db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status,routine:$routine})<-[:ASSIGNED]-(user)", {
+                  db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status,routine:$routine})<-[:ASSIGNED]-(user)", {
                     routine: JSON.stringify([]),
                     id:body.id,
                     day: 0,
@@ -1338,7 +1341,8 @@ class Plan {
                     soreness3: methods[0]._fields[0].properties.soreness3,
                     methodName: methods[0]._fields[0].properties.focus,
                     created: now,
-                    status:"completed"
+                    status:"completed",
+                    uuid:uuidV4(),
                   })
                   .then((workout) => {
                     db.close()
@@ -1430,7 +1434,7 @@ class Plan {
                   return x;
 
                 });
-                db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status, routine:$routine})<-[:ASSIGNED]-(user)", {
+                db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status, routine:$routine})<-[:ASSIGNED]-(user)", {
                   routine: JSON.stringify(pattern),
                   id:body.id,
                   day: 0,
@@ -1440,7 +1444,8 @@ class Plan {
                   soreness3: methods[0]._fields[0].properties.soreness3,
                   methodName: methods[0]._fields[0].properties.focus,
                   created: now,
-                  status:"not started"
+                  status:"not started",
+                  uuid:uuidV4(),
                 })
                 .then((workout) => {
                   db.close()
@@ -1481,7 +1486,7 @@ class Plan {
               })
             }
             else{ // if not workout on this day create a workout object in DATABASE that tells the user not to workout but provides meal advice
-              db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status,routine:$routine})<-[:ASSIGNED]-(user)", {
+              db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status,routine:$routine})<-[:ASSIGNED]-(user)", {
                 routine: JSON.stringify([]),
                 id:body.id,
                 day: 0,
@@ -1492,7 +1497,8 @@ class Plan {
                 soreness3: methods[0]._fields[0].properties.soreness3,
                 methodName: methods[0]._fields[0].properties.focus,
                 created: now,
-                status:"completed"
+                status:"completed",
+                uuid:uuidV4()
               })
               .then((workout) => {
                 db.close()
@@ -1577,6 +1583,51 @@ class Plan {
         res.writeHead(500, header)
         res.end(JSON.stringify({
           status:"error",
+          results: err,
+        }))
+      })
+    })
+
+    //RECORD SET RESULTS
+    server.post('/bf/urfitclient/record/set/results', (req, res, next) => {
+      let now = Date.now();
+      let body = req.body;
+      let cypher = "MATCH (n:WORKOUT {uuid:$workoutID}) SET n.routine = $routine, n.status:$status CREATE (:SetFeedback {repsDone:$repsDone, weightDone:$weightDone, uuid:$uuid, name:$name, created:$created, setTime:$setTime, trainer:$trainerID}) RETURN n"
+      db.run(cypher, {
+        workoutID:body.workoutIDW,
+        routine:body.routine,
+        status: body.status,
+        repsDone: body.repsDone,
+        weightDone:body.weightDone,
+        setTime:body.setTime,
+        created:body.created,
+        trainer:body.trainerID,
+        uuid:uuidV4()
+      })
+      .then((results) => {
+        db.close();
+        results = results.records.map((x) => {
+          x = x._fields[0].properties;
+          x.routine = JSON.parse(x.routine);
+          return x;
+        });
+        res.writeHead(200, header);
+        res.end(JSON.stringify({
+            success:true,
+            results: results,
+          }));
+          console.log('/bf/urfitclient/record/set/results',JSON.stringify({
+            success:true,
+            results: results,
+          }));
+          return
+      })
+      .catch((err) => {
+        log.error(err);
+        console.log('/bf/urfitclient/record/set/results',err);
+        res.writeHead(500, header)
+        res.end(JSON.stringify({
+          status:false,
           results: err,
         }))
       })
