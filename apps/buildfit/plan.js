@@ -498,6 +498,41 @@ class Plan {
 			})
 		})
 
+
+    //GET TRAINERS METHODS
+    server.post('/bf/urfitclient/get/trainer/token', (req, res, next) => {
+      let body = req.body;
+      let cypher = "MATCH (n:TRAINER {uuid:$trainerID}) RETURN n ";
+      db.run(cypher, {trainerID:body.id}).then((results) => {
+        db.close();
+        results = results.records.map((x) => {
+          return x = x._fields[0].properties;
+        });
+        res.writeHead(200, header);
+        res.end(JSON.stringify({
+            results: results[0].fcmtoken,
+            route: '/bf/urfitclient/get/trainer/token'
+          }));
+        console.log(JSON.stringify({
+          results: results[0].fcmtoken,
+          route: '/bf/urfitclient/get/trainer/token'
+        }));
+        return
+      })
+      .catch((err) => {
+        res.writeHead(500, header);
+        res.end(JSON.stringify({
+            results: err,
+            route: '/bf/urfitclient/get/trainer/token'
+          }));
+        console.log(JSON.stringify({
+          results: err,
+          route: '/bf/urfitclient/get/trainer/token'
+        }));
+      })
+    })
+
+
 		//CREATE TRAINERS METHODS
 		server.post('/bf/urfittrainer/create/method', (req, res, next) => {
 			let body = req.body;
@@ -1587,6 +1622,8 @@ class Plan {
         }))
       })
     })
+
+
 
     //RECORD SET RESULTS
     server.post('/bf/urfitclient/record/set/results', (req, res, next) => {
