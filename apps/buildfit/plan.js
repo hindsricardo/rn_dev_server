@@ -1629,7 +1629,7 @@ class Plan {
     server.post('/bf/urfitclient/record/set/results', (req, res, next) => {
       let now = Date.now();
       let body = req.body;
-      let cypher = "MATCH (n:WORKOUT {uuid:$workoutID}) SET n.routine = $routine, n.status = $status CREATE (:SetFeedback {repsDone:$repsDone, weightDone:$weightDone, uuid:$uuid, name:$name, created:$created, setTime:$setTime, trainer:$trainerID, feel:$feel, setDescription:$setDescription}) RETURN n"
+      let cypher = "MATCH (n:WORKOUT {uuid:$workoutID}) SET n.routine = $routine, n.status = $status CREATE (:SetFeedback {repsDone:$repsDone, weightDone:$weightDone, uuid:$uuid, name:$name, created:$created, setTime:$setTime, trainer:$trainer, feel:$feel, setDescription:$setDescription}) RETURN n"
       db.run(cypher, {
         workoutID:body.workoutID,
         routine:body.routine,
