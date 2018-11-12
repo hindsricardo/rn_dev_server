@@ -1604,7 +1604,8 @@ class Plan {
         trainer:body.trainerID,
         feel: body.feel,
         setDescription: body.setDescription,
-        uuid:uuidV4()
+        uuid:uuidV4(),
+        name: body.name,
       })
       .then((results) => {
         db.close();
