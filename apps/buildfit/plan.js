@@ -1125,7 +1125,7 @@ class Plan {
           return x;
         });
       if(results.length > 0){ //if there is a previous workout
-          if(moment(results[0].created).format("LL") == today ||  results[0].status == "not started" ||results[0].status == "inprogress"){ // if the previous workout is the same day
+          if(moment(results[0].created).format("LL") == today ||  results[0].status != "skipped" || results[0].status != "completed" || results[0].status != "incomplete_finish"){ // if the previous workout is the same day
             res.writeHead(200, header);
             res.end(JSON.stringify({
                 success:"yes",
