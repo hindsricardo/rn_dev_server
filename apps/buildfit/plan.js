@@ -1104,6 +1104,41 @@ class Plan {
       })
     })
 
+  server.post('/bf/urfitclient/get/user/workouts', (req, res, next) => {
+    let body = req.body;
+
+    let cypher = "MATCH (n:WORKOUT {user:$id}) RETURN n"
+    db.run(cypher, {
+      id:body.id
+    })
+    .then((results) => {
+      db.close();
+      results = results.records.map((x) => {
+        return x = x._fields[0].properties;
+      });
+
+      res.writeHead(200, header);
+      res.end(JSON.stringify({
+          success:"yes",
+          results: results,
+        }));
+      console.log('/bf/urfitclient/get/user/workouts',JSON.stringify({
+        success:"yes",
+        results: results,
+      }));
+      return
+    })
+    .catch((err) => {
+      log.error(err);// log to error file
+      console.log('/bf/urfitclient/get/user/workouts',err);
+      res.writeHead(500, header)
+      res.end(JSON.stringify({
+        status:"error",
+        results: err,
+      }))
+    })
+  })
+
 
     //GET DAILY ROUTINE & ADVICE
   server.post('/bf/urfitclient/get/daily/advice', (req, res, next) => {
