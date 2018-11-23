@@ -1743,6 +1743,73 @@ class Plan {
     })
 
 
+    server.post("/bf/urfitclient/check/if/feedback/needed", (req, res, next) => {
+      let body = req.body;
+      let cypher = "MATCH (n:WORKOUT {user:$id, status:$status}) RETURN n ORDER BY DESC LIMIT 1";
+      db.run(cypher, {
+        id:body.id,
+        status:"completed"
+      })
+      .then((results) => {
+        db.close();
+        if(results.lenth < 1){
+          res.writeHead(200, header);
+          res.end(JSON.stringify({
+              success:"yes",
+              results: false,
+            }));
+          console.log("/bf/urfitclient/check/if/feedback/needed",JSON.stringify({
+            success:"yes",
+            results: false,
+          }));
+        }
+        else{
+          let now = new Date().getTime();
+          let oneWeekMil = 604800000;
+          let cypher2 = "MATCH (n:RESULT {user:$id, method:$methodID}) WHERE n.created < $now - $oneweek RETURN n ORDER BY DESC LIMIT 1"
+          db.run(cypher2, {
+            id: body.id,
+            methodID:body.methodID,
+            now:now,
+            oneweek:oneWeekMil
+          })
+          .then((results2) => {
+            db.close();
+            if(results2 < 1){
+              res.writeHead(200, header);
+              res.end(JSON.stringify({
+                  success:"yes",
+                  results: false,
+                }));
+              console.log("/bf/urfitclient/check/if/feedback/needed",JSON.stringify({
+                success:"yes",
+                results: false,
+              }));
+            }
+            else{
+              res.writeHead(200, header);
+              res.end(JSON.stringify({
+                  success:"yes",
+                  results: true,
+                }));
+              console.log("/bf/urfitclient/check/if/feedback/needed",JSON.stringify({
+                success:"yes",
+                results: true,
+              }));
+            }
+          })
+        }
+      })
+    })
+
+    /*server.post("/bf/urfitclient/submit/user/results/feedback", (req, res, next) =>  //TODO TODO TODO
+      let body = req.body;
+      let cypher = "MATCH (n:WORKOUT {user:$id, status:$status}) RETURN n ORDER BY DESC LIMIT 1";
+    })*/
+
+
+
+
     // CREATE CUSTOMIZED METHOD FOR CLIENT
     server.post('/bf/urfittrainer/customize/method/for/client', (req, res, next) => {
       let body = req.body;
