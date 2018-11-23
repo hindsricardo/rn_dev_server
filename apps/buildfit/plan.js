@@ -1742,6 +1742,44 @@ class Plan {
       })
     })
 
+    //END WORKOUT
+    server.post('/bf/urfitclient/end/workout', (req, res, next) => {
+      let now = Date.now().getTime();
+      let body = req.body;
+      let cypher = "MATCH (n:WORKOUT {uuid:$workoutID}) SET n.status = $status RETURN n"
+      db.run(cypher, {
+        workoutID:body.workoutID,
+        status: "completed",
+      })
+      .then((results) => {
+        db.close();
+        results = results.records.map((x) => {
+          x = x._fields[0].properties;
+          x.routine = JSON.parse(x.routine);
+          return x;
+        });
+        res.writeHead(200, header);
+        res.end(JSON.stringify({
+            success:true,
+            results: results,
+          }));
+          console.log('/bf/urfitclient/end/workout',JSON.stringify({
+            success:true,
+            results: results,
+          }));
+          return
+      })
+      .catch((err) => {
+        log.error(err);
+        console.log('/bf/urfitclient/end/workout',err);
+        res.writeHead(500, header)
+        res.end(JSON.stringify({
+          status:false,
+          results: err,
+        }))
+      })
+    })
+
 
     server.post("/bf/urfitclient/check/if/feedback/needed", (req, res, next) => {
       let body = req.body;
