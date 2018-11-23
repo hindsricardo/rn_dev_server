@@ -1745,7 +1745,7 @@ class Plan {
 
     server.post("/bf/urfitclient/check/if/feedback/needed", (req, res, next) => {
       let body = req.body;
-      let cypher = "MATCH (n:WORKOUT {user:$id, status:$status}) RETURN n DESC LIMIT 1";
+      let cypher = "MATCH (n:WORKOUT {user:$id, status:$status}) RETURN n LIMIT 1";
       db.run(cypher, {
         id:body.id,
         status:"completed"
@@ -1758,7 +1758,7 @@ class Plan {
               success:"yes",
               results: false,
             }));
-          console.log("/bf/urfitclient/check/if/feedback/needed",JSON.stringify({
+          console.log("/bf/urfitclient/check/if/feedback/needed", JSON.stringify({
             success:"yes",
             results: false,
           }));
@@ -1766,7 +1766,7 @@ class Plan {
         else{
           let now = new Date().getTime();
           let oneWeekMil = 604800000;
-          let cypher2 = "MATCH (n:RESULT {user:$id, method:$methodID}) WHERE n.created < $now - $oneweek RETURN n DESC LIMIT 1"
+          let cypher2 = "MATCH (n:RESULT {user:$id, method:$methodID}) WHERE n.created < $now - $oneweek RETURN n LIMIT 1"
           db.run(cypher2, {
             id: body.id,
             methodID:body.methodID,
