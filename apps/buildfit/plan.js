@@ -1744,7 +1744,7 @@ class Plan {
 
     //END WORKOUT
     server.post('/bf/urfitclient/end/workout', (req, res, next) => {
-      let now = Date.now().getTime();
+      let now = Date.now();
       let body = req.body;
       let cypher = "MATCH (n:WORKOUT {uuid:$workoutID}) SET n.status = $status RETURN n"
       db.run(cypher, {
