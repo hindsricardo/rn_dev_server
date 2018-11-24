@@ -1780,6 +1780,49 @@ class Plan {
       })
     })
 
+    //RECORD RESULTS FEEDBACK
+    server.post('/bf/urfitclient/record/results/feedback', (req, res, next) => {
+      let now = Date.now();
+      let body = req.body;
+      let cypher = "MATCH (u:USER {uuid:$id}) CREATE (u)-[:RECORDED]->(n:RESULTS {uuid:$uuid, trainerID: $trainerID, methodID: $methodID, resultImage: $resultImage, likeResults: $likeResults, resultDesc: $resultDesc, trainerRating: $trainerRating }) RETURN n"
+      db.run(cypher, {
+        trainerID:body.trainerID,
+        methodID: body.methodID,
+        id: body.id,
+        uuid: uuidV4(),
+        resultImage: body.resultImage,
+        likeResults: body.likeResults,
+        resultDesc: body.resultDesc,
+        trainerRating: body.trainerRating,
+      })
+      .then((results) => {
+        db.close();
+        results = results.records.map((x) => {
+          return x = x._fields[0].properties;
+        });
+        res.writeHead(200, header);
+        res.end(JSON.stringify({
+            success:true,
+            results: results[0],
+          }));
+          console.log('/bf/urfitclient/record/results/feedback',JSON.stringify({
+            success:true,
+            results: results[0],
+          }));
+          return
+      })
+      .catch((err) => {
+        log.error(err);
+        console.log('/bf/urfitclient/record/results/feedback',err);
+        res.writeHead(500, header)
+        res.end(JSON.stringify({
+          status:false,
+          results: err,
+        }))
+      })
+    })
+
+
 
     server.post("/bf/urfitclient/check/if/feedback/needed", (req, res, next) => {
       let body = req.body;
