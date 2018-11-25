@@ -1194,7 +1194,7 @@ class Plan {
         });
         console.log("status", results[0].status)
       if(results.length > 0){ //if there is a previous workout
-          if(moment(results[0].created).format("LL") == today || results[0].status != "skipped" && results[0].status != "completed" && results[0].status != "incomplete_finish"){ // if the previous workout is the same day
+          if(moment(results[0].created).format("LL") == today || results[0].status != "skipped" && results[0].status != "completed" && results[0].status != "incomplete_finish" && results[0].status != "rest_day"){ // if the previous workout is the same day
             res.writeHead(200, header);
             res.end(JSON.stringify({
                 success:"yes",
@@ -1252,7 +1252,7 @@ class Plan {
                       id:body.id,
                       day: day,
                       methodID:body.methodID,
-                      pattern:pattern,
+                      routine:pattern,
                       trainer: methods[0]._fields[0].properties.trainer,
                       soreness2: methods[0]._fields[0].properties.soreness2,
                       soreness3: methods[0]._fields[0].properties.soreness3,
@@ -1310,7 +1310,7 @@ class Plan {
                     soreness3: methods[0]._fields[0].properties.soreness3,
                     methodName: methods[0]._fields[0].properties.focus,
                     created: now,
-                    status:"completed",
+                    status:"rest_day",
                     uuid:uuidV4()
                   })
                   .then((workout) => {
@@ -1384,6 +1384,7 @@ class Plan {
                       routine: JSON.stringify(pattern),
                       id:body.id,
                       day: 0,
+                      routine:pattern,
                       methodID:body.methodID,
                       trainer: methods[0]._fields[0].properties.trainer,
                       soreness2: methods[0]._fields[0].properties.soreness2,
@@ -1445,7 +1446,7 @@ class Plan {
                     soreness3: methods[0]._fields[0].properties.soreness3,
                     methodName: methods[0]._fields[0].properties.focus,
                     created: now,
-                    status:"completed",
+                    status:"rest_day",
                     uuid:uuidV4(),
                   })
                   .then((workout) => {
