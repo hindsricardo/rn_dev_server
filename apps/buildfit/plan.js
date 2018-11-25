@@ -1179,7 +1179,7 @@ class Plan {
       //let time = body.time;
       let today = moment().format('LL');
       let now = Date.now();
-      let getLastWorkout = "MATCH (n:WORKOUT {user:$id}) RETURN n ORDER BY n.created DESC";
+      let getLastWorkout = "MATCH (n:WORKOUT {user:$id}) RETURN n ORDER BY n.created DESC LIMIT 1";
 
       let cypher = "MATCH (m:METHOD {uuid:$methodID}) RETURN m"
       db.run(getLastWorkout, {
@@ -1192,8 +1192,9 @@ class Plan {
           x.routine = JSON.parse(x.routine);
           return x;
         });
+        console.log("status", results[0].status)
       if(results.length > 0){ //if there is a previous workout
-          if(moment(results[0].created).format("LL") == today ||  results[0].status != "skipped" || results[0].status != "completed" || results[0].status != "incomplete_finish"){ // if the previous workout is the same day
+          if(moment(results[0].created).format("LL") == today || results[0].status != "skipped" && results[0].status != "completed" && results[0].status != "incomplete_finish"){ // if the previous workout is the same day
             res.writeHead(200, header);
             res.end(JSON.stringify({
                 success:"yes",
@@ -1784,7 +1785,7 @@ class Plan {
     server.post('/bf/urfitclient/record/results/feedback', (req, res, next) => {
       let now = Date.now();
       let body = req.body;
-      let cypher = "MATCH (u:USER {uuid:$id}) CREATE (u)-[:RECORDED]->(n:RESULTS {uuid:$uuid, trainerID: $trainerID, methodID: $methodID, resultImage: $resultImage, likeResults: $likeResults, resultDesc: $resultDesc, trainerRating: $trainerRating }) RETURN n"
+      let cypher = "MATCH (u:USER {uuid:$id}) CREATE (u)-[:RECORDED]->(n:RESULTS {uuid:$uuid, created:$now, trainerID: $trainerID, methodID: $methodID, resultImage: $resultImage, likeResults: $likeResults, resultDesc: $resultDesc, trainerRating: $trainerRating }) RETURN n"
       db.run(cypher, {
         trainerID:body.trainerID,
         methodID: body.methodID,
@@ -1794,6 +1795,7 @@ class Plan {
         likeResults: body.likeResults,
         resultDesc: body.resultDesc,
         trainerRating: body.trainerRating,
+        now: now
       })
       .then((results) => {
         db.close();
@@ -1826,7 +1828,7 @@ class Plan {
 
     server.post("/bf/urfitclient/check/if/feedback/needed", (req, res, next) => {
       let body = req.body;
-      let cypher = "MATCH (n:WORKOUT {user:$id, status:$status}) RETURN n LIMIT 1";
+      let cypher = "MATCH (n:WORKOUT {user:$id, status:$status}) RETURN n ORDER BY n.created DESC LIMIT 1";
       db.run(cypher, {
         id:body.id,
         status:"completed"
@@ -1847,7 +1849,7 @@ class Plan {
         else{
           let now = new Date().getTime();
           let oneWeekMil = 604800000;
-          let cypher2 = "MATCH (n:RESULT {user:$id, method:$methodID}) WHERE n.created < $now - $oneweek RETURN n LIMIT 1"
+          let cypher2 = "MATCH (n:RESULT {user:$id, method:$methodID}) WHERE n.created < $now - $oneweek RETURN n ORDER BY n.created DESC LIMIT 1"
           db.run(cypher2, {
             id: body.id,
             methodID:body.methodID,
