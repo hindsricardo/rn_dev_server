@@ -1248,7 +1248,6 @@ class Plan {
                     pattern:alteredPattern
                   })
                   .then((pattern) => {
-                    console.log(pattern, "pattern result in ")
                     db.close()
                     pattern = pattern.records.map((x) => {
                       x = x._fields[0];
@@ -1258,10 +1257,9 @@ class Plan {
                     });
                     db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created: $created, status:$status, routine:$routine})<-[:ASSIGNED]-(user)", {
                       routine: JSON.stringify(pattern),
-                      id:body.id,
+                      id: body.id,
                       day: day,
                       methodID:body.methodID,
-                      routine:pattern,
                       trainer: methods[0]._fields[0].properties.trainer,
                       soreness2: methods[0]._fields[0].properties.soreness2,
                       soreness3: methods[0]._fields[0].properties.soreness3,
@@ -1393,7 +1391,6 @@ class Plan {
                       routine: JSON.stringify(pattern),
                       id:body.id,
                       day: 0,
-                      routine:pattern,
                       methodID:body.methodID,
                       trainer: methods[0]._fields[0].properties.trainer,
                       soreness2: methods[0]._fields[0].properties.soreness2,
