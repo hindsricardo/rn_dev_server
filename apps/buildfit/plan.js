@@ -238,7 +238,7 @@ class Plan {
 
             let month = 86400000 * 30;
             let now = new Date().getTime();
-            let cypher4 = " MATCH (n:SetFeedback {method:$methodID})-[:RECORDED]->(m:RESULT) WHERE n.stopTime > $now - $month RETURN m";
+            let cypher4 = " MATCH (m:RESULTS {methodID:$methodID}) WHERE m.created > $now - $month RETURN m";
             db.run(cypher4, {
               methodID: body.methodID,
               month: month,
@@ -254,8 +254,13 @@ class Plan {
               db.close();
               if(results4.records.length > 0){
                 let results4Strip = results4.records.map((x) => {
-                  x.score = parseInt(x.score);
-									x.grade = parseInt(x.grade);
+                  if(x.likeResults == true){
+                    x.score = 1
+                  }
+                  else{
+                    x.score = 0
+                  }
+									x.grade = parseInt(x.trainerRating);
                   return x = x._fields[0].properties;
                 });
                 let sum = results4Strip.reduce((accumulator, currentValue) => accumulator + currentValue.score,0);
@@ -269,7 +274,7 @@ class Plan {
 								avgGrade = 0
               }
 
-              let cypher5 = "MATCH (n:SetFeedback {method:$methodID})-[:RECORDED]->(m:RESULT) WHERE n.stopTime < $now - $month RETURN m";
+              let cypher5 = "MATCH (m:RESULTS {method:$methodID}) WHERE m.created < $now - $month RETURN m";
               db.run(cypher5, {
                 methodID: body.methodID,
                 month: month,
@@ -278,8 +283,11 @@ class Plan {
               .then((results5) => {
                 db.close();
                   let results5Strip = results5.records.map((x) => {
-                    x.score = parseInt(x.score);
-										x.grade = parseInt(x.grade);
+                    if(x.likeResults == true){
+                      x.score = 1;
+                    }
+                    else{x.score == 0}
+										x.grade = parseInt(x.trainerRating);
                     return x = x._fields[0].properties;
                   });
                   Promise.resolve(true).then(() => {
@@ -1240,6 +1248,7 @@ class Plan {
                     pattern:alteredPattern
                   })
                   .then((pattern) => {
+                    console.log(pattern, "pattern result in ")
                     db.close()
                     pattern = pattern.records.map((x) => {
                       x = x._fields[0];
@@ -1247,7 +1256,7 @@ class Plan {
                       return x;
 
                     });
-                    db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status, routine:$routine})<-[:ASSIGNED]-(user)", {
+                    db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created: $created, status:$status, routine:$routine})<-[:ASSIGNED]-(user)", {
                       routine: JSON.stringify(pattern),
                       id:body.id,
                       day: day,
@@ -1258,8 +1267,8 @@ class Plan {
                       soreness3: methods[0]._fields[0].properties.soreness3,
                       methodName: methods[0]._fields[0].properties.focus,
                       created: now,
-                      status:"not started",
-                      uuid:uuidV4()
+                      status: "not started",
+                      uuid: uuidV4()
                     })
                     .then((workout) => {
                       db.close()
@@ -1432,7 +1441,7 @@ class Plan {
                     }))
                   })
                 }
-                else{ //TODO:TODO
+                else{
               // start from zero aka day 1 but there is no workout on day 1
                 console.log("start from zero aka day 1 but there is no workout on day 1");
 
@@ -1786,7 +1795,7 @@ class Plan {
     server.post('/bf/urfitclient/record/results/feedback', (req, res, next) => {
       let now = Date.now();
       let body = req.body;
-      let cypher = "MATCH (u:USER {uuid:$id}) CREATE (u)-[:RECORDED]->(n:RESULTS {uuid:$uuid, created:$now, trainerID: $trainerID, methodID: $methodID, resultImage: $resultImage, likeResults: $likeResults, resultDesc: $resultDesc, trainerRating: $trainerRating }) RETURN n"
+      let cypher = "MATCH (u:USER {uuid:$id}) CREATE (u)-[:RECORDED]->(n:RESULTS {uuid:$uuid, created:$now, trainerID: $trainerID, methodID: $methodID, resultImage: $resultImage, likeResults: $likeResults, resultDesc: $resultDesc, trainerRating: $trainerRating, score:$score }) RETURN n"
       db.run(cypher, {
         trainerID:body.trainerID,
         methodID: body.methodID,
@@ -1796,7 +1805,8 @@ class Plan {
         likeResults: body.likeResults,
         resultDesc: body.resultDesc,
         trainerRating: body.trainerRating,
-        now: now
+        now: now,
+        score:body.score
       })
       .then((results) => {
         db.close();
@@ -1836,7 +1846,7 @@ class Plan {
       })
       .then((results) => {
         db.close();
-        if(results.lenth < 1){
+        if(results.length < 1){
           res.writeHead(200, header);
           res.end(JSON.stringify({
               success:"yes",
@@ -1850,7 +1860,7 @@ class Plan {
         else{
           let now = new Date().getTime();
           let oneWeekMil = 604800000;
-          let cypher2 = "MATCH (n:RESULT {user:$id, method:$methodID}) WHERE n.created < $now - $oneweek RETURN n ORDER BY n.created DESC LIMIT 1"
+          let cypher2 = "MATCH (n:RESULTS {user:$id, method:$methodID}) WHERE n.created < $now - $oneweek RETURN n ORDER BY n.created DESC LIMIT 1"
           db.run(cypher2, {
             id: body.id,
             methodID:body.methodID,
