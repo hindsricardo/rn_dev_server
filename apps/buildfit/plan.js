@@ -1186,7 +1186,8 @@ class Plan {
       let body = req.body;
       //let time = body.time;
       let today = moment().format('LL');
-      let now = Date.now();
+      let date = new Date();
+			let now = date.getTime();
       let getLastWorkout = "MATCH (n:WORKOUT {user:$id}) RETURN n ORDER BY n.created DESC LIMIT 1";
 
       let cypher = "MATCH (m:METHOD {uuid:$methodID}) RETURN m"
