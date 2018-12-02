@@ -1858,7 +1858,8 @@ class Plan {
         else{
           let now = new Date().getTime();
           let oneWeekMil = 604800000;
-          let cypher2 = "MATCH (n:RESULTS {user:$id, method:$methodID}) WHERE n.created < $now - $oneweek RETURN n ORDER BY n.created DESC LIMIT 1"
+          let fourweeksMill = oneWeekMil
+          let cypher2 = "MATCH (n:RESULTS {user:$id, method:$methodID}) WHERE n.created < $now - $oneweek AND $now > n.created + $oneweek RETURN n ORDER BY n.created DESC LIMIT 2" //TODO need to set a time 7 days ago 21
           db.run(cypher2, {
             id: body.id,
             methodID:body.methodID,
