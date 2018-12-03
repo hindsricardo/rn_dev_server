@@ -1797,7 +1797,7 @@ class Plan {
       db.run(cypher, {
         trainerID:body.trainerID,
         methodID: body.methodID,
-        id: body.id,
+        user: body.id,
         uuid: uuidV4(),
         resultImage: body.resultImage,
         likeResults: body.likeResults,
@@ -1844,7 +1844,7 @@ class Plan {
       })
       .then((results) => {
         db.close();
-        if(results.length < 1){
+        if(results.records.length < 1){
           res.writeHead(200, header);
           res.end(JSON.stringify({
               success:"yes",
@@ -1860,7 +1860,7 @@ class Plan {
           let now = new Date().getTime();
           let oneWeekMil = 604800000;
           let fourweeksMill = oneWeekMil
-          let cypher2 = "MATCH (n:RESULTS {user:$id, method:$methodID}) WHERE n.created < $now - $oneweek RETURN n ORDER BY n.created DESC LIMIT 2" //TODO need to set a time 7 days ago 21
+          let cypher2 = "MATCH (n:RESULTS {user:$id, method:$methodID}) WHERE n.created > $now - $oneweek AND  RETURN n ORDER BY n.created DESC LIMIT 1" //TODO need to set a time 7 days ago 21
           db.run(cypher2, {
             id: body.id,
             methodID:body.methodID,
@@ -1869,7 +1869,7 @@ class Plan {
           })
           .then((results2) => {
             db.close();
-            if(results2.length > 0){
+            if(results2.records.length > 0){
               res.writeHead(200, header);
               res.end(JSON.stringify({
                   success:"yes",
