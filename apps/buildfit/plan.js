@@ -1186,6 +1186,7 @@ class Plan {
       let body = req.body;
       //let time = body.time;
       let today = moment().format('LL');
+      let day = 86400000;
       let date = new Date();
 			let now = date.getTime();
       let getLastWorkout = "MATCH (n:WORKOUT {user:$id}) RETURN n ORDER BY n.created DESC LIMIT 1";
@@ -1216,15 +1217,20 @@ class Plan {
             return
           }
           else{
+            let daysElapsed = Math.floor(((now - results[0].created)/day))
+            console.log("daysElapsed", daysElapsed);
             // CREATE A WORKOUT BASED ON THE NEXT DAY ASSUMING THERE IS A NEXT DAY EXISTS, IF IT DOESN'T START FROM THE BEGINNING: TODO
             console.log('create workout based on next day');
+            if(daysElapsed < 1){
+              daysElapsed = 1;
+            }
             db.run(cypher, {
               methodID:body.methodID
             })
             .then((methods) => {
               db.close()
               methods = methods.records;
-              let day = results[0].day + 1;
+              let day = results[0].day + daysElapsed;
               let selectedExercise = JSON.parse(methods[0]._fields[0].properties.selectedExercise)
               let diet = JSON.parse(methods[0]._fields[0].properties.diet);
               let pattern = JSON.parse(methods[0]._fields[0].properties.pattern);
