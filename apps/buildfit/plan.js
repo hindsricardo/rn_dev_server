@@ -1869,7 +1869,7 @@ class Plan {
           })
           .then((results2) => {
             db.close();
-            if(results2 < 1){
+            if(results2 > 0){
               res.writeHead(200, header);
               res.end(JSON.stringify({
                   success:"yes",
@@ -1891,6 +1891,7 @@ class Plan {
               console.log("/bf/urfitclient/check/if/feedback/needed",JSON.stringify({
                 success:"yes",
                 results: true,
+                now: now,
                 data: results2
               }));
             }
