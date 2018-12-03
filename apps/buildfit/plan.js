@@ -1860,7 +1860,7 @@ class Plan {
           let now = new Date().getTime();
           let oneWeekMil = 604800000;
           let fourweeksMill = oneWeekMil
-          let cypher2 = "MATCH (n:RESULTS {user:$id, method:$methodID}) WHERE n.created < $now - $oneweek AND $now > n.created + $oneweek RETURN n ORDER BY n.created DESC LIMIT 2" //TODO need to set a time 7 days ago 21
+          let cypher2 = "MATCH (n:RESULTS {user:$id, method:$methodID}) WHERE n.created < $now - $oneweek RETURN n ORDER BY n.created DESC LIMIT 2" //TODO need to set a time 7 days ago 21
           db.run(cypher2, {
             id: body.id,
             methodID:body.methodID,
@@ -1878,7 +1878,8 @@ class Plan {
               console.log("/bf/urfitclient/check/if/feedback/needed",JSON.stringify({
                 success:"yes",
                 results: false,
-                data: results2
+                data: results2,
+                now: now,
               }));
             }
             else{
