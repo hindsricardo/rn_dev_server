@@ -1853,6 +1853,7 @@ class Plan {
           console.log("/bf/urfitclient/check/if/feedback/needed", JSON.stringify({
             success:"yes",
             results: false,
+            data: results,
           }));
         }
         else{
@@ -1877,6 +1878,7 @@ class Plan {
               console.log("/bf/urfitclient/check/if/feedback/needed",JSON.stringify({
                 success:"yes",
                 results: false,
+                data: results2
               }));
             }
             else{
@@ -1888,6 +1890,7 @@ class Plan {
               console.log("/bf/urfitclient/check/if/feedback/needed",JSON.stringify({
                 success:"yes",
                 results: true,
+                data: results2
               }));
             }
           })
