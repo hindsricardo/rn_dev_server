@@ -1869,7 +1869,7 @@ class Plan {
           })
           .then((results2) => {
             db.close();
-            if(results2 > 0){
+            if(results2.length > 0){
               res.writeHead(200, header);
               res.end(JSON.stringify({
                   success:"yes",
