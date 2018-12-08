@@ -1356,12 +1356,12 @@ server.post('/bf/urfitclient/user/login/v1', (req, res, next) => {
                   res.writeHead(200, header);
                   res.end(JSON.stringify({
                       found: true,
-                      results: results2
+                      results: results2[0]
                       //token: token
                     }));
                   console.log('/bf/urfitclient/user/login/v1', JSON.stringify({
                     found: true,
-                    results: results2
+                    results: results2[0]
                     //token: token
                   }));
                   return
@@ -1408,12 +1408,12 @@ server.post('/bf/urfitclient/user/login/v1', (req, res, next) => {
             res.writeHead(200, header);
                 res.end(JSON.stringify({
                     found: false,
-                    results: results2
+                    results: results2[0]
                     //token: token
                   }));
                 console.log('/bf/urfitclient/user/login/v1', JSON.stringify({
                   found: false,
-                  results: results2,
+                  results: results2[0],
                   //token: token
                 }));
                 return
