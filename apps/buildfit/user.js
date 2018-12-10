@@ -1237,12 +1237,12 @@ server.post('/bf/urfitclient/set/then/sendpassword/user/login/v1', (req, res, ne
               res.writeHead(200, header);
                   res.end(JSON.stringify({
                       found: false,
-                      results: results2
+                      results: results2[0]
                       //token: token
                     }));
                   console.log('bf/urfitclient/set/then/sendpassword/user/login/v1', JSON.stringify({
                     found: false,
-                    results: results2,
+                    results: results2[0],
                     //token: token
                   }));
                   return
