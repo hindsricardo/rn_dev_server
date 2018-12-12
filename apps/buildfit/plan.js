@@ -1003,11 +1003,14 @@ class Plan {
 
 
 
-    //EDIT TRAINERS METHODS
+    //SUBSCRIBE TO TRAINER
     server.post('/bf/urfitclient/subscribe/to/trainer', (req, res, next) => {
       let body = req.body;
       stripe.subscriptions.del(
         body.subscription,
+        {
+          stripe_account: body.trainerID,
+        }
         function(err, confirmation) {
           // asynchronously called
           if(err || confirmation.canceled){
