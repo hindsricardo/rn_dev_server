@@ -1010,7 +1010,7 @@ class Plan {
         body.subscription,
         {
           stripe_account: body.trainerID,
-        }
+        },
         function(err, confirmation) {
           // asynchronously called
           if(err || confirmation.canceled){
