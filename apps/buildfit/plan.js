@@ -1001,7 +1001,52 @@ class Plan {
       })
     })
 
-
+    //UNSUBSCRIBE FROM trainer
+    server.post('/bf/urfitclient/unsubscribe/from/trainer', (req, res, next) => {
+      let body = req.body;
+      stripe.subscriptions.del(
+        body.subscription,
+        {
+          stripe_account: body.trainerID,
+        },
+        function(err, confirmation) {
+          if(confirmation.status == "canceled"){
+            db.run("MATCH (user:USER {uuid:$id}) SET user.subscription = $subscriptionId, user.subscribed = $boolean, user.currentTrainer = $trainerID, user.currentMethod = $currentMethod RETURN user", {
+              id:body.id,
+              subscriptionId: "",
+              boolean: false,
+              trainerID:"",
+              currentMethod:""
+            })
+            .then((results) => {
+              db.close();
+              results = results.records;
+              console.log(results)
+              res.writeHead(200, header);
+              res.end(JSON.stringify({
+                  success:"yes",
+                  status:"unsubscribed",
+                  results: results[0]._fields[0].properties,
+                }));
+              console.log('/bf/urfitclient/unsubscribe/from/trainer',JSON.stringify({
+                success:"yes",
+                status: "unsubscribed",
+                results: results[0]._fields[0].properties,
+              }));
+            })
+          }
+          else{
+            log.error(err);// log to error file
+            console.log('/bf/urfitclient/unsubscribe/from/trainer', err);
+            res.writeHead(500, header)
+            res.end(JSON.stringify({
+              success:'no',
+              status:"error",
+              results: err,
+            }))
+          }
+        })
+    })
 
     //SUBSCRIBE TO TRAINER
     server.post('/bf/urfitclient/subscribe/to/trainer', (req, res, next) => {
@@ -1884,7 +1929,7 @@ class Plan {
     server.post('/bf/urfitclient/record/results/feedback', (req, res, next) => {
       let now = Date.now();
       let body = req.body;
-      let cypher = "MATCH (u:USER {uuid:$id}) CREATE (u)-[:RECORDED]->(n:RESULTS {uuid:$uuid, created:$now, trainerID: $trainerID, methodID: $methodID, resultImage: $resultImage, likeResults: $likeResults, resultDesc: $resultDesc, trainerRating: $trainerRating, score:$score }) RETURN n"
+      let cypher = "MATCH (u:USER {uuid:$id}) CREATE (u)-[:RECORDED]->(n:RESULTS {uuid:$uuid, created:$now, trainerID: $trainerID, methodID: $methodID, resultImage: $resultImage, likeResults: $likeResults, resultDesc: $resultDesc, trainerRating: $trainerRating, score:$score, public:$public }) RETURN n"
       db.run(cypher, {
         trainerID:body.trainerID,
         methodID: body.methodID,
@@ -1895,7 +1940,8 @@ class Plan {
         resultDesc: body.resultDesc,
         trainerRating: body.trainerRating,
         now: now,
-        score:body.score
+        score:body.score,
+        public: body.shareResult
       })
       .then((results) => {
         db.close();
@@ -1928,10 +1974,11 @@ class Plan {
 
     server.post("/bf/urfitclient/check/if/feedback/needed", (req, res, next) => {
       let body = req.body;
-      let cypher = "MATCH (n:WORKOUT {user:$id, status:$status}) RETURN n ORDER BY n.created DESC LIMIT 1";
+      let cypher = "MATCH (n:WORKOUT {user:$id, status:$status, trainerID:$trainer}) RETURN n ORDER BY n.created DESC LIMIT 1";
       db.run(cypher, {
         id:body.id,
-        status:"completed"
+        status:"completed",
+        trainer:body.trainerID //TODO check that trainerID is used as trainer identifier in WORKOUT object
       })
       .then((results) => {
         db.close();

@@ -402,7 +402,7 @@ class User {
                 stripe.plans.create({
                   amount: 5000,
                   interval: "month",
-                  nickname: "UrFit: subscription to "+" "+body.fname+" "+body.lname+" $"+50,
+                  nickname: "UrFit: subscription to "+" "+body.fname+" "+body.lname+" $"+30,
                   product: product.id,
                   currency: "usd",
                 }, {
@@ -486,7 +486,7 @@ class User {
           amount: (body.charge * 100),
           interval: "month",
           product:trainer[0]._fields[0].properties.productID,
-          nickname: "UrFit: subscription to "+" "+ trainer[0]._fields[0].properties.name +" $"+body.charge,
+          nickname: "UrFit: subscription to "+" "+ trainer[0]._fields[0].properties.fname+" "+trainer[0]._fields[0].properties.lname+" $"+body.charge,
           currency: "usd",
         }, {
           stripe_account: body.id
