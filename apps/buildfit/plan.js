@@ -1319,11 +1319,13 @@ class Plan {
       let day = 86400000;
       let date = new Date();
 			let now = date.getTime();
-      let getLastWorkout = "MATCH (n:WORKOUT {user:$id}) RETURN n ORDER BY n.created DESC LIMIT 1";
+      let getLastWorkout = "MATCH (n:WORKOUT {user:$id, methodID:$methodID, subscriptionID: $subscriptionID }) RETURN n ORDER BY n.created DESC LIMIT 1";
 
       let cypher = "MATCH (m:METHOD {uuid:$methodID}) RETURN m"
       db.run(getLastWorkout, {
         id:body.id,
+        methodID:body.methodiD,
+        subscription: body.subscriptionID
       })
       .then((results) => {
         db.close();
@@ -1403,7 +1405,8 @@ class Plan {
                       methodName: methods[0]._fields[0].properties.focus,
                       created: now,
                       status: "not started",
-                      uuid: uuidV4()
+                      uuid: uuidV4(),
+                      subscriptionID: body.subscriptionID
                     })
                     .then((workout) => {
                       db.close()
@@ -1455,7 +1458,8 @@ class Plan {
                     methodName: methods[0]._fields[0].properties.focus,
                     created: now,
                     status:"rest_day",
-                    uuid:uuidV4()
+                    uuid:uuidV4(),
+                    subscriptionID: body.subscriptionID
                   })
                   .then((workout) => {
                     db.close()
@@ -1535,7 +1539,8 @@ class Plan {
                       methodName: methods[0]._fields[0].properties.focus,
                       created: now,
                       status:"not started",
-                      uuid:uuidV4()
+                      uuid:uuidV4(),
+                      subscriptionID: body.subscriptionID
                     })
                     .then((workout) => {
                       db.close()
@@ -1591,6 +1596,7 @@ class Plan {
                     created: now,
                     status:"rest_day",
                     uuid:uuidV4(),
+                    subscriptionID: body.subscriptionID
                   })
                   .then((workout) => {
                     db.close()
@@ -1694,6 +1700,7 @@ class Plan {
                   created: now,
                   status:"not started",
                   uuid:uuidV4(),
+                  subscriptionID: body.subscriptionID
                 })
                 .then((workout) => {
                   db.close()
@@ -1746,7 +1753,8 @@ class Plan {
                 methodName: methods[0]._fields[0].properties.focus,
                 created: now,
                 status:"completed",
-                uuid:uuidV4()
+                uuid:uuidV4(),
+                subscriptionID: body.subscriptionID
               })
               .then((workout) => {
                 db.close()
