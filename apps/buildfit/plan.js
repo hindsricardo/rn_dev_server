@@ -1319,7 +1319,7 @@ class Plan {
       let day = 86400000;
       let date = new Date();
 			let now = date.getTime();
-      let getLastWorkout = "MATCH (n:WORKOUT {user:$id, methodID:$methodID, subscriptionID: $subscriptionID }) RETURN n ORDER BY n.created DESC LIMIT 1";
+      let getLastWorkout = "MATCH (n:WORKOUT {user:$id, methodID:$methodID, subscriptionID: $subscription }) RETURN n ORDER BY n.created DESC LIMIT 1";
 
       let cypher = "MATCH (m:METHOD {uuid:$methodID}) RETURN m"
       db.run(getLastWorkout, {
