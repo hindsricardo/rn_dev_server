@@ -1319,13 +1319,13 @@ class Plan {
       let day = 86400000;
       let date = new Date();
 			let now = date.getTime();
-      let getLastWorkout = "MATCH (n:WORKOUT {user:$id, methodID:$methodID, subscriptionID: $subscription }) RETURN n ORDER BY n.created DESC LIMIT 1";
+      let getLastWorkout = "MATCH (n:WORKOUT {user:$id, methodID:$methodID, subscription: $subscriptionID }) RETURN n ORDER BY n.created DESC LIMIT 1";
 
       let cypher = "MATCH (m:METHOD {uuid:$methodID}) RETURN m"
       db.run(getLastWorkout, {
         id:body.id,
         methodID:body.methodiD,
-        subscription: body.subscriptionID
+        subscriptionID: body.subscriptionID
       })
       .then((results) => {
         db.close();
@@ -1394,7 +1394,7 @@ class Plan {
                       return x;
 
                     });
-                    db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created: $created, status:$status, routine:$routine})<-[:ASSIGNED]-(user)", {
+                    db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created: $created, status:$status, routine:$routine, subscription: $subscriptionID})<-[:ASSIGNED]-(user)", {
                       routine: JSON.stringify(pattern),
                       id: body.id,
                       day: day,
@@ -1584,7 +1584,7 @@ class Plan {
               // start from zero aka day 1 but there is no workout on day 1
                 console.log("start from zero aka day 1 but there is no workout on day 1");
 
-                  db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status,routine:$routine})<-[:ASSIGNED]-(user)", {
+                  db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status,routine:$routine, subscription: $subscriptionID})<-[:ASSIGNED]-(user)", {
                     routine: JSON.stringify([]),
                     id:body.id,
                     day: 0,
@@ -1688,7 +1688,7 @@ class Plan {
                   return x;
 
                 });
-                db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status, routine:$routine})<-[:ASSIGNED]-(user)", {
+                db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status, routine:$routine, subscription:$subscriptionID})<-[:ASSIGNED]-(user)", {
                   routine: JSON.stringify(pattern),
                   id:body.id,
                   day: 0,
@@ -1741,7 +1741,7 @@ class Plan {
               })
             }
             else{ // if not workout on this day create a workout object in DATABASE that tells the user not to workout but provides meal advice
-              db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status,routine:$routine})<-[:ASSIGNED]-(user)", {
+              db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status,routine:$routine, subscription:$subscriptionID})<-[:ASSIGNED]-(user)", {
                 routine: JSON.stringify([]),
                 id:body.id,
                 day: 0,
