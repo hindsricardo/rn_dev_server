@@ -1447,7 +1447,7 @@ class Plan {
                   })
                 }
                 else{ // if not workout on this day create a workout object in DATABASE that tells the user not to workout but provides meal advice
-                  db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status, routine:$routine})<-[:ASSIGNED]-(user)", {
+                  db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status, routine:$routine, subscription: $subscriptionID})<-[:ASSIGNED]-(user)", {
                     routine: JSON.stringify([]),
                     id:body.id,
                     day: day,
@@ -1528,7 +1528,7 @@ class Plan {
                       return x;
 
                     });
-                    db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status, routine:$routine})<-[:ASSIGNED]-(user)", {
+                    db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status, routine:$routine, subscription: $subscriptionID})<-[:ASSIGNED]-(user)", {
                       routine: JSON.stringify(pattern),
                       id:body.id,
                       day: 0,
