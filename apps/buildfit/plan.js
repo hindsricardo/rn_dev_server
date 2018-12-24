@@ -1324,7 +1324,7 @@ class Plan {
       let cypher = "MATCH (m:METHOD {uuid:$methodID}) RETURN m"
       db.run(getLastWorkout, {
         id:body.id,
-        methodID:body.methodiD,
+        methodID:body.methodID,
         subscriptionID: body.subscriptionID
       })
       .then((results) => {
