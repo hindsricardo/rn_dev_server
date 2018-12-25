@@ -1335,7 +1335,7 @@ class Plan {
           return x;
         });
       if(results.length > 0){ //if there is a previous workout
-          if(moment(results[0].created).format("LL") == today || results[0].status != "skipped" && results[0].status != "completed" && results[0].status != "incomplete_finish" && results[0].status != "rest_day"){ // if the previous workout is the same day
+          if( results[0].created + (day*5) > now && moment(results[0].created).format("LL") == today || results[0].status != "skipped" && results[0].status != "completed" && results[0].status != "incomplete_finish" && results[0].status != "rest_day"){ // if the previous workout is the same day
             res.writeHead(200, header);
             res.end(JSON.stringify({
                 success:"yes",
