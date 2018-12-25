@@ -1335,128 +1335,53 @@ class Plan {
           return x;
         });
       if(results.length > 0){ //if there is a previous workout
-          if( results[0].created + (day*5) > now && moment(results[0].created).format("LL") == today || results[0].status != "skipped" && results[0].status != "completed" && results[0].status != "incomplete_finish" && results[0].status != "rest_day"){ // if the previous workout is the same day
-            res.writeHead(200, header);
-            res.end(JSON.stringify({
-                success:"yes",
-                results: results[0]
-              }));
-            console.log('/bf/urfitclient/get/daily/advice',JSON.stringify({
-              success:"yes",
-              results: results[0]
-            }));
-            return
-          }
-          else{
-            let daysElapsed = Math.floor(((now - results[0].created)/day))
-            console.log("daysElapsed", daysElapsed);
-            // CREATE A WORKOUT BASED ON THE NEXT DAY ASSUMING THERE IS A NEXT DAY EXISTS, IF IT DOESN'T START FROM THE BEGINNING: TODO
-            console.log('create workout based on next day');
-            if(daysElapsed < 1){
-              daysElapsed = 1;
-            }
+        if(results[0].created + (day * 5) < now) { //if 5 days have past since the last workout was created start at day 1
             db.run(cypher, {
               methodID:body.methodID
             })
             .then((methods) => {
               db.close()
               methods = methods.records;
-              let day = results[0].day + daysElapsed;
               let selectedExercise = JSON.parse(methods[0]._fields[0].properties.selectedExercise)
-              let diet = JSON.parse(methods[0]._fields[0].properties.diet);
-              let pattern = JSON.parse(methods[0]._fields[0].properties.pattern);
-              if(pattern[day] != undefined){
-                console.log('next day exists in pattern. day is: ', day);
-                if(selectedExercise[day].length > 0){ // if there is a workout on day one
-                  console.log('There is a workout on this day');
-                  let randomselected = selectedExercise[day].map((slot) => {
-                    if(slot.length > 0){
-                      return slot[Math.floor(Math.random()*slot.length)]
-                    }
-                    else{return '';}
-                  })
-                  let alteredPattern = pattern[day].map((x, pos) => {
-                     x.exercise = randomselected[x.number - 1];
-                     x.diet = diet[day];
-                     return x;
+              let diet = JSON.parse(methods[0]._fields[0].properties.diet)
+
+              if(selectedExercise[0].length > 0){ // if there is a workout on day one
+                let randomselected = selectedExercise[0].map((slot) => {
+                  if(slot.length > 0){
+                    return slot[Math.floor(Math.random()*slot.length)]
+                  }
+                  else{return '';}
+                })
+                let pattern = JSON.parse(methods[0]._fields[0].properties.pattern);
+                let alteredPattern = pattern[0].map((x, pos) => {
+                   x.exercise = randomselected[x.number - 1];
+                   x.diet = diet[0];
+                   return x;
+                });
+                console.log(alteredPattern,'alteredPattern');
+
+                db.run("UNWIND $pattern AS info MATCH (exercise:EXERCISE {uuid:info.exercise}) RETURN info {.*, exercise:exercise}",{
+                  pattern:alteredPattern
+                })
+                .then((pattern) => {
+                  db.close()
+                  pattern = pattern.records.map((x) => {
+                    x = x._fields[0];
+                    x.exercise = x.exercise.properties;
+                    return x;
+
                   });
-                  console.log(alteredPattern,'alteredPattern');
-
-                  db.run("UNWIND $pattern AS info MATCH (exercise:EXERCISE {uuid:info.exercise}) RETURN info {.*, exercise:exercise}",{
-                    pattern:alteredPattern
-                  })
-                  .then((pattern) => {
-                    db.close()
-                    pattern = pattern.records.map((x) => {
-                      x = x._fields[0];
-                      x.exercise = x.exercise.properties;
-                      return x;
-
-                    });
-                    db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created: $created, status:$status, routine:$routine, subscription: $subscriptionID})<-[:ASSIGNED]-(user)", {
-                      routine: JSON.stringify(pattern),
-                      id: body.id,
-                      day: day,
-                      methodID:body.methodID,
-                      trainer: methods[0]._fields[0].properties.trainer,
-                      soreness2: methods[0]._fields[0].properties.soreness2,
-                      soreness3: methods[0]._fields[0].properties.soreness3,
-                      methodName: methods[0]._fields[0].properties.focus,
-                      created: now,
-                      status: "not started",
-                      uuid: uuidV4(),
-                      subscriptionID: body.subscriptionID
-                    })
-                    .then((workout) => {
-                      db.close()
-                      workout = workout.records.map((x) => {
-                        x = x._fields[0].properties;
-                        x.routine = JSON.parse(x.routine);
-                        return x;
-                      });
-                      res.writeHead(200, header);
-                      res.end(JSON.stringify({
-                          success:"yes",
-                          results: workout[0],
-                        }));
-                      console.log('/bf/urfitclient/get/daily/advice',JSON.stringify({
-                        success:"yes",
-                        results: workout[0],
-                      }));
-                      return
-                    })
-                    .catch((err) => {
-                      log.error(err);// log to error file
-                      console.log('/bf/urfitclient/get/daily/advice',err);
-                      res.writeHead(500, header)
-                      res.end(JSON.stringify({
-                        status:"error",
-                        results: err,
-                      }))
-                    })
-                  })
-                  .catch((err) => {
-                    log.error(err);// log to error file
-                    console.log('/bf/urfitclient/get/daily/advice',err);
-                    res.writeHead(500, header)
-                    res.end(JSON.stringify({
-                      status:"error",
-                      results: err,
-                    }))
-                  })
-                }
-                else{ // if not workout on this day create a workout object in DATABASE that tells the user not to workout but provides meal advice
                   db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status, routine:$routine, subscription: $subscriptionID})<-[:ASSIGNED]-(user)", {
-                    routine: JSON.stringify([]),
+                    routine: JSON.stringify(pattern),
                     id:body.id,
-                    day: day,
+                    day: 0,
                     methodID:body.methodID,
                     trainer: methods[0]._fields[0].properties.trainer,
                     soreness2: methods[0]._fields[0].properties.soreness2,
                     soreness3: methods[0]._fields[0].properties.soreness3,
                     methodName: methods[0]._fields[0].properties.focus,
                     created: now,
-                    status:"rest_day",
+                    status:"not started",
                     uuid:uuidV4(),
                     subscriptionID: body.subscriptionID
                   })
@@ -1487,57 +1412,199 @@ class Plan {
                       results: err,
                     }))
                   })
-                }
+                })
+                .catch((err) => {
+                  log.error(err);// log to error file
+                  console.log('/bf/urfitclient/get/daily/advice',err);
+                  res.writeHead(500, header)
+                  res.end(JSON.stringify({
+                    status:"error",
+                    results: err,
+                  }))
+                })
+              }
+              else{
+            // start from zero aka day 1 but there is no workout on day 1
+              console.log("start from zero aka day 1 but there is no workout on day 1");
+
+                db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status,routine:$routine, subscription: $subscriptionID})<-[:ASSIGNED]-(user)", {
+                  routine: JSON.stringify([]),
+                  id:body.id,
+                  day: 0,
+                  methodID:body.methodID,
+                  trainer: methods[0]._fields[0].properties.trainer,
+                  soreness2: methods[0]._fields[0].properties.soreness2,
+                  soreness3: methods[0]._fields[0].properties.soreness3,
+                  methodName: methods[0]._fields[0].properties.focus,
+                  created: now,
+                  status:"rest_day",
+                  uuid:uuidV4(),
+                  subscriptionID: body.subscriptionID
+                })
+                .then((workout) => {
+                  db.close()
+                  workout = workout.records.map((x) => {
+                    x = x._fields[0].properties;
+                    x.routine = JSON.parse(x.routine);
+                    return x;
+                  });
+                  res.writeHead(200, header);
+                  res.end(JSON.stringify({
+                      success:"yes",
+                      results: workout[0],
+                    }));
+                  console.log('/bf/urfitclient/get/daily/advice',JSON.stringify({
+                    success:"yes",
+                    results: workout[0],
+                  }));
+                  return
+                })
+                .catch((err) => {
+                  log.error(err);// log to error file
+                  console.log('/bf/urfitclient/get/daily/advice',err);
+                  res.writeHead(500, header)
+                  res.end(JSON.stringify({
+                    status:"error",
+                    results: err,
+                  }))
+                })
+              }
+          })
+          .catch((err) => {
+            log.error(err);// log to error file
+            console.log('/bf/urfitclient/get/daily/advice',err);
+            res.writeHead(500, header)
+            res.end(JSON.stringify({
+              status:"error",
+              results: err,
+            }))
+          })
+        }
+        else { // LAST WORKOUT NOT OLDER THAN 5 DAYS
+
+
+            if( moment(results[0].created).format("LL") == today || results[0].status != "skipped" && results[0].status != "completed" && results[0].status != "incomplete_finish" && results[0].status != "rest_day"){ // if the previous workout is the same day
+              res.writeHead(200, header);
+              res.end(JSON.stringify({
+                  success:"yes",
+                  results: results[0]
+                }));
+              console.log('/bf/urfitclient/get/daily/advice',JSON.stringify({
+                success:"yes",
+                results: results[0]
+              }));
+              return
             }
             else{
-              // if THERE ARE NO MORE DAYS START FROM 0
-              console.log("start over at 0");
+              let daysElapsed = Math.floor(((now - results[0].created)/day))
+              console.log("daysElapsed", daysElapsed);
+              // CREATE A WORKOUT BASED ON THE NEXT DAY ASSUMING THERE IS A NEXT DAY EXISTS, IF IT DOESN'T START FROM THE BEGINNING: TODO
+              console.log('create workout based on next day');
+              if(daysElapsed < 1){
+                daysElapsed = 1;
+              }
               db.run(cypher, {
                 methodID:body.methodID
               })
               .then((methods) => {
                 db.close()
                 methods = methods.records;
+                let day = results[0].day + daysElapsed;
                 let selectedExercise = JSON.parse(methods[0]._fields[0].properties.selectedExercise)
-                let diet = JSON.parse(methods[0]._fields[0].properties.diet)
-
-                if(selectedExercise[0].length > 0){ // if there is a workout on day one
-                  let randomselected = selectedExercise[0].map((slot) => {
-                    if(slot.length > 0){
-                      return slot[Math.floor(Math.random()*slot.length)]
-                    }
-                    else{return '';}
-                  })
-                  let pattern = JSON.parse(methods[0]._fields[0].properties.pattern);
-                  let alteredPattern = pattern[0].map((x, pos) => {
-                     x.exercise = randomselected[x.number - 1];
-                     x.diet = diet[0];
-                     return x;
-                  });
-                  console.log(alteredPattern,'alteredPattern');
-
-                  db.run("UNWIND $pattern AS info MATCH (exercise:EXERCISE {uuid:info.exercise}) RETURN info {.*, exercise:exercise}",{
-                    pattern:alteredPattern
-                  })
-                  .then((pattern) => {
-                    db.close()
-                    pattern = pattern.records.map((x) => {
-                      x = x._fields[0];
-                      x.exercise = x.exercise.properties;
-                      return x;
-
+                let diet = JSON.parse(methods[0]._fields[0].properties.diet);
+                let pattern = JSON.parse(methods[0]._fields[0].properties.pattern);
+                if(pattern[day] != undefined){
+                  console.log('next day exists in pattern. day is: ', day);
+                  if(selectedExercise[day].length > 0){ // if there is a workout on day one
+                    console.log('There is a workout on this day');
+                    let randomselected = selectedExercise[day].map((slot) => {
+                      if(slot.length > 0){
+                        return slot[Math.floor(Math.random()*slot.length)]
+                      }
+                      else{return '';}
+                    })
+                    let alteredPattern = pattern[day].map((x, pos) => {
+                       x.exercise = randomselected[x.number - 1];
+                       x.diet = diet[day];
+                       return x;
                     });
+                    console.log(alteredPattern,'alteredPattern');
+
+                    db.run("UNWIND $pattern AS info MATCH (exercise:EXERCISE {uuid:info.exercise}) RETURN info {.*, exercise:exercise}",{
+                      pattern:alteredPattern
+                    })
+                    .then((pattern) => {
+                      db.close()
+                      pattern = pattern.records.map((x) => {
+                        x = x._fields[0];
+                        x.exercise = x.exercise.properties;
+                        return x;
+
+                      });
+                      db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created: $created, status:$status, routine:$routine, subscription: $subscriptionID})<-[:ASSIGNED]-(user)", {
+                        routine: JSON.stringify(pattern),
+                        id: body.id,
+                        day: day,
+                        methodID:body.methodID,
+                        trainer: methods[0]._fields[0].properties.trainer,
+                        soreness2: methods[0]._fields[0].properties.soreness2,
+                        soreness3: methods[0]._fields[0].properties.soreness3,
+                        methodName: methods[0]._fields[0].properties.focus,
+                        created: now,
+                        status: "not started",
+                        uuid: uuidV4(),
+                        subscriptionID: body.subscriptionID
+                      })
+                      .then((workout) => {
+                        db.close()
+                        workout = workout.records.map((x) => {
+                          x = x._fields[0].properties;
+                          x.routine = JSON.parse(x.routine);
+                          return x;
+                        });
+                        res.writeHead(200, header);
+                        res.end(JSON.stringify({
+                            success:"yes",
+                            results: workout[0],
+                          }));
+                        console.log('/bf/urfitclient/get/daily/advice',JSON.stringify({
+                          success:"yes",
+                          results: workout[0],
+                        }));
+                        return
+                      })
+                      .catch((err) => {
+                        log.error(err);// log to error file
+                        console.log('/bf/urfitclient/get/daily/advice',err);
+                        res.writeHead(500, header)
+                        res.end(JSON.stringify({
+                          status:"error",
+                          results: err,
+                        }))
+                      })
+                    })
+                    .catch((err) => {
+                      log.error(err);// log to error file
+                      console.log('/bf/urfitclient/get/daily/advice',err);
+                      res.writeHead(500, header)
+                      res.end(JSON.stringify({
+                        status:"error",
+                        results: err,
+                      }))
+                    })
+                  }
+                  else{ // if not workout on this day create a workout object in DATABASE that tells the user not to workout but provides meal advice
                     db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status, routine:$routine, subscription: $subscriptionID})<-[:ASSIGNED]-(user)", {
-                      routine: JSON.stringify(pattern),
+                      routine: JSON.stringify([]),
                       id:body.id,
-                      day: 0,
+                      day: day,
                       methodID:body.methodID,
                       trainer: methods[0]._fields[0].properties.trainer,
                       soreness2: methods[0]._fields[0].properties.soreness2,
                       soreness3: methods[0]._fields[0].properties.soreness3,
                       methodName: methods[0]._fields[0].properties.focus,
                       created: now,
-                      status:"not started",
+                      status:"rest_day",
                       uuid:uuidV4(),
                       subscriptionID: body.subscriptionID
                     })
@@ -1568,87 +1635,169 @@ class Plan {
                         results: err,
                       }))
                     })
-                  })
-                  .catch((err) => {
-                    log.error(err);// log to error file
-                    console.log('/bf/urfitclient/get/daily/advice',err);
-                    res.writeHead(500, header)
-                    res.end(JSON.stringify({
-                      status:"error",
-                      results: err,
-                    }))
-                  })
-                }
-                else{
-              // start from zero aka day 1 but there is no workout on day 1
-                console.log("start from zero aka day 1 but there is no workout on day 1");
+                  }
+              }
+              else{
+                // if THERE ARE NO MORE DAYS START FROM 0
+                console.log("start over at 0");
+                db.run(cypher, {
+                  methodID:body.methodID
+                })
+                .then((methods) => {
+                  db.close()
+                  methods = methods.records;
+                  let selectedExercise = JSON.parse(methods[0]._fields[0].properties.selectedExercise)
+                  let diet = JSON.parse(methods[0]._fields[0].properties.diet)
 
-                  db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status,routine:$routine, subscription: $subscriptionID})<-[:ASSIGNED]-(user)", {
-                    routine: JSON.stringify([]),
-                    id:body.id,
-                    day: 0,
-                    methodID:body.methodID,
-                    trainer: methods[0]._fields[0].properties.trainer,
-                    soreness2: methods[0]._fields[0].properties.soreness2,
-                    soreness3: methods[0]._fields[0].properties.soreness3,
-                    methodName: methods[0]._fields[0].properties.focus,
-                    created: now,
-                    status:"rest_day",
-                    uuid:uuidV4(),
-                    subscriptionID: body.subscriptionID
-                  })
-                  .then((workout) => {
-                    db.close()
-                    workout = workout.records.map((x) => {
-                      x = x._fields[0].properties;
-                      x.routine = JSON.parse(x.routine);
-                      return x;
+                  if(selectedExercise[0].length > 0){ // if there is a workout on day one
+                    let randomselected = selectedExercise[0].map((slot) => {
+                      if(slot.length > 0){
+                        return slot[Math.floor(Math.random()*slot.length)]
+                      }
+                      else{return '';}
+                    })
+                    let pattern = JSON.parse(methods[0]._fields[0].properties.pattern);
+                    let alteredPattern = pattern[0].map((x, pos) => {
+                       x.exercise = randomselected[x.number - 1];
+                       x.diet = diet[0];
+                       return x;
                     });
-                    res.writeHead(200, header);
-                    res.end(JSON.stringify({
+                    console.log(alteredPattern,'alteredPattern');
+
+                    db.run("UNWIND $pattern AS info MATCH (exercise:EXERCISE {uuid:info.exercise}) RETURN info {.*, exercise:exercise}",{
+                      pattern:alteredPattern
+                    })
+                    .then((pattern) => {
+                      db.close()
+                      pattern = pattern.records.map((x) => {
+                        x = x._fields[0];
+                        x.exercise = x.exercise.properties;
+                        return x;
+
+                      });
+                      db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status, routine:$routine, subscription: $subscriptionID})<-[:ASSIGNED]-(user)", {
+                        routine: JSON.stringify(pattern),
+                        id:body.id,
+                        day: 0,
+                        methodID:body.methodID,
+                        trainer: methods[0]._fields[0].properties.trainer,
+                        soreness2: methods[0]._fields[0].properties.soreness2,
+                        soreness3: methods[0]._fields[0].properties.soreness3,
+                        methodName: methods[0]._fields[0].properties.focus,
+                        created: now,
+                        status:"not started",
+                        uuid:uuidV4(),
+                        subscriptionID: body.subscriptionID
+                      })
+                      .then((workout) => {
+                        db.close()
+                        workout = workout.records.map((x) => {
+                          x = x._fields[0].properties;
+                          x.routine = JSON.parse(x.routine);
+                          return x;
+                        });
+                        res.writeHead(200, header);
+                        res.end(JSON.stringify({
+                            success:"yes",
+                            results: workout[0],
+                          }));
+                        console.log('/bf/urfitclient/get/daily/advice',JSON.stringify({
+                          success:"yes",
+                          results: workout[0],
+                        }));
+                        return
+                      })
+                      .catch((err) => {
+                        log.error(err);// log to error file
+                        console.log('/bf/urfitclient/get/daily/advice',err);
+                        res.writeHead(500, header)
+                        res.end(JSON.stringify({
+                          status:"error",
+                          results: err,
+                        }))
+                      })
+                    })
+                    .catch((err) => {
+                      log.error(err);// log to error file
+                      console.log('/bf/urfitclient/get/daily/advice',err);
+                      res.writeHead(500, header)
+                      res.end(JSON.stringify({
+                        status:"error",
+                        results: err,
+                      }))
+                    })
+                  }
+                  else{
+                // start from zero aka day 1 but there is no workout on day 1
+                  console.log("start from zero aka day 1 but there is no workout on day 1");
+
+                    db.run("MATCH (user:USER {uuid:$id}) CREATE (n:WORKOUT {uuid:$uuid, user:$id, methodID:$methodID, day:$day, trainer:$trainer, soreness2:$soreness2, soreness3:$soreness3, methodName:$methodName, created:$created, status:$status,routine:$routine, subscription: $subscriptionID})<-[:ASSIGNED]-(user)", {
+                      routine: JSON.stringify([]),
+                      id:body.id,
+                      day: 0,
+                      methodID:body.methodID,
+                      trainer: methods[0]._fields[0].properties.trainer,
+                      soreness2: methods[0]._fields[0].properties.soreness2,
+                      soreness3: methods[0]._fields[0].properties.soreness3,
+                      methodName: methods[0]._fields[0].properties.focus,
+                      created: now,
+                      status:"rest_day",
+                      uuid:uuidV4(),
+                      subscriptionID: body.subscriptionID
+                    })
+                    .then((workout) => {
+                      db.close()
+                      workout = workout.records.map((x) => {
+                        x = x._fields[0].properties;
+                        x.routine = JSON.parse(x.routine);
+                        return x;
+                      });
+                      res.writeHead(200, header);
+                      res.end(JSON.stringify({
+                          success:"yes",
+                          results: workout[0],
+                        }));
+                      console.log('/bf/urfitclient/get/daily/advice',JSON.stringify({
                         success:"yes",
                         results: workout[0],
                       }));
-                    console.log('/bf/urfitclient/get/daily/advice',JSON.stringify({
-                      success:"yes",
-                      results: workout[0],
-                    }));
-                    return
-                  })
-                  .catch((err) => {
-                    log.error(err);// log to error file
-                    console.log('/bf/urfitclient/get/daily/advice',err);
-                    res.writeHead(500, header)
-                    res.end(JSON.stringify({
-                      status:"error",
-                      results: err,
-                    }))
-                  })
-                }
-            })
-            .catch((err) => {
-              log.error(err);// log to error file
-              console.log('/bf/urfitclient/get/daily/advice',err);
-              res.writeHead(500, header)
-              res.end(JSON.stringify({
-                status:"error",
-                results: err,
-              }))
-            })
-          }// END OF NO MORE DAYS START OVER
+                      return
+                    })
+                    .catch((err) => {
+                      log.error(err);// log to error file
+                      console.log('/bf/urfitclient/get/daily/advice',err);
+                      res.writeHead(500, header)
+                      res.end(JSON.stringify({
+                        status:"error",
+                        results: err,
+                      }))
+                    })
+                  }
+              })
+              .catch((err) => {
+                log.error(err);// log to error file
+                console.log('/bf/urfitclient/get/daily/advice',err);
+                res.writeHead(500, header)
+                res.end(JSON.stringify({
+                  status:"error",
+                  results: err,
+                }))
+              })
+            }// END OF NO MORE DAYS START OVER
 
-        })
-        .catch((err) => {
-          log.error(err);// log to error file
-          console.log('/bf/urfitclient/get/daily/advice',err);
-          res.writeHead(500, header)
-          res.end(JSON.stringify({
-            status:"error",
-            results: err,
-          }))
-        })
+          })
+          .catch((err) => {
+            log.error(err);// log to error file
+            console.log('/bf/urfitclient/get/daily/advice',err);
+            res.writeHead(500, header)
+            res.end(JSON.stringify({
+              status:"error",
+              results: err,
+            }))
+          })
 
-      }
+        }
+      } //end of else for last workout not older than 5 days
     }
     else{
           // first workout
