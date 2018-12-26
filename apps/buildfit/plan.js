@@ -681,20 +681,9 @@ class Plan {
       let body = req.body;
       let month = 86400000 * 30;
       let now = new Date().getTime();
-      let cypher = ""
-      console.log(body.diet.length, body.parts)
-      Promise.resolve(true).then(() => {
-        if(body.diet.length < 1){
-          cypher = "UNWIND $parts AS part MATCH (m:METHOD) WHERE m.descipline = $focus AND part IN m.parts MATCH (t:TRAINER {uuid:m.trainer}) MATCH (methods:METHOD {trainer: t.uuid}) MATCH (set:SetFeedback)-[:RECORDED]->(result:RESULT {trainer:t.uuid}) RETURN t {.*, methods: collect(DISTINCT methods {.duration, .location, .daysAweek, .focus, .methodDescription, .gender, .parts, .descipline, .pattern}), rating: avg(result.score) } ORDER BY t.rating DESC LIMIT 2000 " ;
-        }
-        else{
-          cypher = "UNWIND $parts AS part UNWIND $diet AS diet MATCH (m:METHOD) WHERE m.descipline = $focus AND part IN m.parts AND diet IN m.diet MATCH (t:TRAINER {uuid:m.trainer}) MATCH (methods:METHOD {trainer: t.uuid}) MATCH (set:SetFeedback)-[:RECORDED]->(result:RESULT {trainer:t.uuid}) RETURN t {.*, methods: collect(DISTINCT methods {.duration, .location, .daysAweek, .focus, .methodDescription, .gender, .parts, .descipline, .pattern}), rating: avg(result.score)  } ORDER BY t.rating DESC LIMIT 2000" ;
-        }
-      })
-      .then(() => {
+      let cypher = "UNWIND $parts AS part MATCH (m:METHOD) WHERE m.descipline = $focus AND part IN m.parts MATCH (t:TRAINER {uuid:m.trainer}) MATCH (methods:METHOD {trainer: t.uuid}) MATCH (set:SetFeedback)-[:RECORDED]->(result:RESULT {trainer:t.uuid}) RETURN t {.*, methods: collect(DISTINCT methods {.duration, .location, .daysAweek, .focus, .methodDescription, .gender, .parts, .descipline, .pattern}), rating: avg(result.score) } ORDER BY t.rating DESC LIMIT 2000 " ;
         db.run(cypher, {
           focus: body.focus,
-          diet: body.diet,
           parts: body.parts,
           now: now,
           month: month
@@ -724,18 +713,6 @@ class Plan {
             route: '/bf/urfitclient/search/from/questions'
           }));
         }) //
-      })
-      .catch((err) => {
-        res.writeHead(500, header);
-        res.end(JSON.stringify({
-            results: err,
-            route: '/bf/urfitclient/search/from/questions'
-          }));
-        console.log(JSON.stringify({
-          results: err,
-          route: '/bf/urfitclient/search/from/questions'
-        }));
-      })
 
     })
 
