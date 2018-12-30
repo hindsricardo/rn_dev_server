@@ -684,6 +684,7 @@ class Plan {
       let cypher = "UNWIND $parts AS part MATCH (m:METHOD) WHERE m.descipline = $focus AND part IN m.parts MATCH (t:TRAINER {uuid:m.trainer}) MATCH (methods:METHOD {trainer: t.uuid}) MATCH (result:RESULTS {trainerID:t.uuid}) RETURN t {.*, methods: collect(DISTINCT methods {.duration, .location, .daysAweek, .focus, .methodDescription, .gender, .parts, .descipline, .pattern}), rating: avg(result.score) ORDER BY t.rating DESC LIMIT 2000 " ;
         db.run(cypher, {
           focus: body.focus,
+          
           parts: body.parts,
         }).then((results) => {
           db.close();
