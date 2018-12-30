@@ -681,7 +681,7 @@ class Plan {
       let body = req.body;
       let month = 86400000 * 30;
       let now = new Date().getTime();
-      let cypher = "UNWIND $parts AS part MATCH (m:METHOD) WHERE m.descipline = $focus AND part IN m.parts MATCH (t:TRAINER {uuid:m.trainer}) MATCH (methods:METHOD {trainer: t.uuid}) MATCH (result:RESULTS {trainerID:t.uuid}) RETURN t {.*, methods: collect(DISTINCT methods {.duration, .location, .daysAweek, .focus, .methodDescription, .gender, .parts, .descipline, .pattern}), rating: avg(result.score), results: collect(DISTINCT result {.score}) ORDER BY t.rating DESC LIMIT 2000 " ;
+      let cypher = "UNWIND $parts AS part MATCH (m:METHOD) WHERE m.descipline = $focus AND part IN m.parts MATCH (t:TRAINER {uuid:m.trainer}) MATCH (methods:METHOD {trainer: t.uuid}) MATCH (result:RESULTS {trainerID:t.uuid}) RETURN t {.*, methods: collect(DISTINCT methods {.duration, .location, .daysAweek, .focus, .methodDescription, .gender, .parts, .descipline, .pattern}), rating: avg(result.score) ORDER BY t.rating DESC LIMIT 2000 " ;
         db.run(cypher, {
           focus: body.focus,
           parts: body.parts,
@@ -717,7 +717,7 @@ class Plan {
     //URFIT CLIENT INITIAL SEARCH
     server.post('/bf/urfitclient/search/by/trainer/email', (req, res, next) => {
       let body = req.body;
-          let cypher = "MATCH (t:TRAINER) WHERE t.email = $search OR t.email CONTAINS $search OR t.original_email = $search OR t.original_email CONTAINS $search OR t.name = $search OR t.name CONTAINS $search MATCH (methods:METHOD {trainer: t.uuid}) MATCH (result:RESULTS {trainerID:t.uuid}) RETURN t {.*, methods: collect(DISTINCT methods {.duration, .location, .daysAweek, .focus, .methodDescription, .gender, .parts, .descipline, .pattern}), rating: avg(result.score), results: collect(DISTINCT result {.score})  } ORDER BY t.rating DESC  LIMIT 25" ;
+          let cypher = "MATCH (t:TRAINER) WHERE t.email = $search OR t.email CONTAINS $search OR t.original_email = $search OR t.original_email CONTAINS $search OR t.name = $search OR t.name CONTAINS $search MATCH (methods:METHOD {trainer: t.uuid}) MATCH (result:RESULTS {trainerID:t.uuid}) RETURN t {.*, methods: collect(DISTINCT methods {.duration, .location, .daysAweek, .focus, .methodDescription, .gender, .parts, .descipline, .pattern}), rating: avg(result.score) } ORDER BY t.rating DESC  LIMIT 25" ;
         db.run(cypher, {
           search: body.search,
         }).then((results) => {
