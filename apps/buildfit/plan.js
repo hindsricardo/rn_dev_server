@@ -1935,7 +1935,7 @@ class Plan {
     //GET EXERCISE HISTORY
     server.post('/bf/urfitclient/get/exercise/set/history', (req, res, next) => {
       let body = req.body;
-      let cypher = "MATCH (sets:SetFeedback {user:$id}) WHERE sets.exerciseId = $exerciseId OR sets.name = $name RETURN sets"
+      let cypher = "MATCH (workouts:WORKOUT {user:$id}) RETURN workouts.routine"
       db.run(cypher, {
         id:body.id,
         exerciseId:body.exerciseId,
@@ -1943,9 +1943,14 @@ class Plan {
       })
       .then((results) => {
         db.close();
+
         results = results.records.map((x) => {
-          return x = x._fields[0].properties;
+          x._fields = JSON.parse(x._fields)
+          return x;
         });
+
+
+
         res.writeHead(200, header);
         res.end(JSON.stringify({
             success:"yes",

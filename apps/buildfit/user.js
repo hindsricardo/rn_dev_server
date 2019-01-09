@@ -155,7 +155,7 @@ class User {
 			  }
 			);
 		})
-    // return user details along with grade and score Weighted
+    // return user details along with grade and score Weighted TODO
     server.post('/bf/urfittrainer/get/subscribed/user/details', (req, res, next) => {
 
       let body = req.body;

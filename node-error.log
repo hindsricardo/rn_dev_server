@@ -353,3 +353,67 @@ Neo4jError: Type mismatch: expected a map but was c9249934-ed97-4889-bba1-cebabc
     at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:1127:18
     at <anonymous>
     at process._tickDomainCallback (internal/process/next_tick.js:228:7) 
+13:59:37.834 ERROR Unexpected token u in JSON at position 0
+SyntaxError: Unexpected token u in JSON at position 0
+    at JSON.parse (<anonymous>)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:1948:27
+    at Array.map (<anonymous>)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:1947:35
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) 
+14:00:40.539 ERROR Cannot read property 'routine' of undefined
+TypeError: Cannot read property 'routine' of undefined
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:1948:57
+    at Array.map (<anonymous>)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:1947:35
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) 
+14:04:52.484 ERROR Cannot read property 'routine' of undefined
+TypeError: Cannot read property 'routine' of undefined
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:1948:80
+    at Array.map (<anonymous>)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:1947:35
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) 
+14:07:31.822 ERROR Cannot read property 'routine' of undefined
+TypeError: Cannot read property 'routine' of undefined
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:1948:80
+    at Array.map (<anonymous>)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:1947:35
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) 
+14:12:07.805 ERROR Cannot read property 'name' of undefined
+TypeError: Cannot read property 'name' of undefined
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:1955:63
+    at Array.filter (<anonymous>)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:1955:30
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) 
+14:15:12.474 ERROR Cannot read property 'name' of undefined
+TypeError: Cannot read property 'name' of undefined
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:1955:73
+    at Array.filter (<anonymous>)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:1955:30
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) 
+14:16:25.766 ERROR Cannot read property 'name' of undefined
+TypeError: Cannot read property 'name' of undefined
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:1952:70
+    at Array.filter (<anonymous>)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:1952:27
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) 
+15:04:21.111 ERROR Cannot read property 'name' of undefined
+TypeError: Cannot read property 'name' of undefined
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:1950:55
+    at Array.filter (<anonymous>)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:1950:12
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) 
+15:12:14.740 ERROR Cannot read property 'name' of undefined
+TypeError: Cannot read property 'name' of undefined
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:1950:55
+    at Array.filter (<anonymous>)
+    at /Users/ricardohinds/Documents/ReactNativeProjects/devAPI/apps/buildfit/plan.js:1950:12
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7) 
