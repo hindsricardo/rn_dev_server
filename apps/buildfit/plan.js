@@ -1984,7 +1984,6 @@ class Plan {
         status: body.status,
         id: body.id,
         updated: body.updated,
-        setTime: 0,
       })
       .then((results) => {
         db.close();
