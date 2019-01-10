@@ -1975,7 +1975,6 @@ class Plan {
 
 
 
-    //RECORD SET RESULTS
     server.post('/bf/urfitclient/record/set/results', (req, res, next) => {
       let body = req.body;
       let cypher = "MATCH (n:WORKOUT {uuid:$workoutID}), (u:USER {uuid:$id}) SET n.routine = $routine, n.status = $status, n.updated = $updated RETURN n";
@@ -1985,6 +1984,7 @@ class Plan {
         status: body.status,
         id: body.id,
         updated: body.updated,
+        setTime: 0,
       })
       .then((results) => {
         db.close();
