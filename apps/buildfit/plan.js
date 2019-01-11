@@ -2018,10 +2018,11 @@ class Plan {
     server.post('/bf/urfitclient/end/workout', (req, res, next) => {
       let now = Date.now();
       let body = req.body;
-      let cypher = "MATCH (n:WORKOUT {uuid:$workoutID}) SET n.status = $status RETURN n"
+      let cypher = "MATCH (n:WORKOUT {uuid:$workoutID}) SET n.status = $status, n.updated = $updated RETURN n"
       db.run(cypher, {
         workoutID:body.workoutID,
         status: "completed",
+        updated: Date.now()
       })
       .then((results) => {
         db.close();
